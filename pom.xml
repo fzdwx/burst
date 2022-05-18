@@ -19,6 +19,7 @@
         <sky.version>0.10.5-dev</sky.version>
         <lambda.version>0.10.4-dev</lambda.version>
         <lombok.version>1.18.22</lombok.version>
+        <spring.boot.version>2.6.7</spring.boot.version>
     </properties>
 
     <dependencies>
@@ -38,6 +39,12 @@
             <groupId>io.github.fzdwx</groupId>
             <artifactId>sky-http-springboot-starter</artifactId>
             <version>${sky.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring.boot.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

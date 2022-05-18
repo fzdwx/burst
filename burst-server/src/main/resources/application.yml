@@ -2,3 +2,4 @@ server:
   port: 8080
   sky:
     path: 33333333333
+    debug: on
