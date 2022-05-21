@@ -1,5 +1,8 @@
 package burst.server.logic.controller;
 
+import http.HttpServerRequest;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -9,5 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ConnectController {
 
+    @GetMapping("connect")
+    public void connect(@RequestParam int token, HttpServerRequest request) {
+        System.out.println("token = " + token);
+        System.out.println(request);
+    }
 
 }

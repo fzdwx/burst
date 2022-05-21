@@ -3,7 +3,6 @@ package burst.server.logic.controller;
 import burst.server.inf.redis.Redis;
 import burst.server.logic.domain.model.request.RegisterReq;
 import cn.hutool.core.util.IdUtil;
-import http.HttpServerRequest;
 import io.github.fzdwx.lambada.Collections;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +21,7 @@ public class RegisterController {
      * 注册客户端
      */
     @PostMapping("register")
-        public ResponseEntity<?> register(@RequestBody RegisterReq req) {
+    public ResponseEntity<?> register(@RequestBody RegisterReq req) {
         final String key = req.toKey();
         final String token = IdUtil.fastSimpleUUID();
 
