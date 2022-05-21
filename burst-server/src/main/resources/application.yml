@@ -3,3 +3,6 @@ server:
   sky:
     path: 33333333333
     debug: on
+spring:
+  profiles:
+    active: @profiles.active@
