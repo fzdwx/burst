@@ -1,7 +1,7 @@
 package burst.server.logic.controller;
 
-import burst.server.inf.redis.Redis;
 import burst.server.logic.domain.model.request.RegisterInfo;
+import burst.server.logic.temp.Cache;
 import cn.hutool.core.util.IdUtil;
 import io.github.fzdwx.lambada.Collections;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ public class RegisterController {
         info.preCheck();
 
         final String token = IdUtil.fastSimpleUUID();
-        Redis.set(token, info.encode());
+        Cache.set(token, info.encode());
 
         return ResponseEntity.ok().body(Collections.map(
                 "token", token

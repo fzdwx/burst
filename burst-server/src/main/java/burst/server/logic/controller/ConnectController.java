@@ -3,8 +3,8 @@ package burst.server.logic.controller;
 import burst.protocol.BurstFactory;
 import burst.protocol.BurstMessage;
 import burst.protocol.BurstType;
-import burst.server.inf.redis.Redis;
 import burst.server.logic.domain.model.request.RegisterInfo;
+import burst.server.logic.temp.Cache;
 import burst.server.logic.trans.Transform;
 import com.google.protobuf.InvalidProtocolBufferException;
 import core.Netty;
@@ -25,7 +25,7 @@ public class ConnectController {
 
     @GetMapping("connect")
     public void connect(@RequestParam String token, HttpServerRequest request) {
-        final var registerInfo = RegisterInfo.from(Redis.get(token));
+        final var registerInfo = RegisterInfo.from(Cache.get(token));
         if (registerInfo == null) {
             throw Exceptions.newIllegalArgument("token is invalid");
         }
