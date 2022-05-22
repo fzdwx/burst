@@ -30,4 +30,4 @@ curl --location --request POST 'http://114.132.249.192:10086/register' \
 => **114.132.249.192:28236** is your mapped address information
 
 ## Install
-[click](https://github.com/fzdwx/burst/Install.md)
+[click](https://github.com/fzdwx/burst/blob/main/Install.md)
