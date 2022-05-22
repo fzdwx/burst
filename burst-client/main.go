@@ -13,8 +13,8 @@ import (
 )
 
 var (
-	serverIp   = flag.String("addr", "localhost", "serverIp")
-	serverPort = flag.Int("serverPort", 8080, "server serverPort")
+	serverIp   = flag.String("sip", "localhost", "server ip")
+	serverPort = flag.Int("sp", 8080, "server serverPort")
 	token      = flag.String("t", "de73df98abad4117a53fa2dfa27da7ac", "your key, you can get it from server")
 	usage      = flag.Bool("h", false, "help")
 	debug      = flag.Bool("d", true, "log level use debug")

@@ -10,6 +10,9 @@ l:
 build:
    mvn -s {{mvn_setting_path}} -DskipTests clean package -Pprod
 
+runServer:
+   java -jar burst-server/target/burst-server-1.0-SNAPSHOT.jar
+
 # compile proto files
 proto:
    protoc --java_out=./burst-server/src/main/java ./protocol/burst.proto
@@ -19,10 +22,10 @@ kill:
     ssh  root@114.132.249.192 "sh /root/killbrust.sh"
     ssh  root@114.132.249.192 "rm -rf {{target_path}}"
 
-run:
+run: pub
     ssh  root@114.132.249.192 "java -jar {{target_path}}"
 
-pub: run
+pub:
     scp -r burst-server/target/burst-server-1.0-SNAPSHOT.jar root@114.132.249.192:{{target_path}}
 
 # dependencies tree for compile

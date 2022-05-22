@@ -48,6 +48,7 @@ public class Transform {
 
             portsMap.put(availablePort, port);
 
+            // todo websocket 关闭后server也要关闭
             new Server().withGroup(boss, worker).withInitChannel(ch -> {
                 ch.pipeline().addLast(new ByteArrayDecoder(), new ByteArrayEncoder(), new TransformHandler(availablePort, socket));
             }).listen(availablePort);
