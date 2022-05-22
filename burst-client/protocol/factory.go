@@ -4,7 +4,7 @@ import (
 	"github.com/golang/protobuf/proto"
 )
 
-func Unmarshal(data []byte) (*BurstMessage, error) {
+func Decode(data []byte) (*BurstMessage, error) {
 	message := BurstMessage{}
 	err := proto.Unmarshal(data, &message)
 	if err != nil {

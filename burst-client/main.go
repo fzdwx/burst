@@ -2,6 +2,9 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"github.com/fzdwx/burst/burst-client/protocol"
+	ws "github.com/fzdwx/burst/burst-client/ws"
 	log "github.com/sirupsen/logrus"
 	"net/url"
 	"os"
@@ -37,17 +40,27 @@ func init() {
 }
 
 func main() {
-	u := url.URL{Scheme: "ws", Host: *addr, Path: "/connect", RawQuery: "token=" + *token}
-	ws, err := Connect(u)
+	u := url.URL{Scheme: "connect", Host: *addr, Path: "/connect", RawQuery: "token=" + *token}
+	client, err := ws.Connect(u)
 	if err != nil {
 		log.Fatal("dial:", err)
 	}
-	defer ws.Close()
+	defer client.Close()
+
+	client.MountBinaryHandler(func(data []byte, ws ws.Client) {
+		burstMessage, err := protocol.Decode(data)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+
+		fmt.Println(burstMessage)
+	})
 
 	down := make(chan struct{})
 	go func() {
 		defer close(down)
-		ws.StartReadMessage()
+		client.StartReadMessage()
 	}()
 
 	for {
