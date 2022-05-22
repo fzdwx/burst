@@ -39,16 +39,16 @@ func (f *Forwarder) write(userConnectId string, data []byte) {
 				"userConnectId": userConnectId,
 				"write":         write,
 				"err":           err,
-			}).Error("Forwarder.Write")
+			}).Error("forward to local: error")
 		}
-		log.Debugf("Forwarder.Write: %s, %d", userConnectId, write)
+		log.Debugf("forward to local: write [%d],  %s", write, userConnectId)
 	}
 }
 
-func (f *Forwarder) Forward(message *protocol.BurstMessage) {
+func (f *Forwarder) ToLocal(message *protocol.BurstMessage) {
 	userConnectId, err := protocol.GetUserConnectId(message)
 	if err != nil {
-		log.Error("parse user connect id error ", err)
+		log.Error("forward to local: parse user connect id error ", err)
 		return
 	}
 
@@ -66,17 +66,17 @@ func (u UserConnForward) StartForwardToServer(client *Client) {
 		buf := make([]byte, 1024)
 		n, err := conn.Read(buf)
 		if err != nil {
-			log.Error("forward to server: ", "read error [", err, "]", userConnectId)
+			log.Error("forward to server: ", "read error [", err, "] ", userConnectId)
 			return
 		}
 
 		// forward to server
 		err = client.Write(userConnectId, buf[:n])
 		if err != nil {
-			log.Error("UserConnForward", "userConnectId", userConnectId, "write error", err)
+			log.Error("forward to server: ", "write error [", err, "] ", userConnectId)
 			return
 		}
-		log.Debug("forward to server: ", "write [", n, "]", userConnectId)
+		log.Debug("forward to server: ", "write [", n, "]  ", userConnectId)
 	}
 }
 

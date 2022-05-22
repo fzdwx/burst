@@ -15,7 +15,7 @@ import (
 var (
 	serverIp   = flag.String("addr", "localhost", "serverIp")
 	serverPort = flag.Int("serverPort", 8080, "server serverPort")
-	token      = flag.String("t", "fda14ac64938420b873226127c5578b1", "your key, you can get it from server")
+	token      = flag.String("t", "de73df98abad4117a53fa2dfa27da7ac", "your key, you can get it from server")
 	usage      = flag.Bool("h", false, "help")
 	debug      = flag.Bool("d", true, "log level use debug")
 	host       string
@@ -147,5 +147,5 @@ func handlerUserConnect(message *protocol.BurstMessage, client *ws.Client) {
 
 func handlerForwardData(message *protocol.BurstMessage, client *ws.Client) {
 	// step 4 [forward to local port]
-	ws.Fw.Forward(message)
+	ws.Fw.ToLocal(message)
 }
