@@ -39,10 +39,10 @@ public class TransformHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(@NotNull final ChannelHandlerContext ctx, @NotNull final Object msg) throws Exception {
         // step 3 [user request] have user request, notify the client
-        final var data = BurstFactory.userRequest(ctx.channel().id().asLongText(), (byte[]) msg);
+        final var bytes = (byte[]) msg;
+        final var data = BurstFactory.userRequest(ctx.channel().id().asLongText(), bytes);
 
         ws.sendBinary(data);
-
-        log.info("user request {}", msg);
+        log.info("user request size {}", bytes.length);
     }
 }

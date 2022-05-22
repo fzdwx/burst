@@ -59,7 +59,7 @@ func (u UserConnForward) StartForwardToServer(client *Client) {
 	userConnectId := u.userConnectId
 	conn := u.conn
 	defer conn.Close()
-	defer log.Debug("forward to server: ", userConnectId, "closed")
+	defer log.Debug("forward to server: closed ", userConnectId)
 	defer Fw.remove(userConnectId)
 
 	for {

@@ -58,7 +58,7 @@ public class ConnectController {
 
                 switch (burstMessage.getType()) {
                     // step 6 [forward to user]
-                    case FORWARD_DATA -> Transform.transform(burstMessage);
+                    case FORWARD_DATA -> Transform.toUser(burstMessage);
                     default -> log.error("unknown type {}", burstMessage.getType());
                 }
 

@@ -73,11 +73,16 @@ public class Transform {
     }
 
     @SneakyThrows
-    public static void transform(final BurstMessage burstMessage) {
+    public static void toUser(final BurstMessage burstMessage) {
         final var userConnectId = burstMessage.getHeaderMap().get(Headers.USER_CONNECT_ID.getNumber()).unpack(StringValue.class).getValue();
         final var socket = userConnectContainer.find(userConnectId);
-        final var binary = burstMessage.getData().toByteArray();
-        socket.send(binary);
+        if (socket != null && socket.channel().isActive()) {
+            final var binary = burstMessage.getData().toByteArray();
+            socket.send(binary);
+            return;
+        }
+
+        log.error("user not found:{}", userConnectId);
     }
 
     private static String getKey(final Channel channel) {
