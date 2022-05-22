@@ -1,10 +1,13 @@
 package burst.server.logic.controller;
 
 import burst.protocol.BurstFactory;
+import burst.protocol.BurstMessage;
 import burst.protocol.BurstType;
 import burst.server.inf.redis.Redis;
 import burst.server.logic.domain.model.request.RegisterInfo;
 import burst.server.logic.trans.Transform;
+import com.google.protobuf.InvalidProtocolBufferException;
+import core.Netty;
 import http.HttpServerRequest;
 import io.github.fzdwx.lambada.Exceptions;
 import lombok.extern.slf4j.Slf4j;
@@ -34,8 +37,7 @@ public class ConnectController {
                 final var portMap = Transform.init(registerInfo, ws, token);
                 if (portMap == null) {
                     ws.sendBinary(BurstFactory.error(BurstType.INIT,
-                                    "portMap is null,maybe server did not have available Port"))
-                            .addListener(f -> Transform.remove(token));
+                            "portMap is null,maybe server did not have available Port"));
                     return;
                 }
 
@@ -43,8 +45,25 @@ public class ConnectController {
             });
 
             ws.mountBinary(b -> {
-                System.out.println(b);
+                BurstMessage burstMessage = null;
+                try {
+                    burstMessage = BurstMessage.parseFrom(Netty.readBytes(b));
+                } catch (InvalidProtocolBufferException e) {
+                    log.error("parseFrom error", e);
+                }
+
+                if (burstMessage == null) {
+                    return;
+                }
+
+                switch (burstMessage.getType()) {
+                    // step 6 [forward to user]
+                    case FORWARD_DATA -> Transform.transform(burstMessage);
+                    default -> log.error("unknown type {}", burstMessage.getType());
+                }
+
             });
+
         });
 
     }

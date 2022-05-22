@@ -1,21 +1,33 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"github.com/fzdwx/burst/burst-client/protocol"
 	ws "github.com/fzdwx/burst/burst-client/ws"
 	log "github.com/sirupsen/logrus"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 )
 
-var addr = flag.String("addr", "localhost:8080", "http service address")
-var token = flag.String("t", "fda14ac64938420b873226127c5578b1", "connect token")
-var debug = flag.Bool("d", true, "log level use debug")
+var (
+	serverIp   = flag.String("addr", "localhost", "serverIp")
+	serverPort = flag.Int("serverPort", 8080, "server serverPort")
+	token      = flag.String("t", "fda14ac64938420b873226127c5578b1", "your key, you can get it from server")
+	usage      = flag.Bool("h", false, "help")
+	debug      = flag.Bool("d", true, "log level use debug")
+	host       string
+)
 
 func init() {
 	flag.Parse()
+	if *usage {
+		flag.Usage()
+		os.Exit(0)
+	}
+
 	if strings.Compare(*token, "null") == 0 {
 		log.Fatal("token is null")
 		os.Exit(1)
@@ -36,17 +48,22 @@ func init() {
 	} else {
 		log.SetLevel(log.InfoLevel)
 	}
+
+	log.Info("log level is ", log.GetLevel())
+	log.Info("server ip:", *serverIp)
+	log.Info("server port:", *serverPort)
+	host = *serverIp + ":" + strconv.Itoa(*serverPort)
 }
 
 func main() {
-	u := url.URL{Scheme: "ws", Host: *addr, Path: "/connect", RawQuery: "token=" + *token}
+	u := url.URL{Scheme: "ws", Host: host, Path: "/connect", RawQuery: "token=" + *token}
 	client, err := ws.Connect(u)
 	if err != nil {
 		log.Fatal("dial:", err)
 	}
 	defer client.Close()
 
-	client.MountBinaryHandler(func(data []byte, ws ws.Client) {
+	client.MountBinaryHandler(func(data []byte, ws *ws.Client) {
 		burstMessage, err := protocol.Decode(data)
 		if err != nil {
 			log.Error(err)
@@ -56,6 +73,10 @@ func main() {
 		switch burstMessage.Type {
 		case protocol.BurstType_INIT:
 			handlerInit(burstMessage, ws)
+		case protocol.BurstType_USER_CONNECT:
+			handlerUserConnect(burstMessage, ws)
+		case protocol.BurstType_FORWARD_DATA:
+			handlerForwardData(burstMessage, ws)
 		}
 	})
 
@@ -73,21 +94,58 @@ func main() {
 	}
 }
 
-func handlerInit(message *protocol.BurstMessage, client ws.Client) {
+func handlerInit(message *protocol.BurstMessage, client *ws.Client) {
 	err := protocol.GetError(message)
 	if err != nil {
-		log.Error("init error ", err)
-		client.Close()
-		os.Exit(1)
+		client.Over(errors.New("init error " + err.Error()))
 	}
 
 	ports, err := protocol.GetPorts(message)
 	if err != nil {
-		log.Error("init get ports error ", err)
-		client.Close()
-		os.Exit(1)
+		client.Over(errors.New("init get ports error " + err.Error()))
 	}
 
 	client.SetPorts(ports.GetPorts())
 	log.Info("init success ", client.Ports())
+}
+
+func handlerUserConnect(message *protocol.BurstMessage, client *ws.Client) {
+	serverExportPort, err := protocol.GetServerExportPort(message)
+	if err != nil {
+		log.Error("parse server export port error ", err)
+		return
+	}
+
+	localPort, ok := client.LocalPort(serverExportPort)
+	if !ok {
+		log.Error("local port not found ", serverExportPort)
+		return
+	}
+
+	userConnectId, err := protocol.GetUserConnectId(message)
+	if err != nil {
+		log.Error("parse user connect id error ", err)
+		return
+	}
+
+	userConnForward, err := ws.NewUserConn(localPort, userConnectId)
+	if err != nil {
+		log.Error("local port connect error ", err)
+		return
+	}
+
+	// step 5 [forwarded to the server], and then forwarded to a specific user
+	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error("forward to server: recover ", err)
+			}
+		}()
+		userConnForward.StartForwardToServer(client)
+	}()
+}
+
+func handlerForwardData(message *protocol.BurstMessage, client *ws.Client) {
+	// step 4 [forward to local port]
+	ws.Fw.Forward(message)
 }

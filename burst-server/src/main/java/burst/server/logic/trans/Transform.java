@@ -1,15 +1,21 @@
 package burst.server.logic.trans;
 
+import burst.protocol.BurstMessage;
+import burst.protocol.Headers;
 import burst.server.logic.domain.model.request.RegisterInfo;
+import com.google.protobuf.StringValue;
 import core.Server;
 import group.DefaultSocketGroup;
 import group.SocketGroup;
 import io.github.fzdwx.lambada.Collections;
+import io.netty.channel.Channel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import socket.Socket;
 import socket.WebSocket;
 import util.AvailablePort;
 
@@ -22,14 +28,17 @@ import java.util.Map;
 @Slf4j
 public class Transform {
 
-    private static final NioEventLoopGroup boss = new NioEventLoopGroup(1);
+    private static final NioEventLoopGroup boss = new NioEventLoopGroup();
     private static final NioEventLoopGroup worker = new NioEventLoopGroup();
 
-    private static final Map<String, Map<Integer, Integer>> clientPortMapping = Collections.map();
-    private static final SocketGroup<String> group = new DefaultSocketGroup<>(GlobalEventExecutor.INSTANCE);
+    private static final SocketGroup<String> userConnectContainer = new DefaultSocketGroup<>(GlobalEventExecutor.INSTANCE);
 
+    /**
+     * export ports.
+     */
     public static Map<Integer, Integer> init(RegisterInfo info, WebSocket socket, String token) {
         Map<Integer, Integer> portsMap = Collections.map();
+
         for (Integer port : info.getPorts()) {
 
             final var availablePort = AvailablePort.random();
@@ -39,25 +48,39 @@ public class Transform {
 
             portsMap.put(availablePort, port);
 
-            new Server()
-                    .withGroup(boss, worker)
-                    .withInitChannel(ch -> {
-                        ch.pipeline().addLast(
-                                new ByteArrayDecoder(),
-                                new ByteArrayEncoder(),
-                                new TransformHandler(token, availablePort)
-                        );
-                    })
-                    .listen(availablePort);
+            new Server().withGroup(boss, worker).withInitChannel(ch -> {
+                ch.pipeline().addLast(new ByteArrayDecoder(), new ByteArrayEncoder(), new TransformHandler(availablePort, socket));
+            }).listen(availablePort);
         }
-        group.add(token, socket);
 
         log.info("client init ports:{}", portsMap);
 
         return portsMap;
     }
 
-    public static void remove(final String token) {
-        group.remove(token);
+    /**
+     * when user connect, add to container.
+     */
+    public static String add(final Channel channel) {
+        final var socket = Socket.create(channel);
+        final var key = getKey(channel);
+        userConnectContainer.add(key, socket);
+        return key;
+    }
+
+    public static void remove(final Socket socket) {
+        userConnectContainer.remove(getKey(socket.channel()));
+    }
+
+    @SneakyThrows
+    public static void transform(final BurstMessage burstMessage) {
+        final var userConnectId = burstMessage.getHeaderMap().get(Headers.USER_CONNECT_ID.getNumber()).unpack(StringValue.class).getValue();
+        final var socket = userConnectContainer.find(userConnectId);
+        final var binary = burstMessage.getData().toByteArray();
+        socket.send(binary);
+    }
+
+    private static String getKey(final Channel channel) {
+        return channel.id().asLongText();
     }
 }
