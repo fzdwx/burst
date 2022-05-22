@@ -37,6 +37,8 @@ public class Transform {
                 return null;
             }
 
+            portsMap.put(availablePort, port);
+
             new Server()
                     .withGroup(boss, worker)
                     .withInitChannel(ch -> {
@@ -46,9 +48,6 @@ public class Transform {
                                 new TransformHandler(token, availablePort)
                         );
                     })
-                    .onSuccess(s -> {
-                        portsMap.put(s.port(), port);
-                    })
                     .listen(availablePort);
         }
         group.add(token, socket);
@@ -56,5 +55,9 @@ public class Transform {
         log.info("client init ports:{}", portsMap);
 
         return portsMap;
+    }
+
+    public static void remove(final String token) {
+        group.remove(token);
     }
 }

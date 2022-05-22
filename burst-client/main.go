@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"github.com/fzdwx/burst/burst-client/protocol"
 	ws "github.com/fzdwx/burst/burst-client/ws"
 	log "github.com/sirupsen/logrus"
@@ -40,7 +39,7 @@ func init() {
 }
 
 func main() {
-	u := url.URL{Scheme: "connect", Host: *addr, Path: "/connect", RawQuery: "token=" + *token}
+	u := url.URL{Scheme: "ws", Host: *addr, Path: "/connect", RawQuery: "token=" + *token}
 	client, err := ws.Connect(u)
 	if err != nil {
 		log.Fatal("dial:", err)
@@ -54,7 +53,10 @@ func main() {
 			return
 		}
 
-		fmt.Println(burstMessage)
+		switch burstMessage.Type {
+		case protocol.BurstType_INIT:
+			handlerInit(burstMessage, ws)
+		}
 	})
 
 	down := make(chan struct{})
@@ -69,4 +71,23 @@ func main() {
 			return
 		}
 	}
+}
+
+func handlerInit(message *protocol.BurstMessage, client ws.Client) {
+	err := protocol.GetError(message)
+	if err != nil {
+		log.Error("init error ", err)
+		client.Close()
+		os.Exit(1)
+	}
+
+	ports, err := protocol.GetPorts(message)
+	if err != nil {
+		log.Error("init get ports error ", err)
+		client.Close()
+		os.Exit(1)
+	}
+
+	client.SetPorts(ports.GetPorts())
+	log.Info("init success ", client.Ports())
 }

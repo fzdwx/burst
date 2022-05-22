@@ -1,11 +1,11 @@
 package burst.server.logic.controller;
 
 import burst.protocol.BurstFactory;
+import burst.protocol.BurstType;
 import burst.server.inf.redis.Redis;
 import burst.server.logic.domain.model.request.RegisterInfo;
 import burst.server.logic.trans.Transform;
 import http.HttpServerRequest;
-import io.github.fzdwx.lambada.Console;
 import io.github.fzdwx.lambada.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,17 +28,18 @@ public class ConnectController {
         }
 
         request.upgradeToWebSocket(ws -> {
+
+            // step 1 [init] server export ports and send ports mapping to client.
             ws.mountOpen(h -> {
                 final var portMap = Transform.init(registerInfo, ws, token);
                 if (portMap == null) {
-                    ws.sendBinary(BurstFactory.error("portMap is null,maybe server did not have available Port"));
+                    ws.sendBinary(BurstFactory.error(BurstType.INIT,
+                                    "portMap is null,maybe server did not have available Port"))
+                            .addListener(f -> Transform.remove(token));
                     return;
                 }
+
                 ws.sendBinary(BurstFactory.successForPort(portMap));
-                final var reader = Console.defaultLineReader();
-                while (true) {
-                    ws.send(reader.readLine());
-                }
             });
 
             ws.mountBinary(b -> {

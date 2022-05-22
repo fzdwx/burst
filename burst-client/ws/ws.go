@@ -12,6 +12,8 @@ type (
 		token    string
 		onText   OnText
 		onBinary OnBinary
+		// key serverPort v localPort
+		ports map[int32]int32
 	}
 
 	OnText func(string, Client)
@@ -64,4 +66,12 @@ func (c *Client) MountBinaryHandler(f OnBinary) {
 	if f != nil {
 		c.onBinary = f
 	}
+}
+
+func (c *Client) SetPorts(ports map[int32]int32) {
+	c.ports = ports
+}
+
+func (c Client) Ports() map[int32]int32 {
+	return c.ports
 }

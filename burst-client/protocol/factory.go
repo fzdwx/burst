@@ -1,7 +1,9 @@
 package protocol
 
 import (
+	"errors"
 	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
 func Decode(data []byte) (*BurstMessage, error) {
@@ -21,4 +23,15 @@ func GetPorts(message *BurstMessage) (*Ports, error) {
 		return nil, err
 	}
 	return ports, nil
+}
+
+func GetError(message *BurstMessage) error {
+	a := message.Header["error"]
+	if a == nil {
+		return nil
+	}
+
+	s := wrappers.StringValue{}
+	_ = a.UnmarshalTo(&s)
+	return errors.New(s.Value)
 }
