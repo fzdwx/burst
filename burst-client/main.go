@@ -2,75 +2,57 @@ package main
 
 import (
 	"flag"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/url"
 	"os"
-	"os/signal"
-	"time"
-
-	"github.com/gorilla/websocket"
+	"strings"
 )
 
 var addr = flag.String("addr", "localhost:8080", "http service address")
+var token = flag.String("t", "fda14ac64938420b873226127c5578b1", "connect token")
+var debug = flag.Bool("d", true, "log level use debug")
+
+func init() {
+	flag.Parse()
+	if strings.Compare(*token, "null") == 0 {
+		log.Fatal("token is null")
+		os.Exit(1)
+	}
+
+	log.SetFormatter(&log.JSONFormatter{
+		FieldMap: log.FieldMap{
+			log.FieldKeyTime:  "time",
+			log.FieldKeyLevel: "level",
+			log.FieldKeyMsg:   "message",
+		},
+		TimestampFormat: "2006-01-02 15:04:05 111",
+		//PrettyPrint:     false,
+	})
+
+	if *debug {
+		log.SetLevel(log.DebugLevel)
+	} else {
+		log.SetLevel(log.InfoLevel)
+	}
+}
 
 func main() {
-	flag.Parse()
-	log.SetFlags(0)
-
-	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt)
-
-	u := url.URL{Scheme: "ws", Host: *addr, Path: "/connect", RawQuery: "token=123"}
-	log.Printf("connecting to %s", u.String())
-
-	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+	u := url.URL{Scheme: "ws", Host: *addr, Path: "/connect", RawQuery: "token=" + *token}
+	ws, err := Connect(u)
 	if err != nil {
 		log.Fatal("dial:", err)
 	}
-	defer c.Close()
+	defer ws.Close()
 
-	done := make(chan struct{})
-
+	down := make(chan struct{})
 	go func() {
-		defer close(done)
-		for {
-			c.WriteMessage(websocket.BinaryMessage, []byte("ping"))
-			_, message, err := c.ReadMessage()
-			if err != nil {
-				log.Println("read:", err)
-				return
-			}
-			log.Printf("recv: %s", message)
-		}
+		defer close(down)
+		ws.StartReadMessage()
 	}()
-
-	ticker := time.NewTicker(time.Second)
-	defer ticker.Stop()
 
 	for {
 		select {
-		case <-done:
-			return
-		case t := <-ticker.C:
-			err := c.WriteMessage(websocket.TextMessage, []byte(t.String()))
-			if err != nil {
-				log.Println("write:", err)
-				return
-			}
-		case <-interrupt:
-			log.Println("interrupt")
-
-			// Cleanly close the connection by sending a close message and then
-			// waiting (with timeout) for the server to close the connection.
-			err := c.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
-			if err != nil {
-				log.Println("write close:", err)
-				return
-			}
-			select {
-			case <-done:
-			case <-time.After(time.Second):
-			}
+		case <-down:
 			return
 		}
 	}

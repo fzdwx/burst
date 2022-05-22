@@ -16,10 +16,4 @@ public class BurstServerApplication {
         final ConfigurableApplicationContext run = SpringApplication.run(BurstServerApplication.class);
     }
 
-    // @Bean
-    // @Primary
-    // @Order(0)
-    // public FilterRegistrationBean<WebMvcMetricsFilter> webMvcMetricsFilter() {
-    //     return new FilterRegistrationBean<>();
-    // }
 }
