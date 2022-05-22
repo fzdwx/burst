@@ -9,7 +9,6 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>burst-client</module>
         <module>burst-server</module>
     </modules>
 
@@ -19,22 +18,9 @@
         <sky.version>0.10.5-dev</sky.version>
         <lambda.version>0.10.4-dev</lambda.version>
         <lombok.version>1.18.22</lombok.version>
+        <spring.boot.version>2.6.7</spring.boot.version>
+        <redisson.version>3.17.0</redisson.version>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>io.github.fzdwx</groupId>
-            <artifactId>sky-infrastructure</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.fzdwx</groupId>
-            <artifactId>lambda</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-    </dependencies>
 
     <dependencyManagement>
         <dependencies>
@@ -50,34 +36,20 @@
             </dependency>
             <dependency>
                 <groupId>io.github.fzdwx</groupId>
+                <artifactId>sky-http-springboot-starter</artifactId>
+                <version>${sky.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.fzdwx</groupId>
                 <artifactId>lambda</artifactId>
                 <version>${lambda.version}</version>
             </dependency>
+            <!-- redis 分布式锁 -->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>
