@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+
+package protocol;
+
+option java_multiple_files = true;
+option java_package = "burst.protocol";
+option java_outer_classname = "Burst";
+
+enum BurstType{
+  // 初始化
+  INIT = 0;
+  // 关闭
+  CLOSE = 1;
+}
+
+message BurstMessage {
+
+  BurstType type = 1;
+  map<string, string> header = 2;
+  bytes data = 3;
+}

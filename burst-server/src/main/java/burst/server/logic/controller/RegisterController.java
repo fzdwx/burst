@@ -1,7 +1,7 @@
 package burst.server.logic.controller;
 
 import burst.server.inf.redis.Redis;
-import burst.server.logic.domain.model.request.RegisterReq;
+import burst.server.logic.domain.model.request.RegisterInfo;
 import cn.hutool.core.util.IdUtil;
 import io.github.fzdwx.lambada.Collections;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +21,14 @@ public class RegisterController {
      * 注册客户端
      */
     @PostMapping("register")
-    public ResponseEntity<?> register(@RequestBody RegisterReq req) {
-        final String key = req.toKey();
+    public ResponseEntity<?> register(@RequestBody RegisterInfo info) {
+        info.preCheck();
+
         final String token = IdUtil.fastSimpleUUID();
+        Redis.set(token, info.encode());
 
-        if (Redis.setNx(key, token)) {
-            return ResponseEntity.ok().body(Collections.map(
-                    "token", token
-            ));
-        }
-
-        return ResponseEntity.badRequest().body("已经注册过了");
+        return ResponseEntity.ok().body(Collections.map(
+                "token", token
+        ));
     }
 }

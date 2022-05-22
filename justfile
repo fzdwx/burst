@@ -3,8 +3,17 @@ mvn_setting_path := "/mnt/c/Users/98065/.m2/settings.xml"
 
 target_path := "/root/burst-server.jar"
 # maven build without tests
+l:
+   @just -l
+
+# build burst-server
 build:
    mvn -s {{mvn_setting_path}} -DskipTests clean package -Pprod
+
+# compile proto files
+proto:
+   protoc --java_out=./burst-server/src/main/java ./protocol/burst.proto
+   protoc --go_out=./burst-client/ ./protocol/burst.proto
 
 kill:
     ssh  root@114.132.249.192 "sh /root/killbrust.sh"
