@@ -16,7 +16,7 @@ runServer:
    java -jar burst-server/target/burst-server-1.0-SNAPSHOT.jar
 
 # compile proto files
-proto:
+protoc:
    protoc --java_out=./burst-server/src/main/java ./protocol/burst.proto
    protoc --go_out=./burst-client/ ./protocol/burst.proto
 

@@ -10,6 +10,9 @@
 sudo apt install protobuf-compiler
 sudo apt install golang-goprotobuf-dev
 ```
+or
+
+https://repo1.maven.org/maven2/com/google/protobuf/protoc
 
 2. gen proto file
 
