@@ -80,7 +80,7 @@ func main() {
 		}
 	})
 
-	down := make(chan struct{})
+	down := make(chan byte)
 	go func() {
 		defer close(down)
 		client.StartReadMessage()
