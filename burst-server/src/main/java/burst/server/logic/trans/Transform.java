@@ -30,7 +30,6 @@ public class Transform {
     private static final NioEventLoopGroup boss = new NioEventLoopGroup();
     private static final NioEventLoopGroup worker = new NioEventLoopGroup();
     private static final Map<String, ServerUserConnectContainer> serverContainer = Collections.map();
-    private static final AttributeKey<String> TOKEN = AttributeKey.valueOf("token");
 
     /**
      * export ports.
