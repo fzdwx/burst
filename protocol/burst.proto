@@ -30,6 +30,8 @@ enum Headers{
   SERVER_EXPORT_PORT = 2;
   // 外网客户的id string
   USER_CONNECT_ID = 3;
+  // register token string
+  TOKEN = 4;
 }
 
 message BurstMessage {

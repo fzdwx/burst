@@ -1,6 +1,7 @@
 package burst.server.logic.trans;
 
 import burst.protocol.BurstFactory;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
@@ -17,23 +18,27 @@ import socket.WebSocket;
 public class TransformHandler extends ChannelInboundHandlerAdapter {
 
     private final Integer serverExportPort;
-
     private final WebSocket ws;
+    private final String token;
 
-    public TransformHandler(final Integer serverExportPort, final WebSocket webSocket) {
+    public TransformHandler(final Integer serverExportPort,
+                            final WebSocket webSocket,
+                            final String token) {
         this.serverExportPort = serverExportPort;
         this.ws = webSocket;
+        this.token = token;
     }
 
     @Override
     public void channelActive(@NotNull final ChannelHandlerContext ctx) throws Exception {
         // step 2 [user connect] have user access, notify the client
-        final var userConnectId = Transform.add(ctx.channel());
+        final var channel = ctx.channel();
+        final var userConnectId = Transform.add(channel,token);
         final var data = BurstFactory.userConnect(serverExportPort, userConnectId);
 
         ws.sendBinary(data);
 
-        log.info("user connect {}", ctx.channel().remoteAddress());
+        log.info("user connect {}", channel.remoteAddress());
     }
 
     @Override

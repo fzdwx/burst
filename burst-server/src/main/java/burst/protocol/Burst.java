@@ -53,10 +53,10 @@ public final class Burst {
       "l.Ports.PortsEntry\032,\n\nPortsEntry\022\013\n\003key\030" +
       "\001 \001(\005\022\r\n\005value\030\002 \001(\005:\0028\001*D\n\tBurstType\022\010\n" +
       "\004INIT\020\000\022\t\n\005CLOSE\020\001\022\020\n\014USER_CONNECT\020\002\022\020\n\014" +
-      "FORWARD_DATA\020\003*L\n\007Headers\022\t\n\005ERROR\020\000\022\t\n\005" +
+      "FORWARD_DATA\020\003*W\n\007Headers\022\t\n\005ERROR\020\000\022\t\n\005" +
       "PORTS\020\001\022\026\n\022SERVER_EXPORT_PORT\020\002\022\023\n\017USER_" +
-      "CONNECT_ID\020\003B\031\n\016burst.protocolB\005BurstP\001b" +
-      "\006proto3"
+      "CONNECT_ID\020\003\022\t\n\005TOKEN\020\004B\031\n\016burst.protoco" +
+      "lB\005BurstP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

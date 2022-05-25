@@ -44,6 +44,10 @@ public class ConnectController {
                 ws.sendBinary(BurstFactory.successForPort(portMap));
             });
 
+            ws.mountClose(h -> {
+                Transform.destroy(token);
+            });
+
             ws.mountBinary(b -> {
                 BurstMessage burstMessage = null;
                 try {

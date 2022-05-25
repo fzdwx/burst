@@ -40,6 +40,14 @@ public enum Headers
    * <code>USER_CONNECT_ID = 3;</code>
    */
   USER_CONNECT_ID(3),
+  /**
+   * <pre>
+   * register token string
+   * </pre>
+   *
+   * <code>TOKEN = 4;</code>
+   */
+  TOKEN(4),
   UNRECOGNIZED(-1),
   ;
 
@@ -75,6 +83,14 @@ public enum Headers
    * <code>USER_CONNECT_ID = 3;</code>
    */
   public static final int USER_CONNECT_ID_VALUE = 3;
+  /**
+   * <pre>
+   * register token string
+   * </pre>
+   *
+   * <code>TOKEN = 4;</code>
+   */
+  public static final int TOKEN_VALUE = 4;
 
 
   public final int getNumber() {
@@ -99,6 +115,7 @@ public enum Headers
       case 1: return PORTS;
       case 2: return SERVER_EXPORT_PORT;
       case 3: return USER_CONNECT_ID;
+      case 4: return TOKEN;
       default: return null;
     }
   }

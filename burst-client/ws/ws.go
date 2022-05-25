@@ -89,6 +89,6 @@ func (c Client) LocalPort(serverExportPort int32) (int32, bool) {
 	return v, ok
 }
 
-func (c Client) Write(userConnectId string, bytes []byte) error {
-	return c.conn.WriteMessage(websocket.BinaryMessage, protocol.Encode(userConnectId, bytes))
+func (c Client) ToServer(userConnectId string, bytes []byte) error {
+	return c.conn.WriteMessage(websocket.BinaryMessage, protocol.Encode(userConnectId, bytes, c.token))
 }

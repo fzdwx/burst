@@ -71,7 +71,7 @@ func (u UserConnForward) StartForwardToServer(client *Client) {
 		}
 
 		// forward to server
-		err = client.Write(userConnectId, buf[:n])
+		err = client.ToServer(userConnectId, buf[:n])
 		if err != nil {
 			log.Error("forward to server: ", "write error [", err, "] ", userConnectId)
 			return
