@@ -34,7 +34,7 @@ curl --location --request POST 'http://114.132.249.192:10086/register' \
 ```shell
 ./burst-client -sip 114.132.249.192 -sp 10086 -t {{token}}
 ```
-![img.png](img.png)
+[![img.png](img.png)](https://raw.githubusercontent.com/fzdwx/burst/main/img.png)
 
 => **114.132.249.192:28236** is your mapped address information
 
