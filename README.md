@@ -1,4 +1,4 @@
-# [WIP] burst
+# burst
 
 Intranet to public network.
 
