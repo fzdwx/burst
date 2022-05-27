@@ -2,6 +2,8 @@
 
 Intranet to public network.
 
+[write intranet penetration from 0 to 1](https://github.com/fzdwx/burst/issues/6)
+
 ## Introduction
 基本原理:
 1. 客户端与服务端建立`websocket`连接(为什么是ws? 因为我刚好最近在弄这个，其他的也可以，比如说直接一个裸的tcp)，然后告诉服务端自己要暴露到公网的端口。
