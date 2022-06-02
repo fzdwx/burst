@@ -16,6 +16,8 @@ Intranet to public network.
 6. 比如说客户端监听的对应的`3306`有数据要转发了，就会通过`websocket`连接发送给服务端一个`FORWARD_DATA`类型的数据包，并携带`channelId`，然后服务端会自动路由到对应的客户端。
 7. 服务端到客户端的数据转发流程也是同理。
 
+## Support protocol
+All tcp-based protocols
 
 ## Quick Start
 1. [get client](https://github.com/fzdwx/burst/releases/tag/v1.0)
