@@ -1,8 +1,8 @@
 # burst   
 
-Intranet to public network.
+Intranet to public network.[write from 0 to 1](https://github.com/fzdwx/burst/issues/6)
 
-[write intranet penetration from 0 to 1](https://github.com/fzdwx/burst/issues/6)
+😄 need your ideas!
 
 ## Introduction
 基本原理:
