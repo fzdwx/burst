@@ -7,13 +7,13 @@ import burst.server.logic.domain.model.request.RegisterInfo;
 import burst.server.logic.temp.Cache;
 import burst.server.logic.trans.Transform;
 import com.google.protobuf.InvalidProtocolBufferException;
-import core.Netty;
-import http.HttpServerRequest;
+import core.http.ext.HttpServerRequest;
 import io.github.fzdwx.lambada.Exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import util.Netty;
 
 /**
  * @author <a href="mailto:likelovec@gmail.com">fzdw1x</a>

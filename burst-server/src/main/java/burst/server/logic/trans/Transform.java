@@ -6,16 +6,15 @@ import burst.server.logic.domain.model.ServerUserConnectContainer;
 import burst.server.logic.domain.model.request.RegisterInfo;
 import com.google.protobuf.StringValue;
 import core.Server;
+import core.socket.WebSocket;
 import io.github.fzdwx.lambada.Collections;
 import io.github.fzdwx.lambada.Lang;
 import io.netty.channel.Channel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
-import io.netty.util.AttributeKey;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import socket.WebSocket;
 import util.AvailablePort;
 
 import java.util.Map;
@@ -46,9 +45,14 @@ public class Transform {
             }
 
             final var server = new Server()
-                    .withGroup(boss, worker)
-                    .withInitChannel(ch -> ch.pipeline().addLast(new ByteArrayDecoder(), new ByteArrayEncoder(), new TransformHandler(availablePort, socket, token)))
-                    .listen(availablePort);
+                    .group(boss, worker)
+                    .childHandler(ch -> ch.pipeline().addLast(
+                            new ByteArrayDecoder(),
+                            new ByteArrayEncoder(),
+                            new TransformHandler(availablePort, socket, token)
+                    ));
+
+            server.listen(availablePort);
 
             portsMap.put(availablePort, port);
             container.add(server);

@@ -1,12 +1,11 @@
 package burst.server.logic.trans;
 
 import burst.protocol.BurstFactory;
-import io.netty.channel.Channel;
+import core.socket.WebSocket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import socket.WebSocket;
 
 /**
  * 接收来自用户的请求,并转发。
@@ -33,7 +32,7 @@ public class TransformHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(@NotNull final ChannelHandlerContext ctx) throws Exception {
         // step 2 [user connect] have user access, notify the client
         final var channel = ctx.channel();
-        final var userConnectId = Transform.add(channel,token);
+        final var userConnectId = Transform.add(channel, token);
         final var data = BurstFactory.userConnect(serverExportPort, userConnectId);
 
         ws.sendBinary(data);
