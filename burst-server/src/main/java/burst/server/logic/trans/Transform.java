@@ -58,7 +58,10 @@ public class Transform {
             container.add(server);
         }
 
-        serverContainer.put(token, container);
+        final var older = serverContainer.put(token, container);
+        if (older != null) {
+            older.destroy();
+        }
         log.info("client init ports:{}", portsMap);
         return portsMap;
     }
