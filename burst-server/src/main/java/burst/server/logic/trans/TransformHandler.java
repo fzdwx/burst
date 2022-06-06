@@ -2,10 +2,10 @@ package burst.server.logic.trans;
 
 import burst.protocol.BurstFactory;
 import core.socket.WebSocket;
+import io.github.fzdwx.lambada.anno.NotNull;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * 接收来自用户的请求,并转发。
