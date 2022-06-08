@@ -1,9 +1,9 @@
-package burst.server.logic.trans;
+package burst.modules.connect.controller.trans;
 
 import burst.protocol.BurstMessage;
 import burst.protocol.Headers;
-import burst.server.logic.domain.model.ServerUserConnectContainer;
-import burst.server.logic.domain.model.request.RegisterInfo;
+import burst.modules.connect.domain.ServerUserConnectContainer;
+import burst.modules.user.domain.model.request.RegisterInfo;
 import com.google.protobuf.StringValue;
 import core.Server;
 import core.socket.WebSocket;

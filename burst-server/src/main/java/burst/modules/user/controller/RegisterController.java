@@ -1,7 +1,7 @@
-package burst.server.logic.controller;
+package burst.modules.user.controller;
 
-import burst.server.logic.domain.model.request.RegisterInfo;
-import burst.server.logic.temp.Cache;
+import burst.modules.user.domain.model.request.RegisterInfo;
+import burst.temp.Cache;
 import cn.hutool.core.util.IdUtil;
 import io.github.fzdwx.lambada.Collections;
 import org.springframework.http.ResponseEntity;

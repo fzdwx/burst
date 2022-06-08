@@ -1,4 +1,4 @@
-package burst.server.logic.domain.model;
+package burst.modules.connect.domain;
 
 import core.Server;
 import core.group.DefaultSocketGroup;

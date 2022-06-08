@@ -1,11 +1,11 @@
-package burst.server.logic.controller;
+package burst.modules.connect.controller;
 
 import burst.protocol.BurstFactory;
 import burst.protocol.BurstMessage;
 import burst.protocol.BurstType;
-import burst.server.logic.domain.model.request.RegisterInfo;
-import burst.server.logic.temp.Cache;
-import burst.server.logic.trans.Transform;
+import burst.modules.user.domain.model.request.RegisterInfo;
+import burst.temp.Cache;
+import burst.modules.connect.controller.trans.Transform;
 import com.google.protobuf.InvalidProtocolBufferException;
 import core.http.ext.HttpServerRequest;
 import io.github.fzdwx.lambada.Exceptions;

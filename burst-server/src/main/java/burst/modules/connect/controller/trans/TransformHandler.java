@@ -1,4 +1,4 @@
-package burst.server.logic.trans;
+package burst.modules.connect.controller.trans;
 
 import burst.protocol.BurstFactory;
 import core.socket.WebSocket;

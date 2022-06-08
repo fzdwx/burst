@@ -1,6 +1,6 @@
-package burst.server.logic.domain.model.request;
+package burst.modules.user.domain.model.request;
 
-import burst.server.inf.Info;
+import burst.inf.Info;
 import com.alibaba.fastjson2.JSON;
 import io.github.fzdwx.lambada.Exceptions;
 import io.github.fzdwx.lambada.Lang;

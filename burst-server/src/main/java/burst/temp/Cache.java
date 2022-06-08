@@ -1,4 +1,4 @@
-package burst.server.logic.temp;
+package burst.temp;
 
 import io.github.fzdwx.lambada.Collections;
 
