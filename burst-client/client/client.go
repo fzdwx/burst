@@ -1,6 +1,7 @@
 package burst
 
 import (
+	"github.com/fzdwx/burst/burst-client/common"
 	"github.com/fzdwx/burst/burst-client/protocol"
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
@@ -68,7 +69,7 @@ func (c Client) React() {
 		case websocket.BinaryMessage:
 			c.onBinary(message, &c)
 		default:
-			if log.GetLevel() == log.DebugLevel {
+			if common.IsDebug() {
 				log.WithFields(log.Fields{
 					"msgType": msgType,
 					"message": string(message),

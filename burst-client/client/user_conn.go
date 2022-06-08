@@ -1,6 +1,7 @@
 package burst
 
 import (
+	"github.com/fzdwx/burst/burst-client/common"
 	"github.com/fzdwx/burst/burst-client/protocol"
 	log "github.com/sirupsen/logrus"
 	"net"
@@ -67,7 +68,7 @@ func (u UserConnect) React(client *Client) {
 			return
 		}
 
-		if log.GetLevel() == log.DebugLevel {
+		if common.IsDebug() {
 			log.Debugf("forward to server: write size:%d,userConnectId:%s", n, userConnectId)
 		}
 	}
@@ -103,7 +104,7 @@ func (f *Forwarder) write(userConnectId string, data []byte) {
 			}).Error("forward to local: error")
 		}
 
-		if log.GetLevel() == log.DebugLevel {
+		if common.IsDebug() {
 			log.Debugf("forward to local: write [%d],  %s", write, userConnectId)
 		}
 	}
