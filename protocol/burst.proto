@@ -41,6 +41,11 @@ message BurstMessage {
   bytes data = 3;
 }
 
+message Proxy{
+  string ip = 1;
+  int32 port = 2;
+}
+
 message Ports{
-  map<int32, int32> ports = 1;
+  map<int32, Proxy> ports = 1;
 }

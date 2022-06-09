@@ -17,8 +17,8 @@ type (
 		token    string
 		onText   OnText
 		onBinary OnBinary
-		// ports mapping: key serverPort ; value localPort.
-		ports map[int32]int32
+		// proxyInfo mapping: key serverPort ; value ip:port.
+		proxyInfo map[int32]*protocol.Proxy
 	}
 
 	// OnText is a callback method that will be called back when there is a text type message.
@@ -93,19 +93,19 @@ func (c *Client) MountTextHandler(f OnText) {
 	}
 }
 
-// SetPorts set ports mapping.
-func (c *Client) SetPorts(ports map[int32]int32) {
-	c.ports = ports
+// SetProxyInfo set ports mapping.
+func (c *Client) SetProxyInfo(proxyInfo map[int32]*protocol.Proxy) {
+	c.proxyInfo = proxyInfo
 }
 
-// Ports get ports mapping.
-func (c *Client) Ports() map[int32]int32 {
-	return c.ports
+// ProxyInfo get ports mapping.
+func (c *Client) ProxyInfo() map[int32]*protocol.Proxy {
+	return c.proxyInfo
 }
 
-// LocalPort Get the local port corresponding to the server port.
-func (c Client) LocalPort(serverExportPort int32) (int32, bool) {
-	v, ok := c.ports[serverExportPort]
+// GetProxy Get the local port(ip:port) corresponding to the server port.
+func (c Client) GetProxy(serverExportPort int32) (*protocol.Proxy, bool) {
+	v, ok := c.proxyInfo[serverExportPort]
 	return v, ok
 }
 

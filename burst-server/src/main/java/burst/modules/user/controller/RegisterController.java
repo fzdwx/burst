@@ -1,6 +1,6 @@
 package burst.modules.user.controller;
 
-import burst.modules.user.domain.model.request.RegisterInfo;
+import burst.modules.user.domain.model.request.RegisterClientReq;
 import burst.temp.Cache;
 import cn.hutool.core.util.IdUtil;
 import io.github.fzdwx.lambada.Collections;
@@ -21,11 +21,11 @@ public class RegisterController {
      * 注册客户端
      */
     @PostMapping("register")
-    public ResponseEntity<?> register(@RequestBody RegisterInfo info) {
-        info.preCheck();
+    public ResponseEntity<?> register(@RequestBody RegisterClientReq req) {
+        req.preCheck();
 
         final String token = IdUtil.fastSimpleUUID();
-        Cache.set(token, info.encode());
+        Cache.set(token, req);
 
         return ResponseEntity.ok().body(Collections.map(
                 "token", token

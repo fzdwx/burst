@@ -1,6 +1,7 @@
 package burst
 
 import (
+	"fmt"
 	"github.com/fzdwx/burst/burst-client/common"
 	"github.com/fzdwx/burst/burst-client/protocol"
 	log "github.com/sirupsen/logrus"
@@ -29,8 +30,10 @@ var (
 )
 
 // NewUserConn open a connection for the specified user id to listen on the mapped port on the intranet.
-func NewUserConn(localPort int32, userConnectId string) (*UserConnect, error) {
-	conn, err := net.Dial("tcp", ":"+strconv.Itoa(int(localPort)))
+func NewUserConn(proxy *protocol.Proxy, userConnectId string) (*UserConnect, error) {
+	address := proxy.Ip + ":" + strconv.Itoa(int(proxy.Port))
+	fmt.Println(address)
+	conn, err := net.Dial("tcp", address)
 	if err != nil {
 		return nil, err
 	}

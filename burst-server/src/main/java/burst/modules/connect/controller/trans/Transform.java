@@ -1,9 +1,9 @@
 package burst.modules.connect.controller.trans;
 
+import burst.modules.connect.domain.ServerUserConnectContainer;
+import burst.modules.user.domain.model.request.RegisterClientReq;
 import burst.protocol.BurstMessage;
 import burst.protocol.Headers;
-import burst.modules.connect.domain.ServerUserConnectContainer;
-import burst.modules.user.domain.model.request.RegisterInfo;
 import com.google.protobuf.StringValue;
 import core.Server;
 import core.http.ext.WebSocket;
@@ -33,14 +33,15 @@ public class Transform {
     /**
      * export ports.
      */
-    public static Map<Integer, Integer> init(RegisterInfo info, WebSocket socket, String token) {
+    public static Map<Integer, RegisterClientReq.Proxy> init(RegisterClientReq req, WebSocket socket, String token) {
         final var container = ServerUserConnectContainer.create();
-        final var portsMap = Collections.<Integer, Integer>map();
+        final var portsMap = Collections.<Integer, RegisterClientReq.Proxy>map();
 
-        for (Integer port : info.getPorts()) {
+        // TODO
+        for (RegisterClientReq.Proxy proxy : req.getProxies()) {
             final var availablePort = AvailablePort.random();
             if (availablePort == null) {
-                log.error("[init] token={},port={}  port not available", token, port);
+                log.error("[init] token={},host={}  port not available", token, proxy);
                 return null;
             }
 
@@ -54,7 +55,7 @@ public class Transform {
 
             server.listen(availablePort);
 
-            portsMap.put(availablePort, port);
+            portsMap.put(availablePort, proxy);
             container.add(server);
         }
 

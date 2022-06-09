@@ -14,8 +14,8 @@ import (
 
 var (
 	serverIp   = flag.String("sip", "localhost", "server ip")
-	serverPort = flag.Int("sp", 8080, "server serverPort")
-	token      = flag.String("t", "de9e679d6f5c49e788603e01012a8243", "your key, you can get it from server")
+	serverPort = flag.Int("sp", 10086, "server serverPort")
+	token      = flag.String("t", "bde150da630d443cb0131d94d536666b", "your key, you can get it from server")
 	usage      = flag.Bool("h", false, "help")
 	debug      = flag.Bool("d", true, "log level use debug")
 	host       string
@@ -39,7 +39,7 @@ func init() {
 			log.FieldKeyLevel: "level",
 			log.FieldKeyMsg:   "message",
 		},
-		TimestampFormat: "2006-01-02 15:04:05 111",
+		TimestampFormat: "2006-01-02 15:04:05",
 		//PrettyPrint:     false,
 	})
 
@@ -105,8 +105,14 @@ func handlerInit(message *protocol.BurstMessage, client *burst.Client) {
 		client.Over(errors.New("init get ports error " + err.Error()))
 	}
 
-	client.SetPorts(ports.GetPorts())
-	log.Info("init success ", client.Ports())
+	client.SetProxyInfo(ports.GetPorts())
+	info := client.ProxyInfo()
+
+	log.Info("init success")
+	for serverExportPort, proxy := range info {
+		address := proxy.Ip + ":" + strconv.Itoa(int(proxy.Port))
+		log.Info("proxy intranet: [", address, "] to server [", *serverIp, ":", serverExportPort, "] ")
+	}
 }
 
 func handlerUserConnect(message *protocol.BurstMessage, client *burst.Client) {
@@ -116,7 +122,7 @@ func handlerUserConnect(message *protocol.BurstMessage, client *burst.Client) {
 		return
 	}
 
-	localPort, ok := client.LocalPort(serverExportPort)
+	proxy, ok := client.GetProxy(serverExportPort)
 	if !ok {
 		log.Error("local port not found ", serverExportPort)
 		return
@@ -128,7 +134,7 @@ func handlerUserConnect(message *protocol.BurstMessage, client *burst.Client) {
 		return
 	}
 
-	userConnForward, err := burst.NewUserConn(localPort, userConnectId)
+	userConnForward, err := burst.NewUserConn(proxy, userConnectId)
 	if err != nil {
 		log.Error("local port connect error ", err)
 		return
