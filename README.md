@@ -7,7 +7,7 @@ Intranet to public network.[write from 0 to 1](https://github.com/fzdwx/burst/is
 ## Features
 
 1. support all tcp-based protocols
-2. forward to any machine in the LAN
+2. proxy any machine in the LAN
 
 ## Introduction
 
