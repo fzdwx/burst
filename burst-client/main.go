@@ -6,6 +6,7 @@ import (
 	burst "github.com/fzdwx/burst/burst-client/client"
 	"github.com/fzdwx/burst/burst-client/protocol"
 	log "github.com/sirupsen/logrus"
+	"io/ioutil"
 	"net/url"
 	"os"
 	"strconv"
@@ -15,7 +16,7 @@ import (
 var (
 	serverIp   = flag.String("sip", "localhost", "server ip")
 	serverPort = flag.Int("sp", 10086, "server serverPort")
-	token      = flag.String("t", "bde150da630d443cb0131d94d536666b", "your key, you can get it from server")
+	token      = flag.String("t", "b92a205269d94d38808c3979615245eb", "your key, you can get it from server")
 	usage      = flag.Bool("h", false, "help")
 	debug      = flag.Bool("d", true, "log level use debug")
 	host       string
@@ -57,9 +58,12 @@ func init() {
 
 func main() {
 	u := url.URL{Scheme: "ws", Host: host, Path: "/connect", RawQuery: "token=" + *token}
-	client, err := burst.Connect(u)
+	client, resp, err := burst.Connect(u)
 	if err != nil {
-		log.Fatal("dial:", err)
+		body := resp.Body
+		defer body.Close()
+		data, _ := ioutil.ReadAll(body)
+		log.Fatal(string(data))
 	}
 	defer client.Close()
 
@@ -110,8 +114,7 @@ func handlerInit(message *protocol.BurstMessage, client *burst.Client) {
 
 	log.Info("init success")
 	for serverExportPort, proxy := range info {
-		address := proxy.Ip + ":" + strconv.Itoa(int(proxy.Port))
-		log.Info("proxy intranet: [", address, "] to server [", *serverIp, ":", serverExportPort, "] ")
+		log.Info("proxy intranet: [", proxy.Host(), "] to server [", *serverIp, ":", serverExportPort, "] ")
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 	"github.com/fzdwx/burst/burst-client/protocol"
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
+	"net/http"
 	"net/url"
 	"os"
 )
@@ -29,12 +30,12 @@ type (
 )
 
 // Connect to Server,will return new Client.
-func Connect(url url.URL) (*Client, error) {
+func Connect(url url.URL) (*Client, *http.Response, error) {
 	log.Printf("start connecting to %s", url.String())
-	c, _, err := websocket.DefaultDialer.Dial(url.String(), nil)
+	c, resp, err := websocket.DefaultDialer.Dial(url.String(), nil)
 
 	if err != nil {
-		return nil, err
+		return nil, resp, err
 	}
 
 	return &Client{
@@ -46,7 +47,7 @@ func Connect(url url.URL) (*Client, error) {
 		onBinary: func(bytes []byte, c *Client) {
 			log.Debugf("onBinary:%s", string(bytes))
 		},
-	}, nil
+	}, nil, nil
 }
 
 // Close the connection to the server.

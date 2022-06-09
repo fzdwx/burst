@@ -8,7 +8,7 @@ import burst.protocol.BurstType;
 import burst.temp.Cache;
 import com.google.protobuf.InvalidProtocolBufferException;
 import core.http.ext.HttpServerRequest;
-import io.github.fzdwx.lambada.Exceptions;
+import core.http.ext.HttpServerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,10 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ConnectController {
 
     @GetMapping("connect")
-    public void connect(@RequestParam String token, HttpServerRequest request) {
+    public void connect(@RequestParam String token, HttpServerRequest request, HttpServerResponse response) {
         final var registerInfo = Cache.<RegisterClientReq>get(token);
         if (registerInfo == null) {
-            throw Exceptions.newIllegalArgument("token is invalid");
+            response.end("token无效,请确认是否注册");
+            return;
         }
 
         request.upgradeToWebSocket(ws -> {

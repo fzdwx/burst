@@ -7,11 +7,17 @@ import (
 	"github.com/golang/protobuf/ptypes/wrappers"
 	proto2 "google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
+	"strconv"
 )
 
 /**
   tool method
 */
+
+// Host format ip:port
+func (x *Proxy) Host() string {
+	return x.Ip + ":" + strconv.Itoa(int(x.Port))
+}
 
 func Decode(data []byte) (*BurstMessage, error) {
 	message := BurstMessage{}
