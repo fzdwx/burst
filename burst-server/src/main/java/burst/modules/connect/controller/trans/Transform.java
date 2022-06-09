@@ -6,7 +6,7 @@ import burst.modules.connect.domain.ServerUserConnectContainer;
 import burst.modules.user.domain.model.request.RegisterInfo;
 import com.google.protobuf.StringValue;
 import core.Server;
-import core.socket.WebSocket;
+import core.http.ext.WebSocket;
 import io.github.fzdwx.lambada.Collections;
 import io.github.fzdwx.lambada.Lang;
 import io.netty.channel.Channel;

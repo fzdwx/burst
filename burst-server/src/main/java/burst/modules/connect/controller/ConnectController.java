@@ -51,7 +51,7 @@ public class ConnectController {
             ws.mountBinary(b -> {
                 BurstMessage burstMessage = null;
                 try {
-                    burstMessage = BurstMessage.parseFrom(Netty.readBytes(b));
+                    burstMessage = BurstMessage.parseFrom(b);
                 } catch (InvalidProtocolBufferException e) {
                     log.error("parseFrom error", e);
                 }

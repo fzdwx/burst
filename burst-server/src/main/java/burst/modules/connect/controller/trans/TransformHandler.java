@@ -1,7 +1,7 @@
 package burst.modules.connect.controller.trans;
 
 import burst.protocol.BurstFactory;
-import core.socket.WebSocket;
+import core.http.ext.WebSocket;
 import io.github.fzdwx.lambada.anno.NotNull;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
