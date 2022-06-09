@@ -9,10 +9,12 @@ public interface BurstMessageOrBuilder extends
 
   /**
    * <code>.protocol.BurstType type = 1;</code>
+   * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
    * <code>.protocol.BurstType type = 1;</code>
+   * @return The type.
    */
   burst.protocol.BurstType getType();
 
@@ -52,6 +54,7 @@ public interface BurstMessageOrBuilder extends
 
   /**
    * <code>bytes data = 3;</code>
+   * @return The data.
    */
   com.google.protobuf.ByteString getData();
 }

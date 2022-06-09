@@ -3,9 +3,10 @@ package main
 import (
 	"errors"
 	"flag"
+	burst "github.com/fzdwx/burst/burst-client/client"
 	"github.com/fzdwx/burst/burst-client/protocol"
-	ws "github.com/fzdwx/burst/burst-client/ws"
 	log "github.com/sirupsen/logrus"
+	"io/ioutil"
 	"net/url"
 	"os"
 	"strconv"
@@ -14,8 +15,8 @@ import (
 
 var (
 	serverIp   = flag.String("sip", "localhost", "server ip")
-	serverPort = flag.Int("sp", 8080, "server serverPort")
-	token      = flag.String("t", "de73df98abad4117a53fa2dfa27da7ac", "your key, you can get it from server")
+	serverPort = flag.Int("sp", 10086, "server serverPort")
+	token      = flag.String("t", "b92a205269d94d38808c3979615245eb", "your key, you can get it from server")
 	usage      = flag.Bool("h", false, "help")
 	debug      = flag.Bool("d", true, "log level use debug")
 	host       string
@@ -39,7 +40,7 @@ func init() {
 			log.FieldKeyLevel: "level",
 			log.FieldKeyMsg:   "message",
 		},
-		TimestampFormat: "2006-01-02 15:04:05 111",
+		TimestampFormat: "2006-01-02 15:04:05",
 		//PrettyPrint:     false,
 	})
 
@@ -57,13 +58,16 @@ func init() {
 
 func main() {
 	u := url.URL{Scheme: "ws", Host: host, Path: "/connect", RawQuery: "token=" + *token}
-	client, err := ws.Connect(u)
+	client, resp, err := burst.Connect(u)
 	if err != nil {
-		log.Fatal("dial:", err)
+		body := resp.Body
+		defer body.Close()
+		data, _ := ioutil.ReadAll(body)
+		log.Fatal(string(data))
 	}
 	defer client.Close()
 
-	client.MountBinaryHandler(func(data []byte, ws *ws.Client) {
+	client.MountBinaryHandler(func(data []byte, client *burst.Client) {
 		burstMessage, err := protocol.Decode(data)
 		if err != nil {
 			log.Error(err)
@@ -72,18 +76,18 @@ func main() {
 
 		switch burstMessage.Type {
 		case protocol.BurstType_INIT:
-			handlerInit(burstMessage, ws)
+			handlerInit(burstMessage, client)
 		case protocol.BurstType_USER_CONNECT:
-			handlerUserConnect(burstMessage, ws)
+			handlerUserConnect(burstMessage, client)
 		case protocol.BurstType_FORWARD_DATA:
-			handlerForwardData(burstMessage, ws)
+			handlerForwardData(burstMessage, client)
 		}
 	})
 
-	down := make(chan struct{})
+	down := make(chan byte)
 	go func() {
 		defer close(down)
-		client.StartReadMessage()
+		client.React()
 	}()
 
 	for {
@@ -94,7 +98,7 @@ func main() {
 	}
 }
 
-func handlerInit(message *protocol.BurstMessage, client *ws.Client) {
+func handlerInit(message *protocol.BurstMessage, client *burst.Client) {
 	err := protocol.GetError(message)
 	if err != nil {
 		client.Over(errors.New("init error " + err.Error()))
@@ -105,18 +109,23 @@ func handlerInit(message *protocol.BurstMessage, client *ws.Client) {
 		client.Over(errors.New("init get ports error " + err.Error()))
 	}
 
-	client.SetPorts(ports.GetPorts())
-	log.Info("init success ", client.Ports())
+	client.SetProxyInfo(ports.GetPorts())
+	info := client.ProxyInfo()
+
+	log.Info("init success")
+	for serverExportPort, proxy := range info {
+		log.Info("proxy intranet: [", proxy.Host(), "] to server [", *serverIp, ":", serverExportPort, "] ")
+	}
 }
 
-func handlerUserConnect(message *protocol.BurstMessage, client *ws.Client) {
+func handlerUserConnect(message *protocol.BurstMessage, client *burst.Client) {
 	serverExportPort, err := protocol.GetServerExportPort(message)
 	if err != nil {
 		log.Error("parse server export port error ", err)
 		return
 	}
 
-	localPort, ok := client.LocalPort(serverExportPort)
+	proxy, ok := client.GetProxy(serverExportPort)
 	if !ok {
 		log.Error("local port not found ", serverExportPort)
 		return
@@ -128,7 +137,7 @@ func handlerUserConnect(message *protocol.BurstMessage, client *ws.Client) {
 		return
 	}
 
-	userConnForward, err := ws.NewUserConn(localPort, userConnectId)
+	userConnForward, err := burst.NewUserConn(proxy, userConnectId)
 	if err != nil {
 		log.Error("local port connect error ", err)
 		return
@@ -141,11 +150,11 @@ func handlerUserConnect(message *protocol.BurstMessage, client *ws.Client) {
 				log.Error("forward to server: recover ", err)
 			}
 		}()
-		userConnForward.StartForwardToServer(client)
+		userConnForward.React(client)
 	}()
 }
 
-func handlerForwardData(message *protocol.BurstMessage, client *ws.Client) {
+func handlerForwardData(message *protocol.BurstMessage, client *burst.Client) {
 	// step 4 [forward to local port]
-	ws.Fw.ToLocal(message)
+	burst.Fw.ToLocal(message)
 }

@@ -6,7 +6,7 @@ package burst.protocol;
 /**
  * Protobuf type {@code protocol.Ports}
  */
-public  final class Ports extends
+public final class Ports extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:protocol.Ports)
     PortsOrBuilder {
@@ -16,6 +16,13 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private Ports() {
+  }
+
+  @java.lang.Override
+  @SuppressWarnings({"unused"})
+  protected java.lang.Object newInstance(
+      UnusedPrivateParameter unused) {
+    return new Ports();
   }
 
   @java.lang.Override
@@ -43,12 +50,12 @@ private static final long serialVersionUID = 0L;
             done = true;
             break;
           case 10: {
-            if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
               ports_ = com.google.protobuf.MapField.newMapField(
                   PortsDefaultEntryHolder.defaultEntry);
               mutable_bitField0_ |= 0x00000001;
             }
-            com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+            com.google.protobuf.MapEntry<java.lang.Integer, burst.protocol.Proxy>
             ports__ = input.readMessage(
                 PortsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
             ports_.getMutableMap().put(
@@ -56,7 +63,7 @@ private static final long serialVersionUID = 0L;
             break;
           }
           default: {
-            if (!parseUnknownFieldProto3(
+            if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
               done = true;
             }
@@ -102,18 +109,18 @@ private static final long serialVersionUID = 0L;
   public static final int PORTS_FIELD_NUMBER = 1;
   private static final class PortsDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
-        java.lang.Integer, java.lang.Integer> defaultEntry =
+        java.lang.Integer, burst.protocol.Proxy> defaultEntry =
             com.google.protobuf.MapEntry
-            .<java.lang.Integer, java.lang.Integer>newDefaultInstance(
+            .<java.lang.Integer, burst.protocol.Proxy>newDefaultInstance(
                 burst.protocol.Burst.internal_static_protocol_Ports_PortsEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.INT32,
                 0,
-                com.google.protobuf.WireFormat.FieldType.INT32,
-                0);
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                burst.protocol.Proxy.getDefaultInstance());
   }
   private com.google.protobuf.MapField<
-      java.lang.Integer, java.lang.Integer> ports_;
-  private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+      java.lang.Integer, burst.protocol.Proxy> ports_;
+  private com.google.protobuf.MapField<java.lang.Integer, burst.protocol.Proxy>
   internalGetPorts() {
     if (ports_ == null) {
       return com.google.protobuf.MapField.emptyMapField(
@@ -126,9 +133,10 @@ private static final long serialVersionUID = 0L;
     return internalGetPorts().getMap().size();
   }
   /**
-   * <code>map&lt;int32, int32&gt; ports = 1;</code>
+   * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
    */
 
+  @java.lang.Override
   public boolean containsPorts(
       int key) {
     
@@ -137,37 +145,41 @@ private static final long serialVersionUID = 0L;
   /**
    * Use {@link #getPortsMap()} instead.
    */
+  @java.lang.Override
   @java.lang.Deprecated
-  public java.util.Map<java.lang.Integer, java.lang.Integer> getPorts() {
+  public java.util.Map<java.lang.Integer, burst.protocol.Proxy> getPorts() {
     return getPortsMap();
   }
   /**
-   * <code>map&lt;int32, int32&gt; ports = 1;</code>
+   * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
    */
+  @java.lang.Override
 
-  public java.util.Map<java.lang.Integer, java.lang.Integer> getPortsMap() {
+  public java.util.Map<java.lang.Integer, burst.protocol.Proxy> getPortsMap() {
     return internalGetPorts().getMap();
   }
   /**
-   * <code>map&lt;int32, int32&gt; ports = 1;</code>
+   * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
    */
+  @java.lang.Override
 
-  public int getPortsOrDefault(
+  public burst.protocol.Proxy getPortsOrDefault(
       int key,
-      int defaultValue) {
+      burst.protocol.Proxy defaultValue) {
     
-    java.util.Map<java.lang.Integer, java.lang.Integer> map =
+    java.util.Map<java.lang.Integer, burst.protocol.Proxy> map =
         internalGetPorts().getMap();
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
-   * <code>map&lt;int32, int32&gt; ports = 1;</code>
+   * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
    */
+  @java.lang.Override
 
-  public int getPortsOrThrow(
+  public burst.protocol.Proxy getPortsOrThrow(
       int key) {
     
-    java.util.Map<java.lang.Integer, java.lang.Integer> map =
+    java.util.Map<java.lang.Integer, burst.protocol.Proxy> map =
         internalGetPorts().getMap();
     if (!map.containsKey(key)) {
       throw new java.lang.IllegalArgumentException();
@@ -204,9 +216,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    for (java.util.Map.Entry<java.lang.Integer, java.lang.Integer> entry
+    for (java.util.Map.Entry<java.lang.Integer, burst.protocol.Proxy> entry
          : internalGetPorts().getMap().entrySet()) {
-      com.google.protobuf.MapEntry<java.lang.Integer, java.lang.Integer>
+      com.google.protobuf.MapEntry<java.lang.Integer, burst.protocol.Proxy>
       ports__ = PortsDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
@@ -229,11 +241,10 @@ private static final long serialVersionUID = 0L;
     }
     burst.protocol.Ports other = (burst.protocol.Ports) obj;
 
-    boolean result = true;
-    result = result && internalGetPorts().equals(
-        other.internalGetPorts());
-    result = result && unknownFields.equals(other.unknownFields);
-    return result;
+    if (!internalGetPorts().equals(
+        other.internalGetPorts())) return false;
+    if (!unknownFields.equals(other.unknownFields)) return false;
+    return true;
   }
 
   @java.lang.Override
@@ -438,35 +449,35 @@ private static final long serialVersionUID = 0L;
 
     @java.lang.Override
     public Builder clone() {
-      return (Builder) super.clone();
+      return super.clone();
     }
     @java.lang.Override
     public Builder setField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
         java.lang.Object value) {
-      return (Builder) super.setField(field, value);
+      return super.setField(field, value);
     }
     @java.lang.Override
     public Builder clearField(
         com.google.protobuf.Descriptors.FieldDescriptor field) {
-      return (Builder) super.clearField(field);
+      return super.clearField(field);
     }
     @java.lang.Override
     public Builder clearOneof(
         com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-      return (Builder) super.clearOneof(oneof);
+      return super.clearOneof(oneof);
     }
     @java.lang.Override
     public Builder setRepeatedField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
         int index, java.lang.Object value) {
-      return (Builder) super.setRepeatedField(field, index, value);
+      return super.setRepeatedField(field, index, value);
     }
     @java.lang.Override
     public Builder addRepeatedField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
         java.lang.Object value) {
-      return (Builder) super.addRepeatedField(field, value);
+      return super.addRepeatedField(field, value);
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -513,8 +524,8 @@ private static final long serialVersionUID = 0L;
     private int bitField0_;
 
     private com.google.protobuf.MapField<
-        java.lang.Integer, java.lang.Integer> ports_;
-    private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+        java.lang.Integer, burst.protocol.Proxy> ports_;
+    private com.google.protobuf.MapField<java.lang.Integer, burst.protocol.Proxy>
     internalGetPorts() {
       if (ports_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
@@ -522,7 +533,7 @@ private static final long serialVersionUID = 0L;
       }
       return ports_;
     }
-    private com.google.protobuf.MapField<java.lang.Integer, java.lang.Integer>
+    private com.google.protobuf.MapField<java.lang.Integer, burst.protocol.Proxy>
     internalGetMutablePorts() {
       onChanged();;
       if (ports_ == null) {
@@ -539,9 +550,10 @@ private static final long serialVersionUID = 0L;
       return internalGetPorts().getMap().size();
     }
     /**
-     * <code>map&lt;int32, int32&gt; ports = 1;</code>
+     * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
      */
 
+    @java.lang.Override
     public boolean containsPorts(
         int key) {
       
@@ -550,37 +562,41 @@ private static final long serialVersionUID = 0L;
     /**
      * Use {@link #getPortsMap()} instead.
      */
+    @java.lang.Override
     @java.lang.Deprecated
-    public java.util.Map<java.lang.Integer, java.lang.Integer> getPorts() {
+    public java.util.Map<java.lang.Integer, burst.protocol.Proxy> getPorts() {
       return getPortsMap();
     }
     /**
-     * <code>map&lt;int32, int32&gt; ports = 1;</code>
+     * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
      */
+    @java.lang.Override
 
-    public java.util.Map<java.lang.Integer, java.lang.Integer> getPortsMap() {
+    public java.util.Map<java.lang.Integer, burst.protocol.Proxy> getPortsMap() {
       return internalGetPorts().getMap();
     }
     /**
-     * <code>map&lt;int32, int32&gt; ports = 1;</code>
+     * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
      */
+    @java.lang.Override
 
-    public int getPortsOrDefault(
+    public burst.protocol.Proxy getPortsOrDefault(
         int key,
-        int defaultValue) {
+        burst.protocol.Proxy defaultValue) {
       
-      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+      java.util.Map<java.lang.Integer, burst.protocol.Proxy> map =
           internalGetPorts().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;int32, int32&gt; ports = 1;</code>
+     * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
      */
+    @java.lang.Override
 
-    public int getPortsOrThrow(
+    public burst.protocol.Proxy getPortsOrThrow(
         int key) {
       
-      java.util.Map<java.lang.Integer, java.lang.Integer> map =
+      java.util.Map<java.lang.Integer, burst.protocol.Proxy> map =
           internalGetPorts().getMap();
       if (!map.containsKey(key)) {
         throw new java.lang.IllegalArgumentException();
@@ -594,7 +610,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>map&lt;int32, int32&gt; ports = 1;</code>
+     * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
      */
 
     public Builder removePorts(
@@ -608,28 +624,31 @@ private static final long serialVersionUID = 0L;
      * Use alternate mutation accessors instead.
      */
     @java.lang.Deprecated
-    public java.util.Map<java.lang.Integer, java.lang.Integer>
+    public java.util.Map<java.lang.Integer, burst.protocol.Proxy>
     getMutablePorts() {
       return internalGetMutablePorts().getMutableMap();
     }
     /**
-     * <code>map&lt;int32, int32&gt; ports = 1;</code>
+     * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
      */
     public Builder putPorts(
         int key,
-        int value) {
+        burst.protocol.Proxy value) {
       
-      
+      if (value == null) {
+  throw new NullPointerException("map value");
+}
+
       internalGetMutablePorts().getMutableMap()
           .put(key, value);
       return this;
     }
     /**
-     * <code>map&lt;int32, int32&gt; ports = 1;</code>
+     * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
      */
 
     public Builder putAllPorts(
-        java.util.Map<java.lang.Integer, java.lang.Integer> values) {
+        java.util.Map<java.lang.Integer, burst.protocol.Proxy> values) {
       internalGetMutablePorts().getMutableMap()
           .putAll(values);
       return this;
@@ -637,7 +656,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return super.setUnknownFieldsProto3(unknownFields);
+      return super.setUnknownFields(unknownFields);
     }
 
     @java.lang.Override

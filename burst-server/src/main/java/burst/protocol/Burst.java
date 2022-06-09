@@ -25,6 +25,11 @@ public final class Burst {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_protocol_BurstMessage_HeaderEntry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_protocol_Proxy_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_protocol_Proxy_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_protocol_Ports_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -49,28 +54,21 @@ public final class Burst {
       "r\030\002 \003(\0132\".protocol.BurstMessage.HeaderEn" +
       "try\022\014\n\004data\030\003 \001(\014\032C\n\013HeaderEntry\022\013\n\003key\030" +
       "\001 \001(\005\022#\n\005value\030\002 \001(\0132\024.google.protobuf.A" +
-      "ny:\0028\001\"`\n\005Ports\022)\n\005ports\030\001 \003(\0132\032.protoco" +
-      "l.Ports.PortsEntry\032,\n\nPortsEntry\022\013\n\003key\030" +
-      "\001 \001(\005\022\r\n\005value\030\002 \001(\005:\0028\001*D\n\tBurstType\022\010\n" +
-      "\004INIT\020\000\022\t\n\005CLOSE\020\001\022\020\n\014USER_CONNECT\020\002\022\020\n\014" +
-      "FORWARD_DATA\020\003*L\n\007Headers\022\t\n\005ERROR\020\000\022\t\n\005" +
-      "PORTS\020\001\022\026\n\022SERVER_EXPORT_PORT\020\002\022\023\n\017USER_" +
-      "CONNECT_ID\020\003B\031\n\016burst.protocolB\005BurstP\001b" +
-      "\006proto3"
+      "ny:\0028\001\"!\n\005Proxy\022\n\n\002ip\030\001 \001(\t\022\014\n\004port\030\002 \001(" +
+      "\005\"q\n\005Ports\022)\n\005ports\030\001 \003(\0132\032.protocol.Por" +
+      "ts.PortsEntry\032=\n\nPortsEntry\022\013\n\003key\030\001 \001(\005" +
+      "\022\036\n\005value\030\002 \001(\0132\017.protocol.Proxy:\0028\001*D\n\t" +
+      "BurstType\022\010\n\004INIT\020\000\022\t\n\005CLOSE\020\001\022\020\n\014USER_C" +
+      "ONNECT\020\002\022\020\n\014FORWARD_DATA\020\003*W\n\007Headers\022\t\n" +
+      "\005ERROR\020\000\022\t\n\005PORTS\020\001\022\026\n\022SERVER_EXPORT_POR" +
+      "T\020\002\022\023\n\017USER_CONNECT_ID\020\003\022\t\n\005TOKEN\020\004B\031\n\016b" +
+      "urst.protocolB\005BurstP\001b\006proto3"
     };
-    com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
-          public com.google.protobuf.ExtensionRegistry assignDescriptors(
-              com.google.protobuf.Descriptors.FileDescriptor root) {
-            descriptor = root;
-            return null;
-          }
-        };
-    com.google.protobuf.Descriptors.FileDescriptor
+    descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.AnyProto.getDescriptor(),
-        }, assigner);
+        });
     internal_static_protocol_BurstMessage_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_protocol_BurstMessage_fieldAccessorTable = new
@@ -83,8 +81,14 @@ public final class Burst {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_protocol_BurstMessage_HeaderEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    internal_static_protocol_Ports_descriptor =
+    internal_static_protocol_Proxy_descriptor =
       getDescriptor().getMessageTypes().get(1);
+    internal_static_protocol_Proxy_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_protocol_Proxy_descriptor,
+        new java.lang.String[] { "Ip", "Port", });
+    internal_static_protocol_Ports_descriptor =
+      getDescriptor().getMessageTypes().get(2);
     internal_static_protocol_Ports_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_protocol_Ports_descriptor,

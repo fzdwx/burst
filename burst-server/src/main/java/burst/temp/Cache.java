@@ -1,4 +1,4 @@
-package burst.server.logic.temp;
+package burst.temp;
 
 import io.github.fzdwx.lambada.Collections;
 
@@ -10,15 +10,15 @@ import java.util.Map;
  */
 public class Cache {
 
-    private static final Map<String, String> cache = Collections.cMap();
+    private static final Map<String, Object> cache = Collections.cMap();
 
 
-    public static void set(String key, String value) {
+    public static void set(String key, Object value) {
         cache.put(key, value);
     }
 
-    public static String get(String key) {
-        return cache.get(key);
+    public static <T> T get(String key) {
+        return (T) cache.get(key);
     }
 
     public static void remove(String key) {

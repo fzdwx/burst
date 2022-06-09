@@ -40,6 +40,14 @@ public enum Headers
    * <code>USER_CONNECT_ID = 3;</code>
    */
   USER_CONNECT_ID(3),
+  /**
+   * <pre>
+   * register token string
+   * </pre>
+   *
+   * <code>TOKEN = 4;</code>
+   */
+  TOKEN(4),
   UNRECOGNIZED(-1),
   ;
 
@@ -75,6 +83,14 @@ public enum Headers
    * <code>USER_CONNECT_ID = 3;</code>
    */
   public static final int USER_CONNECT_ID_VALUE = 3;
+  /**
+   * <pre>
+   * register token string
+   * </pre>
+   *
+   * <code>TOKEN = 4;</code>
+   */
+  public static final int TOKEN_VALUE = 4;
 
 
   public final int getNumber() {
@@ -86,6 +102,8 @@ public enum Headers
   }
 
   /**
+   * @param value The numeric wire value of the corresponding enum entry.
+   * @return The enum associated with the given numeric wire value.
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
@@ -93,12 +111,17 @@ public enum Headers
     return forNumber(value);
   }
 
+  /**
+   * @param value The numeric wire value of the corresponding enum entry.
+   * @return The enum associated with the given numeric wire value.
+   */
   public static Headers forNumber(int value) {
     switch (value) {
       case 0: return ERROR;
       case 1: return PORTS;
       case 2: return SERVER_EXPORT_PORT;
       case 3: return USER_CONNECT_ID;
+      case 4: return TOKEN;
       default: return null;
     }
   }
@@ -117,6 +140,10 @@ public enum Headers
 
   public final com.google.protobuf.Descriptors.EnumValueDescriptor
       getValueDescriptor() {
+    if (this == UNRECOGNIZED) {
+      throw new java.lang.IllegalStateException(
+          "Can't get the descriptor of an unrecognized enum value.");
+    }
     return getDescriptor().getValues().get(ordinal());
   }
   public final com.google.protobuf.Descriptors.EnumDescriptor

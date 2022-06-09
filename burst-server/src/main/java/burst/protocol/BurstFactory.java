@@ -1,9 +1,11 @@
 package burst.protocol;
 
+import burst.modules.user.domain.model.request.RegisterClientReq;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.StringValue;
+import io.github.fzdwx.lambada.Collections;
 
 import java.util.Map;
 
@@ -20,8 +22,14 @@ public class BurstFactory {
                 .putHeader(Headers.ERROR.getNumber(), Any.pack(StringValue.of(errorMessage))).build().toByteArray();
     }
 
-    public static byte[] successForPort(final Map<Integer, Integer> portMap) {
-        final var pack = Any.pack(Ports.newBuilder().putAllPorts(portMap).build());
+    public static byte[] successForPort(final Map<Integer, RegisterClientReq.Proxy> portMap) {
+        final Map<Integer, Proxy> proxyMap = Collections.map();
+
+        portMap.forEach((k, v) -> {
+            proxyMap.put(k, Proxy.newBuilder().setPort(v.getPort()).setIp(v.getIp()).build());
+        });
+
+        final var pack = Any.pack(Ports.newBuilder().putAllPorts(proxyMap).build());
         return BurstMessage.newBuilder()
                 .setType(BurstType.INIT)
                 .putHeader(Headers.PORTS.getNumber(), pack).build().toByteArray();

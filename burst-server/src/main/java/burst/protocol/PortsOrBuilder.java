@@ -8,11 +8,11 @@ public interface PortsOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>map&lt;int32, int32&gt; ports = 1;</code>
+   * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
    */
   int getPortsCount();
   /**
-   * <code>map&lt;int32, int32&gt; ports = 1;</code>
+   * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
    */
   boolean containsPorts(
       int key);
@@ -20,24 +20,24 @@ public interface PortsOrBuilder extends
    * Use {@link #getPortsMap()} instead.
    */
   @java.lang.Deprecated
-  java.util.Map<java.lang.Integer, java.lang.Integer>
+  java.util.Map<java.lang.Integer, burst.protocol.Proxy>
   getPorts();
   /**
-   * <code>map&lt;int32, int32&gt; ports = 1;</code>
+   * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
    */
-  java.util.Map<java.lang.Integer, java.lang.Integer>
+  java.util.Map<java.lang.Integer, burst.protocol.Proxy>
   getPortsMap();
   /**
-   * <code>map&lt;int32, int32&gt; ports = 1;</code>
+   * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
    */
 
-  int getPortsOrDefault(
+  burst.protocol.Proxy getPortsOrDefault(
       int key,
-      int defaultValue);
+      burst.protocol.Proxy defaultValue);
   /**
-   * <code>map&lt;int32, int32&gt; ports = 1;</code>
+   * <code>map&lt;int32, .protocol.Proxy&gt; ports = 1;</code>
    */
 
-  int getPortsOrThrow(
+  burst.protocol.Proxy getPortsOrThrow(
       int key);
 }

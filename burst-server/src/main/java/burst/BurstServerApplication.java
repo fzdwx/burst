@@ -1,8 +1,9 @@
-package burst.server;
+package burst;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import sky.starter.UseSkyWebServer;
 
 /**
  * @author <a href="mailto:likelovec@gmail.com">fzdwx</a>
@@ -10,6 +11,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  */
 // @SpringBootApplication(exclude = WebMvcMetricsAutoConfiguration.class)
 @SpringBootApplication
+@UseSkyWebServer
 public class BurstServerApplication {
 
     public static void main(String[] args) {

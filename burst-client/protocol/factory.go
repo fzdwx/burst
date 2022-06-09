@@ -7,11 +7,17 @@ import (
 	"github.com/golang/protobuf/ptypes/wrappers"
 	proto2 "google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
+	"strconv"
 )
 
 /**
   tool method
 */
+
+// Host format ip:port
+func (x *Proxy) Host() string {
+	return x.Ip + ":" + strconv.Itoa(int(x.Port))
+}
 
 func Decode(data []byte) (*BurstMessage, error) {
 	message := BurstMessage{}
@@ -22,10 +28,12 @@ func Decode(data []byte) (*BurstMessage, error) {
 	return &message, nil
 }
 
-func Encode(userConnectIdStr string, data []byte) []byte {
+func Encode(userConnectIdStr string, data []byte, tokenStr string) []byte {
 	message := BurstMessage{Header: map[int32]*any.Any{}}
 	userConnectId, _ := anypb.New(&wrappers.StringValue{Value: userConnectIdStr})
+	token, _ := anypb.New(&wrappers.StringValue{Value: tokenStr})
 	message.Header[int32(Headers_USER_CONNECT_ID)] = userConnectId
+	message.Header[int32(Headers_TOKEN)] = token
 	message.Type = BurstType_FORWARD_DATA
 	message.Data = data
 	d, _ := proto.Marshal(&message)

@@ -1,4 +1,4 @@
-package burst.server.inf;
+package burst.inf;
 
 import com.alibaba.fastjson2.JSON;
 
