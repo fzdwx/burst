@@ -15,7 +15,7 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <sky.version>0.11.1-dev</sky.version>
+        <sky.version>0.11.2</sky.version>
         <lambda.version>0.10.7-dev</lambda.version>
         <lombok.version>1.18.22</lombok.version>
         <spring.boot.version>2.6.7</spring.boot.version>
