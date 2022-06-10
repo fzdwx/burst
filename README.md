@@ -1,11 +1,11 @@
-# burst
+# 💥 burst
 
 基于Java(Netty) & Go(net) 的内网穿透 or 反向代理程序。 [关于burst](https://github.com/fzdwx/burst/issues/6)
 
 <br> <br>
 
 ## ✨ Features
-
+ 
 1. 支持所有基于tcp的协议 ( Support all tcp-based protocols )
 2. 可以代理局域网(也可以理解成server可以访问的任意机器)内任意一台机器 (Proxy any machine in the LAN)
 3. 😄 need your ideas!
