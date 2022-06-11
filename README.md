@@ -1,6 +1,6 @@
 # burst
 
-💥 基于Java(Netty) & Go(net) 的内网穿透 or 反向代理程序。 [关于burst](https://github.com/fzdwx/burst/issues/6)
+基于Java(Netty) & Go(net) 的内网穿透 or 反向代理程序。 [关于burst](https://github.com/fzdwx/burst/issues/6)
 
 <br>
 
