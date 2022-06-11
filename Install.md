@@ -33,11 +33,14 @@ just runServer
 4. register client
 
 ```shell
-curl --location --request POST 'http://114.132.249.192/:10086/register' \
+curl --location --request POST 'http://114.132.249.192:10086/register' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "ports": [
-        "63342"  // client wants exposed port
+    "proxies":[
+        {
+             "port":8080,
+             "ip":"192.168.1.72"  # default is localhost
+        }
     ]
 }'
 
