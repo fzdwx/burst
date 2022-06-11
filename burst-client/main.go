@@ -4,12 +4,12 @@ import (
 	"errors"
 	"flag"
 	burst "github.com/fzdwx/burst/burst-client/client"
+	"github.com/fzdwx/burst/burst-client/common"
 	"github.com/fzdwx/burst/burst-client/protocol"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/url"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -50,10 +50,11 @@ func init() {
 		log.SetLevel(log.InfoLevel)
 	}
 
+	host = common.FormatToAddr(*serverIp, *serverPort)
+
 	log.Info("log level is ", log.GetLevel())
 	log.Info("server ip:", *serverIp)
 	log.Info("server port:", *serverPort)
-	host = *serverIp + ":" + strconv.Itoa(*serverPort)
 }
 
 func main() {
