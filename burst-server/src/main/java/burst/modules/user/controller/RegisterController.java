@@ -1,12 +1,18 @@
 package burst.modules.user.controller;
 
+import burst.modules.user.domain.model.request.AddProxyInfoReq;
 import burst.modules.user.domain.model.request.RegisterClientReq;
+import burst.modules.user.service.RegisterService;
 import burst.temp.Cache;
-import cn.hutool.core.util.IdUtil;
-import io.github.fzdwx.lambada.Collections;
-import org.springframework.http.ResponseEntity;
+import core.http.response.HttpResponse;
+import core.http.response.JsonMapHttpResponse;
+import core.http.response.JsonObjectHttpResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -15,20 +21,36 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2022/5/21 16:54
  */
 @RestController
+@RequestMapping("register")
+@RequiredArgsConstructor
 public class RegisterController {
+
+    private final RegisterService registerService;
 
     /**
      * 注册客户端
      */
-    @PostMapping("register")
-    public ResponseEntity<?> register(@RequestBody RegisterClientReq req) {
-        req.preCheck();
+    @PostMapping
+    public JsonMapHttpResponse register(@RequestBody RegisterClientReq req) {
+        return HttpResponse.json("token", registerService.register(req));
+    }
 
-        final String token = IdUtil.fastSimpleUUID();
-        Cache.set(token, req);
+    /**
+     * 添加代理信息
+     */
+    @PostMapping("addProxyInfo")
+    public HttpResponse<?> addProxyInfo(@RequestBody AddProxyInfoReq req) {
+        return HttpResponse.ok().body(() -> registerService.addProxyInfo(req));
+    }
 
-        return ResponseEntity.ok().body(Collections.map(
-                "token", token
-        ));
+    /**
+     * 获取对应token的代理信息
+     *
+     * @param token 令牌
+     * @return {@link JsonObjectHttpResponse }
+     */
+    @GetMapping("getProxyInfo")
+    public JsonObjectHttpResponse getProxyInfo(@RequestParam String token) {
+        return HttpResponse.json(Cache.<RegisterClientReq>get(token));
     }
 }

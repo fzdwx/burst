@@ -1,12 +1,15 @@
 package server;
 
 import core.Server;
+import io.github.fzdwx.lambada.Collections;
 import io.github.fzdwx.lambada.Seq;
 import io.github.fzdwx.lambada.lang.StopWatch;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 /**
@@ -27,6 +30,17 @@ public class TestServer {
     //             .listen(0)
     //             .dispose();
     //
+
+    @Test
+    void test_map_add() {
+        final var map = Collections.map("1", Collections.list());
+        map.get("1").add("123");
+
+
+        System.out.println(map.get("1"));
+    }
+
+
     // }
 
     @Test

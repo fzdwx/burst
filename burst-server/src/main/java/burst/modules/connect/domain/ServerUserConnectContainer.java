@@ -3,12 +3,14 @@ package burst.modules.connect.domain;
 import core.Server;
 import core.group.DefaultSocketGroup;
 import core.group.SocketGroup;
+import core.http.ext.WebSocket;
 import core.socket.Socket;
 import io.github.fzdwx.lambada.Collections;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -21,13 +23,21 @@ public class ServerUserConnectContainer {
     private final SocketGroup<String> userConnectContainer = new DefaultSocketGroup<>(GlobalEventExecutor.INSTANCE);
 
     private final List<Server> servers = Collections.list();
+    /**
+     * 与客户端的连接
+     */
+    private final WebSocket ws;
 
-    public static ServerUserConnectContainer create() {
-        return new ServerUserConnectContainer();
+    ServerUserConnectContainer(final WebSocket ws) {
+        this.ws = ws;
     }
 
-    public void add(final Server server) {
-        servers.add(server);
+    public static ServerUserConnectContainer create(final WebSocket ws) {
+        return new ServerUserConnectContainer(ws);
+    }
+
+    public void addServer(final Collection<Server> servers) {
+        this.servers.addAll(servers);
     }
 
     public String add(final Channel channel) {
@@ -39,16 +49,29 @@ public class ServerUserConnectContainer {
         return key;
     }
 
-    public void destroy() {
-        for (final Server server : servers) {
-            server.close();
-        }
+    /**
+     * 返回与对应客户端的连接
+     */
+    public WebSocket ws() {
+        return ws;
+    }
 
+    /**
+     * 回收资源,停止所有该客户端所被代理的关系
+     */
+    public void destroy() {
+        closeServers(servers);
         userConnectContainer.close();
     }
 
     public Socket find(final String key) {
         return userConnectContainer.find(key);
+    }
+
+    public static void closeServers(Collection<Server> servers) {
+        for (final Server server : servers) {
+            server.close();
+        }
     }
 
     private static String getKey(final Channel channel) {

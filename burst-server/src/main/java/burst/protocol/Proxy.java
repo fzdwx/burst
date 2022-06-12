@@ -6,7 +6,7 @@ package burst.protocol;
 /**
  * Protobuf type {@code protocol.Proxy}
  */
-public final class Proxy extends
+public  final class Proxy extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:protocol.Proxy)
     ProxyOrBuilder {
@@ -17,13 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private Proxy() {
     ip_ = "";
-  }
-
-  @java.lang.Override
-  @SuppressWarnings({"unused"})
-  protected java.lang.Object newInstance(
-      UnusedPrivateParameter unused) {
-    return new Proxy();
+    port_ = 0;
   }
 
   @java.lang.Override
@@ -39,6 +33,7 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
+    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -61,7 +56,7 @@ private static final long serialVersionUID = 0L;
             break;
           }
           default: {
-            if (!parseUnknownField(
+            if (!parseUnknownFieldProto3(
                 input, unknownFields, extensionRegistry, tag)) {
               done = true;
             }
@@ -96,9 +91,7 @@ private static final long serialVersionUID = 0L;
   private volatile java.lang.Object ip_;
   /**
    * <code>string ip = 1;</code>
-   * @return The ip.
    */
-  @java.lang.Override
   public java.lang.String getIp() {
     java.lang.Object ref = ip_;
     if (ref instanceof java.lang.String) {
@@ -113,9 +106,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <code>string ip = 1;</code>
-   * @return The bytes for ip.
    */
-  @java.lang.Override
   public com.google.protobuf.ByteString
       getIpBytes() {
     java.lang.Object ref = ip_;
@@ -134,9 +125,7 @@ private static final long serialVersionUID = 0L;
   private int port_;
   /**
    * <code>int32 port = 2;</code>
-   * @return The port.
    */
-  @java.lang.Override
   public int getPort() {
     return port_;
   }
@@ -155,7 +144,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(ip_)) {
+    if (!getIpBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, ip_);
     }
     if (port_ != 0) {
@@ -170,7 +159,7 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(ip_)) {
+    if (!getIpBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, ip_);
     }
     if (port_ != 0) {
@@ -192,12 +181,13 @@ private static final long serialVersionUID = 0L;
     }
     burst.protocol.Proxy other = (burst.protocol.Proxy) obj;
 
-    if (!getIp()
-        .equals(other.getIp())) return false;
-    if (getPort()
-        != other.getPort()) return false;
-    if (!unknownFields.equals(other.unknownFields)) return false;
-    return true;
+    boolean result = true;
+    result = result && getIp()
+        .equals(other.getIp());
+    result = result && (getPort()
+        == other.getPort());
+    result = result && unknownFields.equals(other.unknownFields);
+    return result;
   }
 
   @java.lang.Override
@@ -382,35 +372,35 @@ private static final long serialVersionUID = 0L;
 
     @java.lang.Override
     public Builder clone() {
-      return super.clone();
+      return (Builder) super.clone();
     }
     @java.lang.Override
     public Builder setField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
         java.lang.Object value) {
-      return super.setField(field, value);
+      return (Builder) super.setField(field, value);
     }
     @java.lang.Override
     public Builder clearField(
         com.google.protobuf.Descriptors.FieldDescriptor field) {
-      return super.clearField(field);
+      return (Builder) super.clearField(field);
     }
     @java.lang.Override
     public Builder clearOneof(
         com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-      return super.clearOneof(oneof);
+      return (Builder) super.clearOneof(oneof);
     }
     @java.lang.Override
     public Builder setRepeatedField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
         int index, java.lang.Object value) {
-      return super.setRepeatedField(field, index, value);
+      return (Builder) super.setRepeatedField(field, index, value);
     }
     @java.lang.Override
     public Builder addRepeatedField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
         java.lang.Object value) {
-      return super.addRepeatedField(field, value);
+      return (Builder) super.addRepeatedField(field, value);
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -463,7 +453,6 @@ private static final long serialVersionUID = 0L;
     private java.lang.Object ip_ = "";
     /**
      * <code>string ip = 1;</code>
-     * @return The ip.
      */
     public java.lang.String getIp() {
       java.lang.Object ref = ip_;
@@ -479,7 +468,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>string ip = 1;</code>
-     * @return The bytes for ip.
      */
     public com.google.protobuf.ByteString
         getIpBytes() {
@@ -496,8 +484,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>string ip = 1;</code>
-     * @param value The ip to set.
-     * @return This builder for chaining.
      */
     public Builder setIp(
         java.lang.String value) {
@@ -511,7 +497,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>string ip = 1;</code>
-     * @return This builder for chaining.
      */
     public Builder clearIp() {
       
@@ -521,8 +506,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>string ip = 1;</code>
-     * @param value The bytes for ip to set.
-     * @return This builder for chaining.
      */
     public Builder setIpBytes(
         com.google.protobuf.ByteString value) {
@@ -539,16 +522,12 @@ private static final long serialVersionUID = 0L;
     private int port_ ;
     /**
      * <code>int32 port = 2;</code>
-     * @return The port.
      */
-    @java.lang.Override
     public int getPort() {
       return port_;
     }
     /**
      * <code>int32 port = 2;</code>
-     * @param value The port to set.
-     * @return This builder for chaining.
      */
     public Builder setPort(int value) {
       
@@ -558,7 +537,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>int32 port = 2;</code>
-     * @return This builder for chaining.
      */
     public Builder clearPort() {
       
@@ -569,7 +547,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return super.setUnknownFields(unknownFields);
+      return super.setUnknownFieldsProto3(unknownFields);
     }
 
     @java.lang.Override

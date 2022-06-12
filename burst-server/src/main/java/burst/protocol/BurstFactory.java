@@ -1,6 +1,6 @@
 package burst.protocol;
 
-import burst.modules.user.domain.model.request.RegisterClientReq;
+import burst.modules.user.domain.po.ProxyInfo;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Int32Value;
@@ -22,7 +22,7 @@ public class BurstFactory {
                 .putHeader(Headers.ERROR.getNumber(), Any.pack(StringValue.of(errorMessage))).build().toByteArray();
     }
 
-    public static byte[] successForPort(final Map<Integer, RegisterClientReq.Proxy> portMap) {
+    public static byte[] successForPort(final Map<Integer, ProxyInfo> portMap) {
         final Map<Integer, Proxy> proxyMap = Collections.map();
 
         portMap.forEach((k, v) -> {
@@ -31,7 +31,7 @@ public class BurstFactory {
 
         final var pack = Any.pack(Ports.newBuilder().putAllPorts(proxyMap).build());
         return BurstMessage.newBuilder()
-                .setType(BurstType.INIT)
+                .setType(BurstType.ADD_PROXY_INFO)
                 .putHeader(Headers.PORTS.getNumber(), pack).build().toByteArray();
     }
 

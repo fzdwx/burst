@@ -6,7 +6,7 @@ package burst.protocol;
 /**
  * Protobuf type {@code protocol.BurstMessage}
  */
-public final class BurstMessage extends
+public  final class BurstMessage extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:protocol.BurstMessage)
     BurstMessageOrBuilder {
@@ -18,13 +18,6 @@ private static final long serialVersionUID = 0L;
   private BurstMessage() {
     type_ = 0;
     data_ = com.google.protobuf.ByteString.EMPTY;
-  }
-
-  @java.lang.Override
-  @SuppressWarnings({"unused"})
-  protected java.lang.Object newInstance(
-      UnusedPrivateParameter unused) {
-    return new BurstMessage();
   }
 
   @java.lang.Override
@@ -58,10 +51,10 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 18: {
-            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+            if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
               header_ = com.google.protobuf.MapField.newMapField(
                   HeaderDefaultEntryHolder.defaultEntry);
-              mutable_bitField0_ |= 0x00000001;
+              mutable_bitField0_ |= 0x00000002;
             }
             com.google.protobuf.MapEntry<java.lang.Integer, com.google.protobuf.Any>
             header__ = input.readMessage(
@@ -76,7 +69,7 @@ private static final long serialVersionUID = 0L;
             break;
           }
           default: {
-            if (!parseUnknownField(
+            if (!parseUnknownFieldProto3(
                 input, unknownFields, extensionRegistry, tag)) {
               done = true;
             }
@@ -119,20 +112,19 @@ private static final long serialVersionUID = 0L;
             burst.protocol.BurstMessage.class, burst.protocol.BurstMessage.Builder.class);
   }
 
+  private int bitField0_;
   public static final int TYPE_FIELD_NUMBER = 1;
   private int type_;
   /**
    * <code>.protocol.BurstType type = 1;</code>
-   * @return The enum numeric value on the wire for type.
    */
-  @java.lang.Override public int getTypeValue() {
+  public int getTypeValue() {
     return type_;
   }
   /**
    * <code>.protocol.BurstType type = 1;</code>
-   * @return The type.
    */
-  @java.lang.Override public burst.protocol.BurstType getType() {
+  public burst.protocol.BurstType getType() {
     @SuppressWarnings("deprecation")
     burst.protocol.BurstType result = burst.protocol.BurstType.valueOf(type_);
     return result == null ? burst.protocol.BurstType.UNRECOGNIZED : result;
@@ -168,7 +160,6 @@ private static final long serialVersionUID = 0L;
    * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
    */
 
-  @java.lang.Override
   public boolean containsHeader(
       int key) {
     
@@ -177,7 +168,6 @@ private static final long serialVersionUID = 0L;
   /**
    * Use {@link #getHeaderMap()} instead.
    */
-  @java.lang.Override
   @java.lang.Deprecated
   public java.util.Map<java.lang.Integer, com.google.protobuf.Any> getHeader() {
     return getHeaderMap();
@@ -185,7 +175,6 @@ private static final long serialVersionUID = 0L;
   /**
    * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
    */
-  @java.lang.Override
 
   public java.util.Map<java.lang.Integer, com.google.protobuf.Any> getHeaderMap() {
     return internalGetHeader().getMap();
@@ -193,7 +182,6 @@ private static final long serialVersionUID = 0L;
   /**
    * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
    */
-  @java.lang.Override
 
   public com.google.protobuf.Any getHeaderOrDefault(
       int key,
@@ -206,7 +194,6 @@ private static final long serialVersionUID = 0L;
   /**
    * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
    */
-  @java.lang.Override
 
   public com.google.protobuf.Any getHeaderOrThrow(
       int key) {
@@ -223,9 +210,7 @@ private static final long serialVersionUID = 0L;
   private com.google.protobuf.ByteString data_;
   /**
    * <code>bytes data = 3;</code>
-   * @return The data.
    */
-  @java.lang.Override
   public com.google.protobuf.ByteString getData() {
     return data_;
   }
@@ -244,7 +229,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (type_ != burst.protocol.BurstType.INIT.getNumber()) {
+    if (type_ != burst.protocol.BurstType.ADD_PROXY_INFO.getNumber()) {
       output.writeEnum(1, type_);
     }
     com.google.protobuf.GeneratedMessageV3
@@ -265,7 +250,7 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (type_ != burst.protocol.BurstType.INIT.getNumber()) {
+    if (type_ != burst.protocol.BurstType.ADD_PROXY_INFO.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(1, type_);
     }
@@ -298,13 +283,14 @@ private static final long serialVersionUID = 0L;
     }
     burst.protocol.BurstMessage other = (burst.protocol.BurstMessage) obj;
 
-    if (type_ != other.type_) return false;
-    if (!internalGetHeader().equals(
-        other.internalGetHeader())) return false;
-    if (!getData()
-        .equals(other.getData())) return false;
-    if (!unknownFields.equals(other.unknownFields)) return false;
-    return true;
+    boolean result = true;
+    result = result && type_ == other.type_;
+    result = result && internalGetHeader().equals(
+        other.internalGetHeader());
+    result = result && getData()
+        .equals(other.getData());
+    result = result && unknownFields.equals(other.unknownFields);
+    return result;
   }
 
   @java.lang.Override
@@ -509,45 +495,47 @@ private static final long serialVersionUID = 0L;
     public burst.protocol.BurstMessage buildPartial() {
       burst.protocol.BurstMessage result = new burst.protocol.BurstMessage(this);
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
       result.type_ = type_;
       result.header_ = internalGetHeader();
       result.header_.makeImmutable();
       result.data_ = data_;
+      result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
     }
 
     @java.lang.Override
     public Builder clone() {
-      return super.clone();
+      return (Builder) super.clone();
     }
     @java.lang.Override
     public Builder setField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
         java.lang.Object value) {
-      return super.setField(field, value);
+      return (Builder) super.setField(field, value);
     }
     @java.lang.Override
     public Builder clearField(
         com.google.protobuf.Descriptors.FieldDescriptor field) {
-      return super.clearField(field);
+      return (Builder) super.clearField(field);
     }
     @java.lang.Override
     public Builder clearOneof(
         com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-      return super.clearOneof(oneof);
+      return (Builder) super.clearOneof(oneof);
     }
     @java.lang.Override
     public Builder setRepeatedField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
         int index, java.lang.Object value) {
-      return super.setRepeatedField(field, index, value);
+      return (Builder) super.setRepeatedField(field, index, value);
     }
     @java.lang.Override
     public Builder addRepeatedField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
         java.lang.Object value) {
-      return super.addRepeatedField(field, value);
+      return (Builder) super.addRepeatedField(field, value);
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -602,27 +590,21 @@ private static final long serialVersionUID = 0L;
     private int type_ = 0;
     /**
      * <code>.protocol.BurstType type = 1;</code>
-     * @return The enum numeric value on the wire for type.
      */
-    @java.lang.Override public int getTypeValue() {
+    public int getTypeValue() {
       return type_;
     }
     /**
      * <code>.protocol.BurstType type = 1;</code>
-     * @param value The enum numeric value on the wire for type to set.
-     * @return This builder for chaining.
      */
     public Builder setTypeValue(int value) {
-      
       type_ = value;
       onChanged();
       return this;
     }
     /**
      * <code>.protocol.BurstType type = 1;</code>
-     * @return The type.
      */
-    @java.lang.Override
     public burst.protocol.BurstType getType() {
       @SuppressWarnings("deprecation")
       burst.protocol.BurstType result = burst.protocol.BurstType.valueOf(type_);
@@ -630,8 +612,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>.protocol.BurstType type = 1;</code>
-     * @param value The type to set.
-     * @return This builder for chaining.
      */
     public Builder setType(burst.protocol.BurstType value) {
       if (value == null) {
@@ -644,7 +624,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>.protocol.BurstType type = 1;</code>
-     * @return This builder for chaining.
      */
     public Builder clearType() {
       
@@ -683,7 +662,6 @@ private static final long serialVersionUID = 0L;
      * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
      */
 
-    @java.lang.Override
     public boolean containsHeader(
         int key) {
       
@@ -692,7 +670,6 @@ private static final long serialVersionUID = 0L;
     /**
      * Use {@link #getHeaderMap()} instead.
      */
-    @java.lang.Override
     @java.lang.Deprecated
     public java.util.Map<java.lang.Integer, com.google.protobuf.Any> getHeader() {
       return getHeaderMap();
@@ -700,7 +677,6 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
      */
-    @java.lang.Override
 
     public java.util.Map<java.lang.Integer, com.google.protobuf.Any> getHeaderMap() {
       return internalGetHeader().getMap();
@@ -708,7 +684,6 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
      */
-    @java.lang.Override
 
     public com.google.protobuf.Any getHeaderOrDefault(
         int key,
@@ -721,7 +696,6 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
      */
-    @java.lang.Override
 
     public com.google.protobuf.Any getHeaderOrThrow(
         int key) {
@@ -765,10 +739,7 @@ private static final long serialVersionUID = 0L;
         int key,
         com.google.protobuf.Any value) {
       
-      if (value == null) {
-  throw new NullPointerException("map value");
-}
-
+      if (value == null) { throw new java.lang.NullPointerException(); }
       internalGetMutableHeader().getMutableMap()
           .put(key, value);
       return this;
@@ -787,16 +758,12 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
     /**
      * <code>bytes data = 3;</code>
-     * @return The data.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString getData() {
       return data_;
     }
     /**
      * <code>bytes data = 3;</code>
-     * @param value The data to set.
-     * @return This builder for chaining.
      */
     public Builder setData(com.google.protobuf.ByteString value) {
       if (value == null) {
@@ -809,7 +776,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>bytes data = 3;</code>
-     * @return This builder for chaining.
      */
     public Builder clearData() {
       
@@ -820,7 +786,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return super.setUnknownFields(unknownFields);
+      return super.setUnknownFieldsProto3(unknownFields);
     }
 
     @java.lang.Override

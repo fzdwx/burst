@@ -9,6 +9,7 @@ import burst.temp.Cache;
 import com.google.protobuf.InvalidProtocolBufferException;
 import core.http.ext.HttpServerRequest;
 import core.http.ext.HttpServerResponse;
+import io.github.fzdwx.lambada.Lang;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,13 +35,7 @@ public class ConnectController {
 
             // step 1 [init] server export ports and send ports mapping to client.
             ws.mountOpen(h -> {
-                final var portMap = Transform.init(registerInfo, ws, token);
-                if (portMap == null) {
-                    ws.sendBinary(BurstFactory.error(BurstType.INIT, "portMap is null,maybe server did not have available Port"));
-                    return;
-                }
-
-                ws.sendBinary(BurstFactory.successForPort(portMap));
+                Transform.init(registerInfo, ws, token);
             });
 
             ws.mountClose(h -> {

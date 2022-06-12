@@ -1,5 +1,6 @@
 package burst.temp;
 
+import burst.modules.user.domain.model.request.RegisterClientReq;
 import io.github.fzdwx.lambada.Collections;
 
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.Map;
  */
 public class Cache {
 
-    private static final Map<String, Object> cache = Collections.cMap();
+    private static final Map<String, Object> cache = Collections.cMap("b92a205269d94d38808c3979615245eb", RegisterClientReq.DEFAULT);
 
 
     public static void set(String key, Object value) {

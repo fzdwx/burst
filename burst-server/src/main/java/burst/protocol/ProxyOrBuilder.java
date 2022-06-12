@@ -9,19 +9,16 @@ public interface ProxyOrBuilder extends
 
   /**
    * <code>string ip = 1;</code>
-   * @return The ip.
    */
   java.lang.String getIp();
   /**
    * <code>string ip = 1;</code>
-   * @return The bytes for ip.
    */
   com.google.protobuf.ByteString
       getIpBytes();
 
   /**
    * <code>int32 port = 2;</code>
-   * @return The port.
    */
   int getPort();
 }

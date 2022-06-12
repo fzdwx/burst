@@ -1,11 +1,14 @@
 package burst.modules.user.domain.model.request;
 
 import burst.inf.Info;
-import cn.hutool.core.text.StrPool;
+import burst.modules.user.domain.po.ProxyInfo;
+import io.github.fzdwx.lambada.Collections;
 import io.github.fzdwx.lambada.Exceptions;
 import io.github.fzdwx.lambada.Lang;
+import io.github.fzdwx.lambada.Seq;
 import lombok.Data;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -15,48 +18,36 @@ import java.util.Set;
 @Data
 public class RegisterClientReq implements Info {
 
+    public static final RegisterClientReq DEFAULT = new RegisterClientReq() {
+
+        {
+            final var element = new ProxyInfo();
+            element.port = 63342;
+            setProxies(Collections.set(element));
+        }
+    };
+
     /**
      * 需要被代理的内网地址信息
      */
-    private Set<Proxy> proxies;
+    private Set<ProxyInfo> proxies;
 
     public void preCheck() {
         if (Lang.isEmpty(proxies)) {
             throw Exceptions.newIllegalArgument("port is empty");
         }
 
-        for (final Proxy proxy : proxies) {
+        for (final ProxyInfo proxy : proxies) {
             proxy.preCheck();
         }
-
     }
 
-    @Data
-    public static class Proxy {
-
-        /**
-         * 需要被代理的机器ip
-         */
-        public String ip = "localhost";
-
-        /**
-         * 对应端口号
-         */
-        public Integer port;
-
-        public void preCheck() {
-            if (Lang.isBlank(ip)) {
-                Exceptions.illegalArgument("ip is required");
-            }
-
-            if (port < 0 || port > 65535) {
-                Exceptions.illegalArgument("port is not valid,must between 0 and 65535");
-            }
-        }
-
-        @Override
-        public String toString() {
-            return ip + StrPool.COLON + port;
-        }
+    /**
+     * add all
+     *
+     * @apiNote 返回实际上添加成功了的
+     */
+    public Collection<ProxyInfo> addAll(final Set<ProxyInfo> proxies) {
+        return Seq.of(proxies).filter(this.proxies::add).toList();
     }
 }
