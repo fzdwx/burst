@@ -8,8 +8,9 @@
  
 1. 支持所有基于tcp的协议 ( Support all tcp-based protocols )
 2. 可以代理局域网(也可以理解成server可以访问的任意机器)内任意一台机器 (Proxy any machine in the LAN)
-3. 😄 need your ideas!
-4. ...
+3. 动态添加代理端口( Dynamically add proxy ports ) https://github.com/fzdwx/burst/issues/10#issuecomment-1153122850
+4. 😄 need your ideas!
+5. ...
 
 <br>
 
