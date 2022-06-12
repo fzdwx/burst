@@ -10,8 +10,8 @@ option java_outer_classname = "Burst";
 import "google/protobuf/any.proto";
 
 enum BurstType{
-  // 初始化
-  INIT = 0;
+  // 添加代理信息
+  ADD_PROXY_INFO = 0;
   // 关闭
   CLOSE = 1;
   // 客户连接

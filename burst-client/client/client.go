@@ -47,6 +47,7 @@ func Connect(url url.URL) (*Client, *http.Response, error) {
 		onBinary: func(bytes []byte, c *Client) {
 			log.Debugf("onBinary:%s", string(bytes))
 		},
+		proxyInfo: map[int32]*protocol.Proxy{},
 	}, nil, nil
 }
 
@@ -94,9 +95,11 @@ func (c *Client) MountTextHandler(f OnText) {
 	}
 }
 
-// SetProxyInfo set ports mapping.
-func (c *Client) SetProxyInfo(proxyInfo map[int32]*protocol.Proxy) {
-	c.proxyInfo = proxyInfo
+// AddProxyInfo set ports mapping.
+func (c *Client) AddProxyInfo(proxyInfo map[int32]*protocol.Proxy) {
+	for k, proxy := range proxyInfo {
+		c.proxyInfo[k] = proxy
+	}
 }
 
 // ProxyInfo get ports mapping.

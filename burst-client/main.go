@@ -4,12 +4,12 @@ import (
 	"errors"
 	"flag"
 	burst "github.com/fzdwx/burst/burst-client/client"
+	"github.com/fzdwx/burst/burst-client/common"
 	"github.com/fzdwx/burst/burst-client/protocol"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/url"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -19,7 +19,7 @@ var (
 	token      = flag.String("t", "b92a205269d94d38808c3979615245eb", "your key, you can get it from server")
 	usage      = flag.Bool("h", false, "help")
 	debug      = flag.Bool("d", true, "log level use debug")
-	host       string
+	serverAddr string
 )
 
 func init() {
@@ -50,14 +50,15 @@ func init() {
 		log.SetLevel(log.InfoLevel)
 	}
 
-	log.Info("log level is ", log.GetLevel())
-	log.Info("server ip:", *serverIp)
-	log.Info("server port:", *serverPort)
-	host = *serverIp + ":" + strconv.Itoa(*serverPort)
+	serverAddr = common.FormatToAddr(*serverIp, *serverPort)
+
+	log.Infof("log level is [ %s ]", log.GetLevel().String())
+	log.Infof("server ip: [ %s ]", *serverIp)
+	log.Infof("server port: [ %d ]", *serverPort)
 }
 
 func main() {
-	u := url.URL{Scheme: "ws", Host: host, Path: "/connect", RawQuery: "token=" + *token}
+	u := url.URL{Scheme: "ws", Host: serverAddr, Path: "/connect", RawQuery: "token=" + *token}
 	client, resp, err := burst.Connect(u)
 	if err != nil {
 		body := resp.Body
@@ -75,8 +76,8 @@ func main() {
 		}
 
 		switch burstMessage.Type {
-		case protocol.BurstType_INIT:
-			handlerInit(burstMessage, client)
+		case protocol.BurstType_ADD_PROXY_INFO:
+			handlerAddProxyInfo(burstMessage, client)
 		case protocol.BurstType_USER_CONNECT:
 			handlerUserConnect(burstMessage, client)
 		case protocol.BurstType_FORWARD_DATA:
@@ -98,7 +99,8 @@ func main() {
 	}
 }
 
-func handlerInit(message *protocol.BurstMessage, client *burst.Client) {
+// handlerAddProxyInfo 处理添加映射信息
+func handlerAddProxyInfo(message *protocol.BurstMessage, client *burst.Client) {
 	err := protocol.GetError(message)
 	if err != nil {
 		client.Over(errors.New("init error " + err.Error()))
@@ -109,12 +111,12 @@ func handlerInit(message *protocol.BurstMessage, client *burst.Client) {
 		client.Over(errors.New("init get ports error " + err.Error()))
 	}
 
-	client.SetProxyInfo(ports.GetPorts())
-	info := client.ProxyInfo()
+	proxyInfo := ports.GetPorts()
+	client.AddProxyInfo(proxyInfo)
 
-	log.Info("init success")
-	for serverExportPort, proxy := range info {
-		log.Info("proxy intranet: [", proxy.Host(), "] to server [", *serverIp, ":", serverExportPort, "] ")
+	log.Infoln("add proxy info success")
+	for serverExportPort, proxy := range proxyInfo {
+		log.Infof("proxy intranet: [ %s ] to server [ %s ]", proxy.Host(), common.FormatToAddr(*serverIp, int(serverExportPort)))
 	}
 }
 

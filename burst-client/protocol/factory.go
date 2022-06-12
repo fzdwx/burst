@@ -2,12 +2,12 @@ package protocol
 
 import (
 	"errors"
+	"github.com/fzdwx/burst/burst-client/common"
 	"github.com/golang/protobuf/proto"
 	any "github.com/golang/protobuf/ptypes/any"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	proto2 "google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
-	"strconv"
 )
 
 /**
@@ -16,7 +16,7 @@ import (
 
 // Host format ip:port
 func (x *Proxy) Host() string {
-	return x.Ip + ":" + strconv.Itoa(int(x.Port))
+	return common.FormatToAddr(x.Ip, int(x.Port))
 }
 
 func Decode(data []byte) (*BurstMessage, error) {
