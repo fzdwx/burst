@@ -8,6 +8,7 @@ import io.github.fzdwx.lambada.Seq;
 import lombok.Data;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -48,5 +49,14 @@ public class RegisterClientReq {
      */
     public Collection<ProxyInfo> addAll(final Set<ProxyInfo> proxies) {
         return Seq.of(proxies).filter(this.proxies::add).toList();
+    }
+
+    /**
+     * remove all
+     *
+     * @apiNote 返回实际上删除成功了的
+     */
+    public List<ProxyInfo> removeAll(final Set<ProxyInfo> proxies) {
+        return Seq.of(proxies).filter(this.proxies::remove).toList();
     }
 }

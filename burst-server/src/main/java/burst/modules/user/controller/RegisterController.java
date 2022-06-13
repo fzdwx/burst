@@ -2,6 +2,7 @@ package burst.modules.user.controller;
 
 import burst.modules.user.domain.model.request.AddProxyInfoReq;
 import burst.modules.user.domain.model.request.RegisterClientReq;
+import burst.modules.user.domain.model.request.RemoveProxyInfoReq;
 import burst.modules.user.service.RegisterService;
 import burst.temp.Cache;
 import core.http.response.HttpResponse;
@@ -41,6 +42,17 @@ public class RegisterController {
     @PostMapping("addProxyInfo")
     public HttpResponse<?> addProxyInfo(@RequestBody AddProxyInfoReq req) {
         return HttpResponse.ok().body(() -> registerService.addProxyInfo(req));
+    }
+
+    /**
+     * 删除代理信息（动态删除客户端需要代理的端口）
+     *
+     * @param req 要求事情
+     * @return {@link JsonObjectHttpResponse }
+     */
+    @PostMapping("removeProxyInfo")
+    public JsonObjectHttpResponse removeProxyInfo(@RequestBody RemoveProxyInfoReq req) {
+        return HttpResponse.json(registerService.removeProxyInfo(req));
     }
 
     /**

@@ -3,11 +3,14 @@ package burst.modules.user.service;
 import burst.modules.connect.controller.trans.Transform;
 import burst.modules.user.domain.model.request.AddProxyInfoReq;
 import burst.modules.user.domain.model.request.RegisterClientReq;
+import burst.modules.user.domain.model.request.RemoveProxyInfoReq;
+import burst.modules.user.domain.po.ProxyInfo;
 import burst.temp.Cache;
 import cn.hutool.core.util.IdUtil;
 import io.github.fzdwx.lambada.Assert;
-import io.github.fzdwx.lambada.Lang;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:likelovec@gmail.com">fzdwx</a>
@@ -37,11 +40,30 @@ public class RegisterService {
     public void addProxyInfo(final AddProxyInfoReq req) {
         final var registerClientReq = req.preCheck();
 
-        final var proxyInfos = registerClientReq.addAll(req.getProxies());
-        Assert.notEmpty(proxyInfos, "暂无需要代理的端口(您输入的代理信息可能已经存在！)");
+        final var proxies = registerClientReq.addAll(req.getProxies());
+        Assert.notEmpty(proxies, "暂无需要代理的端口(您输入的代理信息可能已经存在！)");
 
         Transform.addProxyInfo(req.getToken(), req.getProxies());
 
+        // 到时候可能不是内存缓存，所以需要更新
         Cache.set(req.getToken(), registerClientReq);
+    }
+
+    /**
+     * 删除代理信息（动态删除客户端需要代理的端口）
+     */
+    public List<ProxyInfo> removeProxyInfo(final RemoveProxyInfoReq req) {
+        final var registerClientReq = req.preCheck();
+
+        final var proxies = registerClientReq.removeAll(req.getProxies());
+        if (proxies.isEmpty()) {
+            return null;
+        }
+
+        Transform.removeProxyInfo(req.getToken(), req.getProxies());
+
+        // 到时候可能不是内存缓存，所以需要更新
+        Cache.set(req.getToken(), registerClientReq);
+        return proxies;
     }
 }

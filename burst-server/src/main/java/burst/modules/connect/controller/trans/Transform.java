@@ -13,7 +13,7 @@ import core.http.ext.WebSocket;
 import io.github.fzdwx.lambada.Collections;
 import io.github.fzdwx.lambada.Exceptions;
 import io.github.fzdwx.lambada.Lang;
-import io.github.fzdwx.lambada.anno.Nullable;
+import io.github.fzdwx.lambada.Seq;
 import io.netty.channel.Channel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
@@ -52,32 +52,30 @@ public class Transform {
     /**
      * 添加代理信息,并发送消息到客户端
      *
-     * @param token      token
-     * @param proxyInfos 代理信息
+     * @param token   token
+     * @param proxies 代理信息
      * @apiNote 当该客户端断开连接或找不到可用端口时会返回null
      */
-    @Nullable
-    public static void addProxyInfo(String token, Set<ProxyInfo> proxyInfos) {
+    public static void addProxyInfo(String token, Set<ProxyInfo> proxies) {
+        if (Lang.isEmpty(proxies)) {
+            return;
+        }
+
         final var container = serverContainer.get(token);
         if (container == null) {
             return;
         }
-
-        final var ws = container.ws();
-        if (!ws.channel().isOpen() || !ws.channel().isActive()) {
-            container.destroy();
-            throw Exceptions.newIllegalState("客户端已经断开连接");
-        }
+        final var ws = container.safetyWs();
 
         final var portsMap = Collections.<Integer, ProxyInfo>map();
-        final var servers = Collections.<Server>list();
+        final var servers = Collections.<ProxyInfo, Server>map();
 
-        for (ProxyInfo proxyInfo : proxyInfos) {
+        for (ProxyInfo proxyInfo : proxies) {
             final var availablePort = AvailablePort.random();
             if (availablePort == null) {
                 log.error("[init] token={},host={}  port not available", token, proxyInfo);
                 // 获取不到可用端口,回收当前监听的所有端口
-                ServerUserConnectContainer.closeServers(servers);
+                ServerUserConnectContainer.closeServers(servers.values());
                 throw Exceptions.newIllegalState("服务端暂无可用端口");
             }
 
@@ -90,7 +88,7 @@ public class Transform {
                     ));
 
             server.listen(availablePort);
-            servers.add(server);
+            servers.put(proxyInfo, server);
             portsMap.put(availablePort, proxyInfo);
         }
         container.addServer(servers);
@@ -102,6 +100,33 @@ public class Transform {
 
         log.info("client add proxy ports:{}", portsMap);
         ws.sendBinary(BurstFactory.successForPort(portsMap));
+    }
+
+    public static void removeProxyInfo(final String token, final Set<ProxyInfo> proxies) {
+        if (Lang.isEmpty(proxies)) {
+            return;
+        }
+
+        final var container = serverContainer.get(token);
+        if (container == null) {
+            return;
+        }
+
+        final var ws = container.safetyWs();
+
+        final var serverPorts = Seq.of(proxies)
+                .map(container::getServer)
+                .nonNull()
+                .and(container::close)
+                .map(Server::port)
+                .toList();
+
+        if (serverPorts.isEmpty()) {
+            throw Exceptions.newIllegalState("没有需要关闭的服务端端口映射!");
+        }
+
+        // todo notify client
+
     }
 
     /**
@@ -118,10 +143,10 @@ public class Transform {
     }
 
     /**
-     * when user connect, add to container.
+     * bind user channel to client connect container.
      */
     public static String add(final Channel channel, final String token) {
-        return serverContainer.get(token).add(channel);
+        return serverContainer.get(token).addUserConnect(channel);
     }
 
     @SneakyThrows
