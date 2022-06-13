@@ -1,6 +1,5 @@
 package burst.modules.user.domain.model.request;
 
-import burst.inf.Info;
 import burst.modules.user.domain.po.ProxyInfo;
 import io.github.fzdwx.lambada.Collections;
 import io.github.fzdwx.lambada.Exceptions;
@@ -16,7 +15,7 @@ import java.util.Set;
  * @date 2022/5/21 17:01
  */
 @Data
-public class RegisterClientReq implements Info {
+public class RegisterClientReq {
 
     public static final RegisterClientReq DEFAULT = new RegisterClientReq() {
 
