@@ -49,9 +49,7 @@ func (u UserConnect) React(client *Client) {
 	userConnectId := u.userConnectId
 	conn := u.conn
 	defer func() {
-		log.WithFields(log.Fields{
-			"userConnectId": userConnectId,
-		}).Infoln("close user connect")
+		log.WithFields(log.Fields{"userConnectId": userConnectId}).Infoln("close user connect")
 		Fw.remove(userConnectId)
 		conn.Close()
 	}()
@@ -60,32 +58,19 @@ func (u UserConnect) React(client *Client) {
 		buf := make([]byte, 1024)
 		read, err := conn.Read(buf)
 		if err != nil {
-			log.WithFields(log.Fields{
-				"status":        "read from intranet error",
-				"cause":         err,
-				"userConnectId": userConnectId,
-			}).Errorf("forward to %s  :", common.WrapRed("server"))
+			log.WithFields(log.Fields{"status": "read from intranet error", "cause": err, "userConnectId": userConnectId}).Errorf("forward to %s  :", common.WrapRed("server"))
 			return
 		}
 
 		// forward to server
 		err = client.ToServer(userConnectId, buf[:read])
 		if err != nil {
-			log.WithFields(log.Fields{
-				"status":        "error",
-				"cause":         err,
-				"userConnectId": userConnectId,
-				"len":           read,
-			}).Errorf("forward to %s  :", common.WrapRed("server"))
+			log.WithFields(log.Fields{"status": "error", "cause": err, "userConnectId": userConnectId, "len": read}).Errorf("forward to %s  :", common.WrapRed("server"))
 			return
 		}
 
 		if common.IsDebug() {
-			log.WithFields(log.Fields{
-				"status":        "success",
-				"userConnectId": userConnectId,
-				"len":           read,
-			}).Debugf("forward to %s  :", common.WrapRed("server"))
+			log.WithFields(log.Fields{"status": "success", "userConnectId": userConnectId, "len": read}).Debugf("forward to %s  :", common.WrapRed("server"))
 		}
 	}
 }
@@ -105,20 +90,11 @@ func (f *Forwarder) write(userConnectId string, data []byte) {
 	if forward, ok := f.container[userConnectId]; ok {
 		write, err := forward.conn.Write(data)
 		if err != nil {
-			log.WithFields(log.Fields{
-				"userConnectId": userConnectId,
-				"status":        "error",
-				"len":           write,
-				"cause":         err,
-			}).Errorf("forward to %s:", common.WrapCyan("intranet"))
+			log.WithFields(log.Fields{"userConnectId": userConnectId, "status": "error", "len": write, "cause": err}).Errorf("forward to %s:", common.WrapCyan("intranet"))
 		}
 
 		if common.IsDebug() {
-			log.WithFields(log.Fields{
-				"userConnectId": userConnectId,
-				"len":           write,
-				"status":        "success",
-			}).Debugf("forward to %s:", common.WrapCyan("intranet"))
+			log.WithFields(log.Fields{"userConnectId": userConnectId, "len": write, "status": "success"}).Debugf("forward to %s:", common.WrapCyan("intranet"))
 		}
 	}
 }
