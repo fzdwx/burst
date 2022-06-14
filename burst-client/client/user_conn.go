@@ -5,30 +5,25 @@ import (
 	"github.com/fzdwx/burst/burst-client/protocol"
 	log "github.com/sirupsen/logrus"
 	"net"
+	"strings"
 )
 
 type (
 	// UserConnect user connect.
 	UserConnect struct {
+		// userConnectId user Connect id (from server)
 		userConnectId string
-		conn          net.Conn
-	}
-
-	// Forwarder store connections between real users and mapped ports.
-	Forwarder struct {
-		container map[string]*UserConnect
-	}
-)
-
-var (
-	// Fw default Forwarder
-	Fw = &Forwarder{
-		container: make(map[string]*UserConnect),
+		// conn 与内网端口的连接
+		// The connection to the Intranet port
+		conn net.Conn
+		// serverPort 用于在移除代理时关闭与内网的连接
+		// This command is used to close the connection to the Intranet when the agent is removed
+		serverPort int32
 	}
 )
 
 // NewUserConn open a connection for the specified user id to listen on the mapped port on the intranet.
-func NewUserConn(proxy *protocol.Proxy, userConnectId string) (*UserConnect, error) {
+func NewUserConn(serverPort int32, proxy *protocol.Proxy, userConnectId string) (*UserConnect, error) {
 	conn, err := net.Dial("tcp", proxy.Host())
 	if err != nil {
 		return nil, err
@@ -37,9 +32,10 @@ func NewUserConn(proxy *protocol.Proxy, userConnectId string) (*UserConnect, err
 	u := &UserConnect{
 		userConnectId,
 		conn,
+		serverPort,
 	}
 
-	Fw.add(u)
+	Fw.Add(u)
 
 	return u, nil
 }
@@ -48,63 +44,35 @@ func NewUserConn(proxy *protocol.Proxy, userConnectId string) (*UserConnect, err
 func (u UserConnect) React(client *Client) {
 	userConnectId := u.userConnectId
 	conn := u.conn
-	defer conn.Close()
-	defer Fw.remove(userConnectId)
-	defer log.Debug("forward to server: closed ", userConnectId)
+	defer func() {
+		log.WithFields(log.Fields{"userConnectId": userConnectId}).Infoln("close user connect")
+		Fw.remove(userConnectId)
+	}()
 
 	for {
 		buf := make([]byte, 1024)
-		n, err := conn.Read(buf)
+		read, err := conn.Read(buf)
 		if err != nil {
-			log.Errorf("forward to server: read error:[%s] userConnectId:%s", err, userConnectId)
+			// todo 是否要判断？strings.Contains 还是所有都直接打印日志
+			if !strings.Contains(err.Error(), "use of closed network connection") {
+				log.WithFields(log.Fields{"status": "read from intranet error", "cause": err, "userConnectId": userConnectId}).Errorf("forward to %s  :", common.WrapRed("server"))
+			}
 			return
 		}
 
 		// forward to server
-		err = client.ToServer(userConnectId, buf[:n])
+		err = client.ToServer(userConnectId, buf[:read])
 		if err != nil {
-			log.Errorf("forward to server: write error:[%s] userConnectId:%s", err, userConnectId)
+			log.WithFields(log.Fields{"status": "error", "cause": err, "userConnectId": userConnectId, "len": read}).Errorf("forward to %s  :", common.WrapRed("server"))
 			return
 		}
 
 		if common.IsDebug() {
-			log.Debugf("forward to server: write size:%d,userConnectId:%s", n, userConnectId)
+			log.WithFields(log.Fields{"status": "success", "userConnectId": userConnectId, "len": read}).Debugf("forward to %s  :", common.WrapRed("server"))
 		}
 	}
 }
 
-// ToLocal forward real user data to the mapped port on the intranet.
-func (f *Forwarder) ToLocal(message *protocol.BurstMessage) {
-	userConnectId, err := protocol.GetUserConnectId(message)
-	if err != nil {
-		log.Error("forward to local: parse user connect id error ", err)
-		return
-	}
-
-	f.write(userConnectId, message.Data)
-}
-
-func (f *Forwarder) add(forward *UserConnect) {
-	f.container[forward.userConnectId] = forward
-}
-
-func (f *Forwarder) remove(key string) {
-	delete(f.container, key)
-}
-
-func (f *Forwarder) write(userConnectId string, data []byte) {
-	if forward, ok := f.container[userConnectId]; ok {
-		write, err := forward.conn.Write(data)
-		if err != nil {
-			log.WithFields(log.Fields{
-				"userConnectId": userConnectId,
-				"write":         write,
-				"err":           err,
-			}).Error("forward to local: error")
-		}
-
-		if common.IsDebug() {
-			log.Debugf("forward to local: write [%d],  %s", write, userConnectId)
-		}
-	}
+func (u *UserConnect) Close() error {
+	return u.conn.Close()
 }

@@ -1,6 +1,5 @@
 package burst.modules.user.domain.model.request;
 
-import burst.inf.Info;
 import burst.modules.user.domain.po.ProxyInfo;
 import io.github.fzdwx.lambada.Collections;
 import io.github.fzdwx.lambada.Exceptions;
@@ -9,6 +8,8 @@ import io.github.fzdwx.lambada.Seq;
 import lombok.Data;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -16,7 +17,7 @@ import java.util.Set;
  * @date 2022/5/21 17:01
  */
 @Data
-public class RegisterClientReq implements Info {
+public class RegisterClientReq {
 
     public static final RegisterClientReq DEFAULT = new RegisterClientReq() {
 
@@ -43,11 +44,58 @@ public class RegisterClientReq implements Info {
     }
 
     /**
-     * add all
+     * copy add all
      *
      * @apiNote 返回实际上添加成功了的
      */
-    public Collection<ProxyInfo> addAll(final Set<ProxyInfo> proxies) {
-        return Seq.of(proxies).filter(this.proxies::add).toList();
+    public Collection<ProxyInfo> copyAndAddAll(final Set<ProxyInfo> proxies) {
+        if (Lang.isEmpty(proxies)) {
+            return Collections.emptyList();
+        }
+
+        final HashSet<ProxyInfo> copy = new HashSet<>(this.proxies);
+        return Seq.of(proxies).filter(copy::add).toList();
+    }
+
+    /**
+     * copy remove all
+     *
+     * @apiNote 返回实际上删除成功了的
+     */
+    public List<ProxyInfo> copyRemoveAll(final Set<ProxyInfo> proxies) {
+        if (Lang.isEmpty(proxies)) {
+            return Collections.emptyList();
+        }
+
+        final HashSet<ProxyInfo> copy = new HashSet<>(this.proxies);
+        return Seq.of(proxies).filter(copy::remove).toList();
+    }
+
+    /**
+     * add all
+     *
+     * @param proxies proxy info
+     * @return {@link RegisterClientReq }
+     */
+    public RegisterClientReq addAll(final Collection<ProxyInfo> proxies) {
+        if (Lang.isNotEmpty(proxies)) {
+            this.proxies.addAll(proxies);
+        }
+
+        return this;
+    }
+
+    /**
+     * remove all
+     *
+     * @param proxies proxy info
+     * @return {@link RegisterClientReq }
+     */
+    public RegisterClientReq removeAll(final List<ProxyInfo> proxies) {
+        if (Lang.isNotEmpty(proxies)) {
+            proxies.forEach(this.proxies::remove);
+        }
+
+        return this;
     }
 }

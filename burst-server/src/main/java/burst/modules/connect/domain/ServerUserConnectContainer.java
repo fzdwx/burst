@@ -1,17 +1,21 @@
 package burst.modules.connect.domain;
 
+import burst.modules.user.domain.po.ProxyInfo;
 import core.Server;
 import core.group.DefaultSocketGroup;
 import core.group.SocketGroup;
 import core.http.ext.WebSocket;
 import core.socket.Socket;
 import io.github.fzdwx.lambada.Collections;
+import io.github.fzdwx.lambada.Exceptions;
+import io.github.fzdwx.lambada.anno.Nullable;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.InetSocketAddress;
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:likelovec@gmail.com">fzdwx</a>
@@ -20,9 +24,10 @@ import java.util.List;
 @Slf4j
 public class ServerUserConnectContainer {
 
+    private final static String ATTR_PORT = "port";
     private final SocketGroup<String> userConnectContainer = new DefaultSocketGroup<>(GlobalEventExecutor.INSTANCE);
 
-    private final List<Server> servers = Collections.list();
+    private final Map<ProxyInfo, Server> servers = Collections.map();
     /**
      * 与客户端的连接
      */
@@ -36,13 +41,19 @@ public class ServerUserConnectContainer {
         return new ServerUserConnectContainer(ws);
     }
 
-    public void addServer(final Collection<Server> servers) {
-        this.servers.addAll(servers);
+    public void addServer(final Map<ProxyInfo, Server> servers) {
+        this.servers.putAll(servers);
     }
 
-    public String add(final Channel channel) {
+    @Nullable
+    public Server getServer(final ProxyInfo proxyInfo) {
+        return this.servers.get(proxyInfo);
+    }
+
+    public String addUserConnect(final Channel channel) {
         final var socket = Socket.create(channel);
         final var key = getKey(channel);
+        socket.attr(ATTR_PORT, ((InetSocketAddress) channel.localAddress()).getPort());
         userConnectContainer.add(key, socket);
 
         log.debug("add user channel: {}", key);
@@ -57,10 +68,22 @@ public class ServerUserConnectContainer {
     }
 
     /**
+     * 返回与对应客户端的连接（校验连通性）
+     */
+    public WebSocket safetyWs() {
+        if (!this.ws.channel().isOpen() || !this.ws.channel().isActive()) {
+            this.destroy();
+            throw Exceptions.newIllegalState("客户端已经断开连接");
+        }
+
+        return ws;
+    }
+
+    /**
      * 回收资源,停止所有该客户端所被代理的关系
      */
     public void destroy() {
-        closeServers(servers);
+        closeServers(servers.values());
         userConnectContainer.close();
     }
 
@@ -72,6 +95,12 @@ public class ServerUserConnectContainer {
         for (final Server server : servers) {
             server.close();
         }
+    }
+
+    public void close(final Server server) {
+        server.close().addListener(f -> {
+            userConnectContainer.close(s -> s.attr(ATTR_PORT).equals(server.port()));
+        });
     }
 
     private static String getKey(final Channel channel) {

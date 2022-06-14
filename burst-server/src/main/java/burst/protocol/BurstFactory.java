@@ -5,8 +5,10 @@ import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.StringValue;
+import io.github.fzdwx.lambada.Assert;
 import io.github.fzdwx.lambada.Collections;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,6 +30,7 @@ public class BurstFactory {
         portMap.forEach((k, v) -> {
             proxyMap.put(k, Proxy.newBuilder().setPort(v.getPort()).setIp(v.getIp()).build());
         });
+
 
         final var pack = Any.pack(Ports.newBuilder().putAllPorts(proxyMap).build());
         return BurstMessage.newBuilder()
@@ -51,5 +54,12 @@ public class BurstFactory {
                 .setType(BurstType.FORWARD_DATA)
                 .putHeader(Headers.USER_CONNECT_ID.getNumber(), userConnectId)
                 .setData(ByteString.copyFrom(data)).build().toByteArray();
+    }
+
+    public static byte[] removeProxyInfo(final List<Integer> serverPorts) {
+        Assert.notEmpty(serverPorts, "server ports is empty");
+        return BurstMessage.newBuilder()
+                .setType(BurstType.REMOVE_PROXY_INFO)
+                .addAllServerPort(serverPorts).build().toByteArray();
     }
 }

@@ -1,8 +1,8 @@
 package burst.modules.user.domain.po;
 
 import cn.hutool.core.text.StrPool;
+import io.github.fzdwx.lambada.Assert;
 import io.github.fzdwx.lambada.Exceptions;
-import io.github.fzdwx.lambada.Lang;
 import lombok.Data;
 
 /**
@@ -23,9 +23,7 @@ public class ProxyInfo {
     public Integer port;
 
     public void preCheck() {
-        if (Lang.isBlank(ip)) {
-            Exceptions.illegalArgument("ip is required");
-        }
+        Assert.notBlank(ip, "ip is required");
 
         if (port < 0 || port > 65535) {
             Exceptions.illegalArgument("port is not valid,must between 0 and 65535");
