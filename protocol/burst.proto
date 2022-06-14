@@ -18,13 +18,15 @@ enum BurstType{
   USER_CONNECT = 2;
   // 转发数据
   FORWARD_DATA = 3;
+  // 删除代理信息
+  REMOVE_PROXY_INFO = 4;
 }
 
 enum Headers{
 
   // 错误信息 string
   ERROR = 0;
-  // port mapping Map<int,int>
+  // port mapping Map<int,Proxy>
   PORTS = 1;
   // 服务端暴露的端口 int32
   SERVER_EXPORT_PORT = 2;
