@@ -4,6 +4,7 @@ import burst.modules.user.domain.po.ProxyInfo;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Int32Value;
+import com.google.protobuf.Internal;
 import com.google.protobuf.StringValue;
 import io.github.fzdwx.lambada.Collections;
 
@@ -28,6 +29,7 @@ public class BurstFactory {
         portMap.forEach((k, v) -> {
             proxyMap.put(k, Proxy.newBuilder().setPort(v.getPort()).setIp(v.getIp()).build());
         });
+
 
         final var pack = Any.pack(Ports.newBuilder().putAllPorts(proxyMap).build());
         return BurstMessage.newBuilder()
