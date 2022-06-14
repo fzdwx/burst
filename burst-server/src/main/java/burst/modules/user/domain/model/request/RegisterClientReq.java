@@ -49,6 +49,10 @@ public class RegisterClientReq {
      * @apiNote 返回实际上添加成功了的
      */
     public Collection<ProxyInfo> copyAndAddAll(final Set<ProxyInfo> proxies) {
+        if (Lang.isEmpty(proxies)) {
+            return Collections.emptyList();
+        }
+
         final HashSet<ProxyInfo> copy = new HashSet<>(proxies);
         return Seq.of(proxies).filter(copy::add).toList();
     }
@@ -59,6 +63,10 @@ public class RegisterClientReq {
      * @apiNote 返回实际上删除成功了的
      */
     public List<ProxyInfo> copyRemoveAll(final Set<ProxyInfo> proxies) {
+        if (Lang.isEmpty(proxies)) {
+            return Collections.emptyList();
+        }
+
         final HashSet<ProxyInfo> copy = new HashSet<>(proxies);
         return Seq.of(proxies).filter(copy::remove).toList();
     }
@@ -70,7 +78,10 @@ public class RegisterClientReq {
      * @return {@link RegisterClientReq }
      */
     public RegisterClientReq addAll(final Collection<ProxyInfo> proxies) {
-        this.proxies.addAll(proxies);
+        if (Lang.isNotEmpty(proxies)) {
+            this.proxies.addAll(proxies);
+        }
+
         return this;
     }
 
@@ -81,7 +92,10 @@ public class RegisterClientReq {
      * @return {@link RegisterClientReq }
      */
     public RegisterClientReq removeAll(final List<ProxyInfo> proxies) {
-        proxies.forEach(this.proxies::remove);
+        if (Lang.isNotEmpty(proxies)) {
+            proxies.forEach(this.proxies::remove);
+        }
+
         return this;
     }
 }
