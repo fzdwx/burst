@@ -31,7 +31,7 @@ type (
 
 // Connect to Server,will return new Client.
 func Connect(url url.URL) (*Client, *http.Response, error) {
-	log.Printf("start connecting to %s", url.String())
+	log.Infoln("start connecting to:", common.WrapGreen(url.String()))
 	c, resp, err := websocket.DefaultDialer.Dial(url.String(), nil)
 
 	if err != nil {
@@ -42,10 +42,10 @@ func Connect(url url.URL) (*Client, *http.Response, error) {
 		conn:  c,
 		token: url.Query().Get("token"),
 		onText: func(s string, c *Client) {
-			log.Debugf("onText:%s", s)
+			log.Debugln("onText:", common.WrapGreen(s))
 		},
 		onBinary: func(bytes []byte, c *Client) {
-			log.Debugf("onBinary:%s", string(bytes))
+			log.Debugln("onBinary:", common.WrapGreen(string(bytes)))
 		},
 		proxyInfo: map[int32]*protocol.Proxy{},
 	}, nil, nil
@@ -115,7 +115,7 @@ func (c Client) GetProxy(serverExportPort int32) (*protocol.Proxy, bool) {
 
 // Over is called when there is some exception that needs to close the client.
 func (c Client) Over(err error) {
-	log.Error("stop client cause: ", err)
+	log.WithField("cause", err).Errorln("stop client")
 	c.Close()
 	os.Exit(1)
 }

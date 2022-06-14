@@ -48,27 +48,35 @@ func NewUserConn(proxy *protocol.Proxy, userConnectId string) (*UserConnect, err
 func (u UserConnect) React(client *Client) {
 	userConnectId := u.userConnectId
 	conn := u.conn
-	defer conn.Close()
-	defer Fw.remove(userConnectId)
-	defer log.Debug("forward to server: closed ", userConnectId)
+	defer func() {
+		log.WithFields(log.Fields{
+			"status":        common.WrapGreen("close"),
+			"userConnectId": common.WrapGreen(userConnectId),
+		}).Debug("forward to server")
+		Fw.remove(userConnectId)
+		conn.Close()
+	}()
 
 	for {
 		buf := make([]byte, 1024)
-		n, err := conn.Read(buf)
+		read, err := conn.Read(buf)
 		if err != nil {
 			log.Errorf("forward to server: read error:[%s] userConnectId:%s", err, userConnectId)
 			return
 		}
 
 		// forward to server
-		err = client.ToServer(userConnectId, buf[:n])
+		err = client.ToServer(userConnectId, buf[:read])
 		if err != nil {
 			log.Errorf("forward to server: write error:[%s] userConnectId:%s", err, userConnectId)
 			return
 		}
 
 		if common.IsDebug() {
-			log.Debugf("forward to server: write size:%d,userConnectId:%s", n, userConnectId)
+			log.WithFields(log.Fields{
+				"userConnectId": userConnectId,
+				"len":           read,
+			}).Debugf("forward to %s  :", common.WrapRed("server"))
 		}
 	}
 }
@@ -84,27 +92,30 @@ func (f *Forwarder) ToLocal(message *protocol.BurstMessage) {
 	f.write(userConnectId, message.Data)
 }
 
-func (f *Forwarder) add(forward *UserConnect) {
-	f.container[forward.userConnectId] = forward
-}
-
-func (f *Forwarder) remove(key string) {
-	delete(f.container, key)
-}
-
 func (f *Forwarder) write(userConnectId string, data []byte) {
 	if forward, ok := f.container[userConnectId]; ok {
 		write, err := forward.conn.Write(data)
 		if err != nil {
 			log.WithFields(log.Fields{
 				"userConnectId": userConnectId,
-				"write":         write,
-				"err":           err,
-			}).Error("forward to local: error")
+				"len":           write,
+				"cause":         err,
+			}).Error("forward to intranet")
 		}
 
 		if common.IsDebug() {
-			log.Debugf("forward to local: write [%d],  %s", write, userConnectId)
+			log.WithFields(log.Fields{
+				"userConnectId": userConnectId,
+				"len":           write,
+			}).Debugf("forward to %s:", common.WrapCyan("intranet"))
 		}
 	}
+}
+
+func (f *Forwarder) add(forward *UserConnect) {
+	f.container[forward.userConnectId] = forward
+}
+
+func (f *Forwarder) remove(key string) {
+	delete(f.container, key)
 }

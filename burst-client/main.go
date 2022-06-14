@@ -7,6 +7,7 @@ import (
 	"github.com/fzdwx/burst/burst-client/common"
 	"github.com/fzdwx/burst/burst-client/protocol"
 	log "github.com/sirupsen/logrus"
+	prefixed "github.com/x-cray/logrus-prefixed-formatter"
 	"io/ioutil"
 	"net/url"
 	"os"
@@ -34,15 +35,15 @@ func init() {
 		os.Exit(1)
 	}
 
-	log.SetFormatter(&log.JSONFormatter{
-		FieldMap: log.FieldMap{
-			log.FieldKeyTime:  "time",
-			log.FieldKeyLevel: "level",
-			log.FieldKeyMsg:   "message",
-		},
-		TimestampFormat: "2006-01-02 15:04:05",
-		//PrettyPrint:     false,
-	})
+	//log.SetFormatter(&log.TextFormatter{
+	//	ForceColors:     true,
+	//	FullTimestamp:   true,
+	//	TimestampFormat: "2006-01-02 15:04:05.000",
+	//})
+	formatter := new(prefixed.TextFormatter)
+	formatter.FullTimestamp = true
+	formatter.TimestampFormat = "2006-01-02 15:04:05.000"
+	log.SetFormatter(formatter)
 
 	if *debug {
 		log.SetLevel(log.DebugLevel)
@@ -52,9 +53,8 @@ func init() {
 
 	serverAddr = common.FormatToAddr(*serverIp, *serverPort)
 
-	log.Infof("log level is [ %s ]", log.GetLevel().String())
-	log.Infof("server ip: [ %s ]", *serverIp)
-	log.Infof("server port: [ %d ]", *serverPort)
+	log.Infoln("log level:", common.WrapGreen(log.GetLevel().String()))
+	log.Infoln("server address:", common.WrapGreen(serverAddr))
 }
 
 func main() {
@@ -114,9 +114,8 @@ func handlerAddProxyInfo(message *protocol.BurstMessage, client *burst.Client) {
 	proxyInfo := ports.GetPorts()
 	client.AddProxyInfo(proxyInfo)
 
-	log.Infoln("add proxy info success")
 	for serverExportPort, proxy := range proxyInfo {
-		log.Infof("proxy intranet: [ %s ] to server [ %s ]", proxy.Host(), common.FormatToAddr(*serverIp, int(serverExportPort)))
+		log.Infof("add proxy: %s to server %s", common.WrapRed(proxy.Host()), common.WrapRed(common.FormatToAddr(*serverIp, int(serverExportPort))))
 	}
 }
 
