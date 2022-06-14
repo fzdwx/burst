@@ -102,6 +102,20 @@ func (c *Client) AddProxyInfo(proxyInfo map[int32]*protocol.Proxy) {
 	}
 }
 
+// RemoveProxyPorts 删除服务端代理的端口
+func (c *Client) RemoveProxyPorts(port []int32) {
+	for _, p := range port {
+		proxy := c.proxyInfo[p]
+		if proxy == nil {
+			return
+		}
+		delete(c.proxyInfo, p)
+		Fw.RemoveProxyPort(p)
+
+		log.WithFields(log.Fields{"serverPort": p, "intranet": proxy.Host()}).Infoln("remove proxy port")
+	}
+}
+
 // ProxyInfo get ports mapping.
 func (c *Client) ProxyInfo() map[int32]*protocol.Proxy {
 	return c.proxyInfo

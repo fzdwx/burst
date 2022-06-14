@@ -41,7 +41,7 @@ message BurstMessage {
   BurstType type = 1;
   map<int32, google.protobuf.Any> header = 2;
   bytes data = 3;
-  // 当type = REMOVE_PROXY_INFO 时间有效
+  // 当type = REMOVE_PROXY_INFO 时有效
   repeated int32 serverPort = 4;
 }
 

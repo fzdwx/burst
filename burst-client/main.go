@@ -82,6 +82,8 @@ func main() {
 			handlerUserConnect(burstMessage, client)
 		case protocol.BurstType_FORWARD_DATA:
 			handlerForwardData(burstMessage, client)
+		case protocol.BurstType_REMOVE_PROXY_INFO:
+			handlerRemoveProxyInfo(burstMessage, client)
 		}
 	})
 
@@ -119,6 +121,21 @@ func handlerAddProxyInfo(message *protocol.BurstMessage, client *burst.Client) {
 	}
 }
 
+// handlerRemoveProxyInfo 移除映射信息
+func handlerRemoveProxyInfo(message *protocol.BurstMessage, client *burst.Client) {
+	err := protocol.GetError(message)
+	if err != nil {
+		client.Over(errors.New("init error " + err.Error()))
+	}
+
+	port := message.GetServerPort()
+	if len(port) == 0 {
+		return
+	}
+
+	client.RemoveProxyPorts(port)
+}
+
 func handlerUserConnect(message *protocol.BurstMessage, client *burst.Client) {
 	serverExportPort, err := protocol.GetServerExportPort(message)
 	if err != nil {
@@ -138,7 +155,7 @@ func handlerUserConnect(message *protocol.BurstMessage, client *burst.Client) {
 		return
 	}
 
-	userConnForward, err := burst.NewUserConn(proxy, userConnectId)
+	userConnForward, err := burst.NewUserConn(serverExportPort, proxy, userConnectId)
 	if err != nil {
 		log.Error("local port connect error ", err)
 		return

@@ -4,6 +4,9 @@ import burst.modules.connect.domain.ServerUserConnectContainer;
 import burst.modules.user.domain.model.request.RegisterClientReq;
 import burst.modules.user.domain.po.ProxyInfo;
 import burst.protocol.BurstFactory;
+import burst.protocol.BurstMessage;
+import burst.protocol.BurstType;
+import burst.protocol.Headers;
 import com.google.protobuf.StringValue;
 import core.Server;
 import core.http.ext.WebSocket;
@@ -99,6 +102,12 @@ public class Transform {
         ws.sendBinary(BurstFactory.successForPort(portsMap));
     }
 
+    /**
+     * 移除代理信息,并发送消息到客户端
+     *
+     * @param token   token
+     * @param proxies 代理信息
+     */
     public static void removeProxyInfo(final String token, final Set<ProxyInfo> proxies) {
         if (Lang.isEmpty(proxies)) {
             return;
@@ -122,8 +131,8 @@ public class Transform {
             throw Exceptions.newIllegalState("没有需要关闭的服务端端口映射!");
         }
 
-        // todo notify client
-
+        // notify client remove proxy info
+        ws.sendBinary(BurstFactory.removeProxyInfo(serverPorts));
     }
 
     /**

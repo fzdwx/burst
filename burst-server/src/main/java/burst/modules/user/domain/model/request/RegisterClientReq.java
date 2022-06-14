@@ -53,7 +53,7 @@ public class RegisterClientReq {
             return Collections.emptyList();
         }
 
-        final HashSet<ProxyInfo> copy = new HashSet<>(proxies);
+        final HashSet<ProxyInfo> copy = new HashSet<>(this.proxies);
         return Seq.of(proxies).filter(copy::add).toList();
     }
 
@@ -67,7 +67,7 @@ public class RegisterClientReq {
             return Collections.emptyList();
         }
 
-        final HashSet<ProxyInfo> copy = new HashSet<>(proxies);
+        final HashSet<ProxyInfo> copy = new HashSet<>(this.proxies);
         return Seq.of(proxies).filter(copy::remove).toList();
     }
 
