@@ -40,13 +40,13 @@ public class RegisterService {
     public void addProxyInfo(final AddProxyInfoReq req) {
         final var registerClientReq = req.preCheck();
 
-        final var proxies = registerClientReq.addAll(req.getProxies());
+        final var proxies = registerClientReq.copyAndAddAll(req.getProxies());
         Assert.notEmpty(proxies, "暂无需要代理的端口(您输入的代理信息可能已经存在！)");
 
         Transform.addProxyInfo(req.getToken(), req.getProxies());
 
-        // 到时候可能不是内存缓存，所以需要更新
-        Cache.set(req.getToken(), registerClientReq);
+        // update
+        Cache.set(req.getToken(), registerClientReq.addAll(proxies));
     }
 
     /**
@@ -55,15 +55,13 @@ public class RegisterService {
     public List<ProxyInfo> removeProxyInfo(final RemoveProxyInfoReq req) {
         final var registerClientReq = req.preCheck();
 
-        final var proxies = registerClientReq.removeAll(req.getProxies());
-        if (proxies.isEmpty()) {
-            return null;
-        }
+        final var proxies = registerClientReq.copyRemoveAll(req.getProxies());
+        Assert.notEmpty(proxies, "暂无需要关闭代理的端口(您输入的代理信息可能已经关闭！)");
 
         Transform.removeProxyInfo(req.getToken(), req.getProxies());
 
-        // 到时候可能不是内存缓存，所以需要更新
-        Cache.set(req.getToken(), registerClientReq);
+        // update
+        Cache.set(req.getToken(), registerClientReq.removeAll(proxies));
         return proxies;
     }
 }

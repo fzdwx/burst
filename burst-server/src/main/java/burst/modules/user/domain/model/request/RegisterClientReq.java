@@ -8,6 +8,7 @@ import io.github.fzdwx.lambada.Seq;
 import lombok.Data;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,20 +44,44 @@ public class RegisterClientReq {
     }
 
     /**
-     * add all
+     * copy add all
      *
      * @apiNote 返回实际上添加成功了的
      */
-    public Collection<ProxyInfo> addAll(final Set<ProxyInfo> proxies) {
-        return Seq.of(proxies).filter(this.proxies::add).toList();
+    public Collection<ProxyInfo> copyAndAddAll(final Set<ProxyInfo> proxies) {
+        final HashSet<ProxyInfo> copy = new HashSet<>(proxies);
+        return Seq.of(proxies).filter(copy::add).toList();
+    }
+
+    /**
+     * copy remove all
+     *
+     * @apiNote 返回实际上删除成功了的
+     */
+    public List<ProxyInfo> copyRemoveAll(final Set<ProxyInfo> proxies) {
+        final HashSet<ProxyInfo> copy = new HashSet<>(proxies);
+        return Seq.of(proxies).filter(copy::remove).toList();
+    }
+
+    /**
+     * add all
+     *
+     * @param proxies proxy info
+     * @return {@link RegisterClientReq }
+     */
+    public RegisterClientReq addAll(final Collection<ProxyInfo> proxies) {
+        this.proxies.addAll(proxies);
+        return this;
     }
 
     /**
      * remove all
      *
-     * @apiNote 返回实际上删除成功了的
+     * @param proxies proxy info
+     * @return {@link RegisterClientReq }
      */
-    public List<ProxyInfo> removeAll(final Set<ProxyInfo> proxies) {
-        return Seq.of(proxies).filter(this.proxies::remove).toList();
+    public RegisterClientReq removeAll(final List<ProxyInfo> proxies) {
+        proxies.forEach(this.proxies::remove);
+        return this;
     }
 }
