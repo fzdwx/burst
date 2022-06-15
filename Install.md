@@ -4,30 +4,22 @@
 
 ## Installation from source code
 
-1. install protobuf
+1. clone source
 
 ```bash
-sudo apt install protobuf-compiler
-sudo apt install golang-goprotobuf-dev
-```
-or
-
-https://repo1.maven.org/maven2/com/google/protobuf/protoc
-
-2. gen proto file
-
-```shell
-just protoc
+git clone https://github.com/fzdwx/burst.git
 ```
 
-3. build java code
+2. package
 
-- custom justFile set your mvn path
-- add application-prod.yml
+```bash
+cd burst && mvn -DskipTests clean package
+```
 
-```shell
-just build
-just runServer
+3. run server
+
+```bash
+java -jar burst-server/target/burst-server-1.3.jar
 ```
 
 4. register client
@@ -51,9 +43,7 @@ curl --location --request POST 'http://114.132.249.192:10086/register' \
 5. run client
 
 ```shell
-cd burst-client
-# get usage
-go run . -u
+cd burst/burst-client
 go run . -sip {{serverIp}} -sp {{serverPort}} -t {{token}}
 ```
 
