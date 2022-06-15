@@ -1,5 +1,6 @@
 #!/usr/bin/env just --justfile
-mvn_setting_path := "/mnt/c/Users/98065/.m2/settings.xml"
+#mvn_setting_path := "/mnt/c/Users/98065/.m2/settings.xml"
+mvn_setting_path := "/e/devTool/repo/settings.xml"
 
 target_path := "/root/burst-server.jar"
 log_path := "/root/burst-server.log"
