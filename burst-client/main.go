@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	burst "github.com/fzdwx/burst/burst-client/client"
 	"github.com/fzdwx/burst/burst-client/common"
@@ -51,21 +52,25 @@ func init() {
 }
 
 func main() {
-	u := url.URL{Scheme: "ws", Host: serverAddr, Path: "/connect", RawQuery: "token=" + *token}
-	client, resp, err := burst.Connect(u)
-	if err != nil {
-		body := resp.Body
-		defer body.Close()
-		data, _ := ioutil.ReadAll(body)
-		log.Fatal(string(data))
-	}
-	defer client.Close()
+	common.Run(func(cancelFunc context.CancelFunc) {
+		u := url.URL{Scheme: "ws", Host: serverAddr, Path: "/connect", RawQuery: "token=" + *token}
+		client, resp, err := burst.Connect(u)
+		if err != nil {
+			body := resp.Body
+			defer body.Close()
+			data, _ := ioutil.ReadAll(body)
+			log.Fatal(string(data))
+		}
 
-	client.MountBinaryHandler(burst.HandlerBinaryData())
+		client.MountBinaryHandler(burst.HandlerBinaryData())
 
-	go func() {
-		client.React()
-	}()
+		go func() {
+			defer func() {
+				cancelFunc()
+				client.Close()
+			}()
 
-	select {}
+			client.React()
+		}()
+	})
 }
