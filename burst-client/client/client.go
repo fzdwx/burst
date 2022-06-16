@@ -13,11 +13,12 @@ import (
 type (
 	// Client related operations and information.
 	Client struct {
-		//
-		conn     *websocket.Conn
-		token    string
-		onText   OnText
-		onBinary OnBinary
+		// conn to server
+		conn           *websocket.Conn
+		serverHostName string
+		token          string
+		onText         OnText
+		onBinary       OnBinary
 		// proxyInfo mapping: key serverPort ; value ip:port.
 		proxyInfo map[int32]*protocol.Proxy
 	}
@@ -39,8 +40,9 @@ func Connect(url url.URL) (*Client, *http.Response, error) {
 	}
 
 	return &Client{
-		conn:  c,
-		token: url.Query().Get("token"),
+		conn:           c,
+		serverHostName: url.Hostname(),
+		token:          url.Query().Get("token"),
 		onText: func(s string, c *Client) {
 			log.Debugln("onText:", common.WrapGreen(s))
 		},
