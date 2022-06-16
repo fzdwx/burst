@@ -35,11 +35,6 @@ func init() {
 		os.Exit(1)
 	}
 
-	//log.SetFormatter(&log.TextFormatter{
-	//	ForceColors:     true,
-	//	FullTimestamp:   true,
-	//	TimestampFormat: "2006-01-02 15:04:05.000",
-	//})
 	formatter := new(prefixed.TextFormatter)
 	formatter.FullTimestamp = true
 	formatter.TimestampFormat = "2006-01-02 15:04:05.000"
