@@ -1,10 +1,8 @@
-package burst.modules.user.domain.model.request;
+package burst.domain.model.request;
 
-import burst.modules.user.domain.po.ProxyInfo;
+import burst.domain.ProxyInfo;
 import burst.temp.Cache;
 import io.github.fzdwx.lambada.Assert;
-import io.github.fzdwx.lambada.Exceptions;
-import io.github.fzdwx.lambada.Lang;
 import lombok.Data;
 
 import java.util.Set;

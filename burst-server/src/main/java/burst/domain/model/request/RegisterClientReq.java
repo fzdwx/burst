@@ -1,6 +1,6 @@
-package burst.modules.user.domain.model.request;
+package burst.domain.model.request;
 
-import burst.modules.user.domain.po.ProxyInfo;
+import burst.domain.ProxyInfo;
 import io.github.fzdwx.lambada.Collections;
 import io.github.fzdwx.lambada.Exceptions;
 import io.github.fzdwx.lambada.Lang;

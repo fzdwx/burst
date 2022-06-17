@@ -1,4 +1,4 @@
-package burst.modules.user.domain.po;
+package burst.domain;
 
 import cn.hutool.core.text.StrPool;
 import io.github.fzdwx.lambada.Assert;
@@ -21,6 +21,11 @@ public class ProxyInfo {
      * 对应端口号
      */
     public Integer port;
+
+    /**
+     * 当前通道的类型
+     */
+    public String type;
 
     public void preCheck() {
         Assert.notBlank(ip, "ip is required");

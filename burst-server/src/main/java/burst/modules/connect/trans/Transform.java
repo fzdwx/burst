@@ -1,8 +1,8 @@
 package burst.modules.connect.trans;
 
-import burst.modules.connect.domain.ServerUserConnectContainer;
-import burst.modules.user.domain.model.request.RegisterClientReq;
-import burst.modules.user.domain.po.ProxyInfo;
+import burst.domain.ServerUserConnectContainer;
+import burst.domain.model.request.RegisterClientReq;
+import burst.domain.ProxyInfo;
 import burst.protocol.BurstFactory;
 import burst.protocol.BurstMessage;
 import burst.protocol.BurstType;

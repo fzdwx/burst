@@ -1,6 +1,5 @@
-package burst.modules.connect.domain;
+package burst.domain;
 
-import burst.modules.user.domain.po.ProxyInfo;
 import core.Server;
 import core.group.DefaultSocketGroup;
 import core.group.SocketGroup;

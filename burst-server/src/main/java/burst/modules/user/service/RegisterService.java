@@ -1,10 +1,10 @@
 package burst.modules.user.service;
 
 import burst.modules.connect.trans.Transform;
-import burst.modules.user.domain.model.request.AddProxyInfoReq;
-import burst.modules.user.domain.model.request.RegisterClientReq;
-import burst.modules.user.domain.model.request.RemoveProxyInfoReq;
-import burst.modules.user.domain.po.ProxyInfo;
+import burst.domain.model.request.AddProxyInfoReq;
+import burst.domain.model.request.RegisterClientReq;
+import burst.domain.model.request.RemoveProxyInfoReq;
+import burst.domain.ProxyInfo;
 import burst.temp.Cache;
 import cn.hutool.core.util.IdUtil;
 import io.github.fzdwx.lambada.Assert;

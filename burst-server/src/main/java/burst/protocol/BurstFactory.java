@@ -1,6 +1,6 @@
 package burst.protocol;
 
-import burst.modules.user.domain.po.ProxyInfo;
+import burst.domain.ProxyInfo;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Int32Value;

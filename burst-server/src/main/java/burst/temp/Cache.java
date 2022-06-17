@@ -1,6 +1,6 @@
 package burst.temp;
 
-import burst.modules.user.domain.model.request.RegisterClientReq;
+import burst.domain.model.request.RegisterClientReq;
 import io.github.fzdwx.lambada.Collections;
 
 import java.util.Map;
