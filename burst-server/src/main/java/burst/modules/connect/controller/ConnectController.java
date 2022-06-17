@@ -1,6 +1,6 @@
 package burst.modules.connect.controller;
 
-import burst.modules.connect.controller.trans.Transform;
+import burst.modules.connect.trans.Transform;
 import burst.modules.user.domain.model.request.RegisterClientReq;
 import burst.protocol.BurstMessage;
 import burst.temp.Cache;

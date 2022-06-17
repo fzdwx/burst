@@ -1,4 +1,4 @@
-package burst.modules.connect.controller.trans;
+package burst.modules.connect.trans;
 
 import burst.modules.connect.domain.ServerUserConnectContainer;
 import burst.modules.user.domain.model.request.RegisterClientReq;
@@ -65,33 +65,9 @@ public class Transform {
         if (container == null) {
             return;
         }
-        final var ws = container.safetyWs();
 
-        final var portsMap = Collections.<Integer, ProxyInfo>map();
-        final var servers = Collections.<ProxyInfo, Server>map();
-
-        for (ProxyInfo proxyInfo : proxies) {
-            final var availablePort = AvailablePort.random();
-            if (availablePort == null) {
-                log.error("[init] token={},host={}  port not available", token, proxyInfo);
-                // 获取不到可用端口,回收当前监听的所有端口
-                ServerUserConnectContainer.closeServers(servers.values());
-                throw Exceptions.newIllegalState("服务端暂无可用端口");
-            }
-
-            final var server = new Server()
-                    .group(boss, worker)
-                    .childHandler(ch -> ch.pipeline().addLast(
-                            new ByteArrayDecoder(),
-                            new ByteArrayEncoder(),
-                            new TransformHandler(availablePort, ws, token)
-                    ));
-
-            server.listen(availablePort);
-            servers.put(proxyInfo, server);
-            portsMap.put(availablePort, proxyInfo);
-        }
-        container.addServer(servers);
+        final WebSocket ws = container.safetyWs();
+        final Map<Integer, ProxyInfo> portsMap = listenAndGetPortMapping(container, token, proxies);
 
         if (portsMap.isEmpty()) {
             ws.sendBinary(BurstFactory.error(BurstType.ADD_PROXY_INFO, "portMap is null,maybe server did not have available Port"));
@@ -173,5 +149,36 @@ public class Transform {
         }
 
         log.debug("user not active:{}", userConnectId);
+    }
+
+    private static Map<Integer, ProxyInfo> listenAndGetPortMapping(ServerUserConnectContainer container, final String token,
+                                                                   final Set<ProxyInfo> proxies) {
+        final var ws = container.safetyWs();
+        final var portsMap = Collections.<Integer, ProxyInfo>map();
+        final var servers = Collections.<ProxyInfo, Server>map();
+        for (ProxyInfo proxyInfo : proxies) {
+            final var availablePort = AvailablePort.random();
+            if (availablePort == null) {
+                log.error("[init] token={},host={}  port not available", token, proxyInfo);
+                ServerUserConnectContainer.closeServers(servers.values());
+                throw Exceptions.newIllegalState("服务端暂无可用端口");
+            }
+
+            final Server server = getServer(token, ws, availablePort);
+
+            servers.put(proxyInfo, server);
+            portsMap.put(availablePort, proxyInfo);
+        }
+        container.addServer(servers);
+
+        return portsMap;
+    }
+
+    private static Server getServer(final String token, final WebSocket ws, final Integer availablePort) {
+        final Server server = new Server()
+                .group(boss, worker)
+                .childHandler(ch -> ch.pipeline().addLast(new ByteArrayDecoder(), new ByteArrayEncoder(), new TransformHandler(availablePort, ws, token)));
+        server.listen(availablePort);
+        return server;
     }
 }

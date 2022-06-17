@@ -19,7 +19,7 @@ cd burst && mvn -DskipTests clean package
 3. run server
 
 ```bash
-java -jar burst-server/target/burst-server-1.3.1.jar
+java -jar burst-server/target/burst-server-1.4.jar
 ```
 
 4. register client
