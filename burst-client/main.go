@@ -9,7 +9,6 @@ import (
 	prefixed "github.com/x-cray/logrus-prefixed-formatter"
 	"io/ioutil"
 	"net/url"
-	"os"
 	"strings"
 )
 
@@ -26,12 +25,6 @@ func init() {
 	flag.Parse()
 	if *usage {
 		flag.Usage()
-		os.Exit(0)
-	}
-
-	if strings.Compare(*token, "null") == 0 {
-		log.Fatal("token is null")
-		os.Exit(1)
 	}
 
 	formatter := new(prefixed.TextFormatter)
@@ -46,6 +39,10 @@ func init() {
 	}
 
 	serverAddr = common.FormatToAddr(*serverIp, *serverPort)
+
+	if strings.Compare(*token, "null") == 0 || strings.Compare(*token, "") == 0 {
+		log.Fatal("token is null")
+	}
 
 	log.Infoln("log level:", common.WrapGreen(log.GetLevel().String()))
 	log.Infoln("server address:", common.WrapGreen(serverAddr))
