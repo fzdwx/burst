@@ -14,6 +14,7 @@ import io.github.fzdwx.lambada.Collections;
 import io.github.fzdwx.lambada.Exceptions;
 import io.github.fzdwx.lambada.Lang;
 import io.github.fzdwx.lambada.Seq;
+import io.github.fzdwx.lambada.anno.Nullable;
 import io.netty.channel.Channel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
@@ -35,6 +36,16 @@ public class Transform {
     private static final NioEventLoopGroup boss = new NioEventLoopGroup();
     private static final NioEventLoopGroup worker = new NioEventLoopGroup();
     private static final Map<String, ServerUserConnectContainer> serverContainer = Collections.map();
+
+    /**
+     * get user connect container by token
+     * @param token token
+     * @return {@link ServerUserConnectContainer }
+     */
+    @Nullable
+    public static ServerUserConnectContainer getContainer(String token) {
+        return serverContainer.get(token);
+    }
 
     /**
      * 初始化客户端的代理信息
@@ -131,6 +142,18 @@ public class Transform {
         return serverContainer.get(token).addUserConnect(channel);
     }
 
+    /**
+     * remove user connect from container.
+     */
+    public static boolean remove(String token, String userConnectId) {
+        final ServerUserConnectContainer container = serverContainer.get(token);
+        if (container == null) {
+            return false;
+        }
+
+        return container.remove(userConnectId);
+    }
+
     @SneakyThrows
     public static void toUser(final BurstMessage burstMessage) {
         final var userConnectId = burstMessage.getHeaderMap().get(Headers.USER_CONNECT_ID.getNumber()).unpack(StringValue.class).getValue();
@@ -177,7 +200,7 @@ public class Transform {
     private static Server getServer(final String token, final WebSocket ws, final Integer availablePort) {
         final Server server = new Server()
                 .group(boss, worker)
-                .childHandler(ch -> ch.pipeline().addLast(new ByteArrayDecoder(), new ByteArrayEncoder(), new TransformHandler(availablePort, ws, token)));
+                .childHandler(ch -> ch.pipeline().addLast(new ByteArrayDecoder(), new ByteArrayEncoder(), new DefaultTransformHandler(availablePort, ws, token)));
         server.listen(availablePort);
         return server;
     }

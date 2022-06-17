@@ -59,6 +59,10 @@ public class ServerUserConnectContainer {
         return key;
     }
 
+    public boolean remove(final String userConnectId) {
+        return this.userConnectContainer.remove(userConnectId);
+    }
+
     /**
      * 返回与对应客户端的连接
      */
