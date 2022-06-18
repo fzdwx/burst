@@ -6,7 +6,7 @@ package burst.protocol;
 /**
  * Protobuf type {@code protocol.BurstMessage}
  */
-public final class BurstMessage extends
+public  final class BurstMessage extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:protocol.BurstMessage)
     BurstMessageOrBuilder {
@@ -18,14 +18,7 @@ private static final long serialVersionUID = 0L;
   private BurstMessage() {
     type_ = 0;
     data_ = com.google.protobuf.ByteString.EMPTY;
-    serverPort_ = emptyIntList();
-  }
-
-  @java.lang.Override
-  @SuppressWarnings({"unused"})
-  protected java.lang.Object newInstance(
-      UnusedPrivateParameter unused) {
-    return new BurstMessage();
+    serverPort_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -59,10 +52,10 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 18: {
-            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+            if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
               header_ = com.google.protobuf.MapField.newMapField(
                   HeaderDefaultEntryHolder.defaultEntry);
-              mutable_bitField0_ |= 0x00000001;
+              mutable_bitField0_ |= 0x00000002;
             }
             com.google.protobuf.MapEntry<java.lang.Integer, com.google.protobuf.Any>
             header__ = input.readMessage(
@@ -77,28 +70,28 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 32: {
-            if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-              serverPort_ = newIntList();
-              mutable_bitField0_ |= 0x00000002;
+            if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+              serverPort_ = new java.util.ArrayList<java.lang.Integer>();
+              mutable_bitField0_ |= 0x00000008;
             }
-            serverPort_.addInt(input.readInt32());
+            serverPort_.add(input.readInt32());
             break;
           }
           case 34: {
             int length = input.readRawVarint32();
             int limit = input.pushLimit(length);
-            if (!((mutable_bitField0_ & 0x00000002) != 0) && input.getBytesUntilLimit() > 0) {
-              serverPort_ = newIntList();
-              mutable_bitField0_ |= 0x00000002;
+            if (!((mutable_bitField0_ & 0x00000008) == 0x00000008) && input.getBytesUntilLimit() > 0) {
+              serverPort_ = new java.util.ArrayList<java.lang.Integer>();
+              mutable_bitField0_ |= 0x00000008;
             }
             while (input.getBytesUntilLimit() > 0) {
-              serverPort_.addInt(input.readInt32());
+              serverPort_.add(input.readInt32());
             }
             input.popLimit(limit);
             break;
           }
           default: {
-            if (!parseUnknownField(
+            if (!parseUnknownFieldProto3(
                 input, unknownFields, extensionRegistry, tag)) {
               done = true;
             }
@@ -112,8 +105,8 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
-      if (((mutable_bitField0_ & 0x00000002) != 0)) {
-        serverPort_.makeImmutable(); // C
+      if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+        serverPort_ = java.util.Collections.unmodifiableList(serverPort_);
       }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -144,20 +137,19 @@ private static final long serialVersionUID = 0L;
             burst.protocol.BurstMessage.class, burst.protocol.BurstMessage.Builder.class);
   }
 
+  private int bitField0_;
   public static final int TYPE_FIELD_NUMBER = 1;
   private int type_;
   /**
    * <code>.protocol.BurstType type = 1;</code>
-   * @return The enum numeric value on the wire for type.
    */
-  @java.lang.Override public int getTypeValue() {
+  public int getTypeValue() {
     return type_;
   }
   /**
    * <code>.protocol.BurstType type = 1;</code>
-   * @return The type.
    */
-  @java.lang.Override public burst.protocol.BurstType getType() {
+  public burst.protocol.BurstType getType() {
     @SuppressWarnings("deprecation")
     burst.protocol.BurstType result = burst.protocol.BurstType.valueOf(type_);
     return result == null ? burst.protocol.BurstType.UNRECOGNIZED : result;
@@ -193,7 +185,6 @@ private static final long serialVersionUID = 0L;
    * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
    */
 
-  @java.lang.Override
   public boolean containsHeader(
       int key) {
     
@@ -202,7 +193,6 @@ private static final long serialVersionUID = 0L;
   /**
    * Use {@link #getHeaderMap()} instead.
    */
-  @java.lang.Override
   @java.lang.Deprecated
   public java.util.Map<java.lang.Integer, com.google.protobuf.Any> getHeader() {
     return getHeaderMap();
@@ -210,7 +200,6 @@ private static final long serialVersionUID = 0L;
   /**
    * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
    */
-  @java.lang.Override
 
   public java.util.Map<java.lang.Integer, com.google.protobuf.Any> getHeaderMap() {
     return internalGetHeader().getMap();
@@ -218,7 +207,6 @@ private static final long serialVersionUID = 0L;
   /**
    * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
    */
-  @java.lang.Override
 
   public com.google.protobuf.Any getHeaderOrDefault(
       int key,
@@ -231,7 +219,6 @@ private static final long serialVersionUID = 0L;
   /**
    * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
    */
-  @java.lang.Override
 
   public com.google.protobuf.Any getHeaderOrThrow(
       int key) {
@@ -248,24 +235,20 @@ private static final long serialVersionUID = 0L;
   private com.google.protobuf.ByteString data_;
   /**
    * <code>bytes data = 3;</code>
-   * @return The data.
    */
-  @java.lang.Override
   public com.google.protobuf.ByteString getData() {
     return data_;
   }
 
   public static final int SERVERPORT_FIELD_NUMBER = 4;
-  private com.google.protobuf.Internal.IntList serverPort_;
+  private java.util.List<java.lang.Integer> serverPort_;
   /**
    * <pre>
    * 当type = REMOVE_PROXY_INFO 时有效
    * </pre>
    *
    * <code>repeated int32 serverPort = 4;</code>
-   * @return A list containing the serverPort.
    */
-  @java.lang.Override
   public java.util.List<java.lang.Integer>
       getServerPortList() {
     return serverPort_;
@@ -276,7 +259,6 @@ private static final long serialVersionUID = 0L;
    * </pre>
    *
    * <code>repeated int32 serverPort = 4;</code>
-   * @return The count of serverPort.
    */
   public int getServerPortCount() {
     return serverPort_.size();
@@ -287,11 +269,9 @@ private static final long serialVersionUID = 0L;
    * </pre>
    *
    * <code>repeated int32 serverPort = 4;</code>
-   * @param index The index of the element to return.
-   * @return The serverPort at the given index.
    */
   public int getServerPort(int index) {
-    return serverPort_.getInt(index);
+    return serverPort_.get(index);
   }
   private int serverPortMemoizedSerializedSize = -1;
 
@@ -327,7 +307,7 @@ private static final long serialVersionUID = 0L;
       output.writeUInt32NoTag(serverPortMemoizedSerializedSize);
     }
     for (int i = 0; i < serverPort_.size(); i++) {
-      output.writeInt32NoTag(serverPort_.getInt(i));
+      output.writeInt32NoTag(serverPort_.get(i));
     }
     unknownFields.writeTo(output);
   }
@@ -360,7 +340,7 @@ private static final long serialVersionUID = 0L;
       int dataSize = 0;
       for (int i = 0; i < serverPort_.size(); i++) {
         dataSize += com.google.protobuf.CodedOutputStream
-          .computeInt32SizeNoTag(serverPort_.getInt(i));
+          .computeInt32SizeNoTag(serverPort_.get(i));
       }
       size += dataSize;
       if (!getServerPortList().isEmpty()) {
@@ -385,15 +365,16 @@ private static final long serialVersionUID = 0L;
     }
     burst.protocol.BurstMessage other = (burst.protocol.BurstMessage) obj;
 
-    if (type_ != other.type_) return false;
-    if (!internalGetHeader().equals(
-        other.internalGetHeader())) return false;
-    if (!getData()
-        .equals(other.getData())) return false;
-    if (!getServerPortList()
-        .equals(other.getServerPortList())) return false;
-    if (!unknownFields.equals(other.unknownFields)) return false;
-    return true;
+    boolean result = true;
+    result = result && type_ == other.type_;
+    result = result && internalGetHeader().equals(
+        other.internalGetHeader());
+    result = result && getData()
+        .equals(other.getData());
+    result = result && getServerPortList()
+        .equals(other.getServerPortList());
+    result = result && unknownFields.equals(other.unknownFields);
+    return result;
   }
 
   @java.lang.Override
@@ -575,8 +556,8 @@ private static final long serialVersionUID = 0L;
       internalGetMutableHeader().clear();
       data_ = com.google.protobuf.ByteString.EMPTY;
 
-      serverPort_ = emptyIntList();
-      bitField0_ = (bitField0_ & ~0x00000002);
+      serverPort_ = java.util.Collections.emptyList();
+      bitField0_ = (bitField0_ & ~0x00000008);
       return this;
     }
 
@@ -604,50 +585,52 @@ private static final long serialVersionUID = 0L;
     public burst.protocol.BurstMessage buildPartial() {
       burst.protocol.BurstMessage result = new burst.protocol.BurstMessage(this);
       int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
       result.type_ = type_;
       result.header_ = internalGetHeader();
       result.header_.makeImmutable();
       result.data_ = data_;
-      if (((bitField0_ & 0x00000002) != 0)) {
-        serverPort_.makeImmutable();
-        bitField0_ = (bitField0_ & ~0x00000002);
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        serverPort_ = java.util.Collections.unmodifiableList(serverPort_);
+        bitField0_ = (bitField0_ & ~0x00000008);
       }
       result.serverPort_ = serverPort_;
+      result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
     }
 
     @java.lang.Override
     public Builder clone() {
-      return super.clone();
+      return (Builder) super.clone();
     }
     @java.lang.Override
     public Builder setField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
         java.lang.Object value) {
-      return super.setField(field, value);
+      return (Builder) super.setField(field, value);
     }
     @java.lang.Override
     public Builder clearField(
         com.google.protobuf.Descriptors.FieldDescriptor field) {
-      return super.clearField(field);
+      return (Builder) super.clearField(field);
     }
     @java.lang.Override
     public Builder clearOneof(
         com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-      return super.clearOneof(oneof);
+      return (Builder) super.clearOneof(oneof);
     }
     @java.lang.Override
     public Builder setRepeatedField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
         int index, java.lang.Object value) {
-      return super.setRepeatedField(field, index, value);
+      return (Builder) super.setRepeatedField(field, index, value);
     }
     @java.lang.Override
     public Builder addRepeatedField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
         java.lang.Object value) {
-      return super.addRepeatedField(field, value);
+      return (Builder) super.addRepeatedField(field, value);
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -672,7 +655,7 @@ private static final long serialVersionUID = 0L;
       if (!other.serverPort_.isEmpty()) {
         if (serverPort_.isEmpty()) {
           serverPort_ = other.serverPort_;
-          bitField0_ = (bitField0_ & ~0x00000002);
+          bitField0_ = (bitField0_ & ~0x00000008);
         } else {
           ensureServerPortIsMutable();
           serverPort_.addAll(other.serverPort_);
@@ -712,27 +695,21 @@ private static final long serialVersionUID = 0L;
     private int type_ = 0;
     /**
      * <code>.protocol.BurstType type = 1;</code>
-     * @return The enum numeric value on the wire for type.
      */
-    @java.lang.Override public int getTypeValue() {
+    public int getTypeValue() {
       return type_;
     }
     /**
      * <code>.protocol.BurstType type = 1;</code>
-     * @param value The enum numeric value on the wire for type to set.
-     * @return This builder for chaining.
      */
     public Builder setTypeValue(int value) {
-      
       type_ = value;
       onChanged();
       return this;
     }
     /**
      * <code>.protocol.BurstType type = 1;</code>
-     * @return The type.
      */
-    @java.lang.Override
     public burst.protocol.BurstType getType() {
       @SuppressWarnings("deprecation")
       burst.protocol.BurstType result = burst.protocol.BurstType.valueOf(type_);
@@ -740,8 +717,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>.protocol.BurstType type = 1;</code>
-     * @param value The type to set.
-     * @return This builder for chaining.
      */
     public Builder setType(burst.protocol.BurstType value) {
       if (value == null) {
@@ -754,7 +729,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>.protocol.BurstType type = 1;</code>
-     * @return This builder for chaining.
      */
     public Builder clearType() {
       
@@ -793,7 +767,6 @@ private static final long serialVersionUID = 0L;
      * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
      */
 
-    @java.lang.Override
     public boolean containsHeader(
         int key) {
       
@@ -802,7 +775,6 @@ private static final long serialVersionUID = 0L;
     /**
      * Use {@link #getHeaderMap()} instead.
      */
-    @java.lang.Override
     @java.lang.Deprecated
     public java.util.Map<java.lang.Integer, com.google.protobuf.Any> getHeader() {
       return getHeaderMap();
@@ -810,7 +782,6 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
      */
-    @java.lang.Override
 
     public java.util.Map<java.lang.Integer, com.google.protobuf.Any> getHeaderMap() {
       return internalGetHeader().getMap();
@@ -818,7 +789,6 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
      */
-    @java.lang.Override
 
     public com.google.protobuf.Any getHeaderOrDefault(
         int key,
@@ -831,7 +801,6 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>map&lt;int32, .google.protobuf.Any&gt; header = 2;</code>
      */
-    @java.lang.Override
 
     public com.google.protobuf.Any getHeaderOrThrow(
         int key) {
@@ -875,10 +844,7 @@ private static final long serialVersionUID = 0L;
         int key,
         com.google.protobuf.Any value) {
       
-      if (value == null) {
-  throw new NullPointerException("map value");
-}
-
+      if (value == null) { throw new java.lang.NullPointerException(); }
       internalGetMutableHeader().getMutableMap()
           .put(key, value);
       return this;
@@ -897,16 +863,12 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
     /**
      * <code>bytes data = 3;</code>
-     * @return The data.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString getData() {
       return data_;
     }
     /**
      * <code>bytes data = 3;</code>
-     * @param value The data to set.
-     * @return This builder for chaining.
      */
     public Builder setData(com.google.protobuf.ByteString value) {
       if (value == null) {
@@ -919,7 +881,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>bytes data = 3;</code>
-     * @return This builder for chaining.
      */
     public Builder clearData() {
       
@@ -928,11 +889,11 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.Internal.IntList serverPort_ = emptyIntList();
+    private java.util.List<java.lang.Integer> serverPort_ = java.util.Collections.emptyList();
     private void ensureServerPortIsMutable() {
-      if (!((bitField0_ & 0x00000002) != 0)) {
-        serverPort_ = mutableCopy(serverPort_);
-        bitField0_ |= 0x00000002;
+      if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+        serverPort_ = new java.util.ArrayList<java.lang.Integer>(serverPort_);
+        bitField0_ |= 0x00000008;
        }
     }
     /**
@@ -941,12 +902,10 @@ private static final long serialVersionUID = 0L;
      * </pre>
      *
      * <code>repeated int32 serverPort = 4;</code>
-     * @return A list containing the serverPort.
      */
     public java.util.List<java.lang.Integer>
         getServerPortList() {
-      return ((bitField0_ & 0x00000002) != 0) ?
-               java.util.Collections.unmodifiableList(serverPort_) : serverPort_;
+      return java.util.Collections.unmodifiableList(serverPort_);
     }
     /**
      * <pre>
@@ -954,7 +913,6 @@ private static final long serialVersionUID = 0L;
      * </pre>
      *
      * <code>repeated int32 serverPort = 4;</code>
-     * @return The count of serverPort.
      */
     public int getServerPortCount() {
       return serverPort_.size();
@@ -965,11 +923,9 @@ private static final long serialVersionUID = 0L;
      * </pre>
      *
      * <code>repeated int32 serverPort = 4;</code>
-     * @param index The index of the element to return.
-     * @return The serverPort at the given index.
      */
     public int getServerPort(int index) {
-      return serverPort_.getInt(index);
+      return serverPort_.get(index);
     }
     /**
      * <pre>
@@ -977,14 +933,11 @@ private static final long serialVersionUID = 0L;
      * </pre>
      *
      * <code>repeated int32 serverPort = 4;</code>
-     * @param index The index to set the value at.
-     * @param value The serverPort to set.
-     * @return This builder for chaining.
      */
     public Builder setServerPort(
         int index, int value) {
       ensureServerPortIsMutable();
-      serverPort_.setInt(index, value);
+      serverPort_.set(index, value);
       onChanged();
       return this;
     }
@@ -994,12 +947,10 @@ private static final long serialVersionUID = 0L;
      * </pre>
      *
      * <code>repeated int32 serverPort = 4;</code>
-     * @param value The serverPort to add.
-     * @return This builder for chaining.
      */
     public Builder addServerPort(int value) {
       ensureServerPortIsMutable();
-      serverPort_.addInt(value);
+      serverPort_.add(value);
       onChanged();
       return this;
     }
@@ -1009,8 +960,6 @@ private static final long serialVersionUID = 0L;
      * </pre>
      *
      * <code>repeated int32 serverPort = 4;</code>
-     * @param values The serverPort to add.
-     * @return This builder for chaining.
      */
     public Builder addAllServerPort(
         java.lang.Iterable<? extends java.lang.Integer> values) {
@@ -1026,18 +975,17 @@ private static final long serialVersionUID = 0L;
      * </pre>
      *
      * <code>repeated int32 serverPort = 4;</code>
-     * @return This builder for chaining.
      */
     public Builder clearServerPort() {
-      serverPort_ = emptyIntList();
-      bitField0_ = (bitField0_ & ~0x00000002);
+      serverPort_ = java.util.Collections.emptyList();
+      bitField0_ = (bitField0_ & ~0x00000008);
       onChanged();
       return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return super.setUnknownFields(unknownFields);
+      return super.setUnknownFieldsProto3(unknownFields);
     }
 
     @java.lang.Override

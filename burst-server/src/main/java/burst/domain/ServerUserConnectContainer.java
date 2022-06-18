@@ -7,6 +7,7 @@ import core.http.ext.WebSocket;
 import core.socket.Socket;
 import io.github.fzdwx.lambada.Collections;
 import io.github.fzdwx.lambada.Exceptions;
+import io.github.fzdwx.lambada.Seq;
 import io.github.fzdwx.lambada.anno.Nullable;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.GlobalEventExecutor;
@@ -31,13 +32,19 @@ public class ServerUserConnectContainer {
      * 与客户端的连接
      */
     private final WebSocket ws;
+    private final String token;
 
-    ServerUserConnectContainer(final WebSocket ws) {
+    ServerUserConnectContainer(final WebSocket ws, final String token) {
         this.ws = ws;
+        this.token = token;
     }
 
-    public static ServerUserConnectContainer create(final WebSocket ws) {
-        return new ServerUserConnectContainer(ws);
+    public static ServerUserConnectContainer create(final WebSocket ws, final String token) {
+        return new ServerUserConnectContainer(ws, token);
+    }
+
+    public String getToken(){
+        return token;
     }
 
     public void addServer(final Map<ProxyInfo, Server> servers) {
@@ -95,9 +102,7 @@ public class ServerUserConnectContainer {
     }
 
     public static void closeServers(Collection<Server> servers) {
-        for (final Server server : servers) {
-            server.close();
-        }
+        Seq.of(servers).nonNull().forEach(Server::close);
     }
 
     public void close(final Server server) {

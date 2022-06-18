@@ -48,6 +48,14 @@ public enum Headers
    * <code>TOKEN = 4;</code>
    */
   TOKEN(4),
+  /**
+   * <pre>
+   * custom domain
+   * </pre>
+   *
+   * <code>CUSTOM_DOMAIN = 5;</code>
+   */
+  CUSTOM_DOMAIN(5),
   UNRECOGNIZED(-1),
   ;
 
@@ -91,6 +99,14 @@ public enum Headers
    * <code>TOKEN = 4;</code>
    */
   public static final int TOKEN_VALUE = 4;
+  /**
+   * <pre>
+   * custom domain
+   * </pre>
+   *
+   * <code>CUSTOM_DOMAIN = 5;</code>
+   */
+  public static final int CUSTOM_DOMAIN_VALUE = 5;
 
 
   public final int getNumber() {
@@ -102,8 +118,6 @@ public enum Headers
   }
 
   /**
-   * @param value The numeric wire value of the corresponding enum entry.
-   * @return The enum associated with the given numeric wire value.
    * @deprecated Use {@link #forNumber(int)} instead.
    */
   @java.lang.Deprecated
@@ -111,10 +125,6 @@ public enum Headers
     return forNumber(value);
   }
 
-  /**
-   * @param value The numeric wire value of the corresponding enum entry.
-   * @return The enum associated with the given numeric wire value.
-   */
   public static Headers forNumber(int value) {
     switch (value) {
       case 0: return ERROR;
@@ -122,6 +132,7 @@ public enum Headers
       case 2: return SERVER_EXPORT_PORT;
       case 3: return USER_CONNECT_ID;
       case 4: return TOKEN;
+      case 5: return CUSTOM_DOMAIN;
       default: return null;
     }
   }
@@ -140,10 +151,6 @@ public enum Headers
 
   public final com.google.protobuf.Descriptors.EnumValueDescriptor
       getValueDescriptor() {
-    if (this == UNRECOGNIZED) {
-      throw new java.lang.IllegalStateException(
-          "Can't get the descriptor of an unrecognized enum value.");
-    }
     return getDescriptor().getValues().get(ordinal());
   }
   public final com.google.protobuf.Descriptors.EnumDescriptor

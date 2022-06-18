@@ -27,6 +27,18 @@ public class DefaultTransformHandler extends BurstChannelHandler {
     }
 
     @Override
+    public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
+        Transform.remove(token, userConnectId);
+        super.channelInactive(ctx);
+    }
+
+    @Override
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
+        Transform.remove(token, userConnectId);
+        super.exceptionCaught(ctx, cause);
+    }
+
+    @Override
     protected void onUserConnect(final Channel channel) {
         userConnectId = Transform.add(channel, token);
         final var data = BurstFactory.userConnect(serverExportPort, userConnectId);
@@ -39,17 +51,5 @@ public class DefaultTransformHandler extends BurstChannelHandler {
         final var data = BurstFactory.userRequest(userConnectId, bytes);
         ws.sendBinary(data);
         log.info("user request size {}", bytes.length);
-    }
-
-    @Override
-    public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
-        Transform.remove(token, userConnectId);
-        super.channelInactive(ctx);
-    }
-
-    @Override
-    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
-        Transform.remove(token, userConnectId);
-        super.exceptionCaught(ctx, cause);
     }
 }

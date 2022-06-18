@@ -6,7 +6,7 @@ package burst.protocol;
 /**
  * Protobuf type {@code protocol.Proxy}
  */
-public final class Proxy extends
+public  final class Proxy extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:protocol.Proxy)
     ProxyOrBuilder {
@@ -17,13 +17,10 @@ private static final long serialVersionUID = 0L;
   }
   private Proxy() {
     ip_ = "";
-  }
-
-  @java.lang.Override
-  @SuppressWarnings({"unused"})
-  protected java.lang.Object newInstance(
-      UnusedPrivateParameter unused) {
-    return new Proxy();
+    port_ = 0;
+    type_ = "";
+    customDomain_ = "";
+    serverExport_ = 0;
   }
 
   @java.lang.Override
@@ -39,6 +36,7 @@ private static final long serialVersionUID = 0L;
     if (extensionRegistry == null) {
       throw new java.lang.NullPointerException();
     }
+    int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
@@ -60,8 +58,25 @@ private static final long serialVersionUID = 0L;
             port_ = input.readInt32();
             break;
           }
+          case 26: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            type_ = s;
+            break;
+          }
+          case 34: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            customDomain_ = s;
+            break;
+          }
+          case 40: {
+
+            serverExport_ = input.readInt32();
+            break;
+          }
           default: {
-            if (!parseUnknownField(
+            if (!parseUnknownFieldProto3(
                 input, unknownFields, extensionRegistry, tag)) {
               done = true;
             }
@@ -96,9 +111,7 @@ private static final long serialVersionUID = 0L;
   private volatile java.lang.Object ip_;
   /**
    * <code>string ip = 1;</code>
-   * @return The ip.
    */
-  @java.lang.Override
   public java.lang.String getIp() {
     java.lang.Object ref = ip_;
     if (ref instanceof java.lang.String) {
@@ -113,9 +126,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <code>string ip = 1;</code>
-   * @return The bytes for ip.
    */
-  @java.lang.Override
   public com.google.protobuf.ByteString
       getIpBytes() {
     java.lang.Object ref = ip_;
@@ -134,11 +145,86 @@ private static final long serialVersionUID = 0L;
   private int port_;
   /**
    * <code>int32 port = 2;</code>
-   * @return The port.
    */
-  @java.lang.Override
   public int getPort() {
     return port_;
+  }
+
+  public static final int TYPE_FIELD_NUMBER = 3;
+  private volatile java.lang.Object type_;
+  /**
+   * <code>string type = 3;</code>
+   */
+  public java.lang.String getType() {
+    java.lang.Object ref = type_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      type_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string type = 3;</code>
+   */
+  public com.google.protobuf.ByteString
+      getTypeBytes() {
+    java.lang.Object ref = type_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      type_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int CUSTOMDOMAIN_FIELD_NUMBER = 4;
+  private volatile java.lang.Object customDomain_;
+  /**
+   * <code>string customDomain = 4;</code>
+   */
+  public java.lang.String getCustomDomain() {
+    java.lang.Object ref = customDomain_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      customDomain_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string customDomain = 4;</code>
+   */
+  public com.google.protobuf.ByteString
+      getCustomDomainBytes() {
+    java.lang.Object ref = customDomain_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      customDomain_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int SERVEREXPORT_FIELD_NUMBER = 5;
+  private int serverExport_;
+  /**
+   * <code>int32 serverExport = 5;</code>
+   */
+  public int getServerExport() {
+    return serverExport_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -155,11 +241,20 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(ip_)) {
+    if (!getIpBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, ip_);
     }
     if (port_ != 0) {
       output.writeInt32(2, port_);
+    }
+    if (!getTypeBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, type_);
+    }
+    if (!getCustomDomainBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, customDomain_);
+    }
+    if (serverExport_ != 0) {
+      output.writeInt32(5, serverExport_);
     }
     unknownFields.writeTo(output);
   }
@@ -170,12 +265,22 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(ip_)) {
+    if (!getIpBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, ip_);
     }
     if (port_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, port_);
+    }
+    if (!getTypeBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, type_);
+    }
+    if (!getCustomDomainBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, customDomain_);
+    }
+    if (serverExport_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(5, serverExport_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -192,12 +297,19 @@ private static final long serialVersionUID = 0L;
     }
     burst.protocol.Proxy other = (burst.protocol.Proxy) obj;
 
-    if (!getIp()
-        .equals(other.getIp())) return false;
-    if (getPort()
-        != other.getPort()) return false;
-    if (!unknownFields.equals(other.unknownFields)) return false;
-    return true;
+    boolean result = true;
+    result = result && getIp()
+        .equals(other.getIp());
+    result = result && (getPort()
+        == other.getPort());
+    result = result && getType()
+        .equals(other.getType());
+    result = result && getCustomDomain()
+        .equals(other.getCustomDomain());
+    result = result && (getServerExport()
+        == other.getServerExport());
+    result = result && unknownFields.equals(other.unknownFields);
+    return result;
   }
 
   @java.lang.Override
@@ -211,6 +323,12 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getIp().hashCode();
     hash = (37 * hash) + PORT_FIELD_NUMBER;
     hash = (53 * hash) + getPort();
+    hash = (37 * hash) + TYPE_FIELD_NUMBER;
+    hash = (53 * hash) + getType().hashCode();
+    hash = (37 * hash) + CUSTOMDOMAIN_FIELD_NUMBER;
+    hash = (53 * hash) + getCustomDomain().hashCode();
+    hash = (37 * hash) + SERVEREXPORT_FIELD_NUMBER;
+    hash = (53 * hash) + getServerExport();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -348,6 +466,12 @@ private static final long serialVersionUID = 0L;
 
       port_ = 0;
 
+      type_ = "";
+
+      customDomain_ = "";
+
+      serverExport_ = 0;
+
       return this;
     }
 
@@ -376,41 +500,44 @@ private static final long serialVersionUID = 0L;
       burst.protocol.Proxy result = new burst.protocol.Proxy(this);
       result.ip_ = ip_;
       result.port_ = port_;
+      result.type_ = type_;
+      result.customDomain_ = customDomain_;
+      result.serverExport_ = serverExport_;
       onBuilt();
       return result;
     }
 
     @java.lang.Override
     public Builder clone() {
-      return super.clone();
+      return (Builder) super.clone();
     }
     @java.lang.Override
     public Builder setField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
         java.lang.Object value) {
-      return super.setField(field, value);
+      return (Builder) super.setField(field, value);
     }
     @java.lang.Override
     public Builder clearField(
         com.google.protobuf.Descriptors.FieldDescriptor field) {
-      return super.clearField(field);
+      return (Builder) super.clearField(field);
     }
     @java.lang.Override
     public Builder clearOneof(
         com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-      return super.clearOneof(oneof);
+      return (Builder) super.clearOneof(oneof);
     }
     @java.lang.Override
     public Builder setRepeatedField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
         int index, java.lang.Object value) {
-      return super.setRepeatedField(field, index, value);
+      return (Builder) super.setRepeatedField(field, index, value);
     }
     @java.lang.Override
     public Builder addRepeatedField(
         com.google.protobuf.Descriptors.FieldDescriptor field,
         java.lang.Object value) {
-      return super.addRepeatedField(field, value);
+      return (Builder) super.addRepeatedField(field, value);
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -430,6 +557,17 @@ private static final long serialVersionUID = 0L;
       }
       if (other.getPort() != 0) {
         setPort(other.getPort());
+      }
+      if (!other.getType().isEmpty()) {
+        type_ = other.type_;
+        onChanged();
+      }
+      if (!other.getCustomDomain().isEmpty()) {
+        customDomain_ = other.customDomain_;
+        onChanged();
+      }
+      if (other.getServerExport() != 0) {
+        setServerExport(other.getServerExport());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -463,7 +601,6 @@ private static final long serialVersionUID = 0L;
     private java.lang.Object ip_ = "";
     /**
      * <code>string ip = 1;</code>
-     * @return The ip.
      */
     public java.lang.String getIp() {
       java.lang.Object ref = ip_;
@@ -479,7 +616,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>string ip = 1;</code>
-     * @return The bytes for ip.
      */
     public com.google.protobuf.ByteString
         getIpBytes() {
@@ -496,8 +632,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>string ip = 1;</code>
-     * @param value The ip to set.
-     * @return This builder for chaining.
      */
     public Builder setIp(
         java.lang.String value) {
@@ -511,7 +645,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>string ip = 1;</code>
-     * @return This builder for chaining.
      */
     public Builder clearIp() {
       
@@ -521,8 +654,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>string ip = 1;</code>
-     * @param value The bytes for ip to set.
-     * @return This builder for chaining.
      */
     public Builder setIpBytes(
         com.google.protobuf.ByteString value) {
@@ -539,16 +670,12 @@ private static final long serialVersionUID = 0L;
     private int port_ ;
     /**
      * <code>int32 port = 2;</code>
-     * @return The port.
      */
-    @java.lang.Override
     public int getPort() {
       return port_;
     }
     /**
      * <code>int32 port = 2;</code>
-     * @param value The port to set.
-     * @return This builder for chaining.
      */
     public Builder setPort(int value) {
       
@@ -558,7 +685,6 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <code>int32 port = 2;</code>
-     * @return This builder for chaining.
      */
     public Builder clearPort() {
       
@@ -566,10 +692,174 @@ private static final long serialVersionUID = 0L;
       onChanged();
       return this;
     }
+
+    private java.lang.Object type_ = "";
+    /**
+     * <code>string type = 3;</code>
+     */
+    public java.lang.String getType() {
+      java.lang.Object ref = type_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        type_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string type = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getTypeBytes() {
+      java.lang.Object ref = type_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        type_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string type = 3;</code>
+     */
+    public Builder setType(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      type_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string type = 3;</code>
+     */
+    public Builder clearType() {
+      
+      type_ = getDefaultInstance().getType();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string type = 3;</code>
+     */
+    public Builder setTypeBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      type_ = value;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object customDomain_ = "";
+    /**
+     * <code>string customDomain = 4;</code>
+     */
+    public java.lang.String getCustomDomain() {
+      java.lang.Object ref = customDomain_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        customDomain_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string customDomain = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getCustomDomainBytes() {
+      java.lang.Object ref = customDomain_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        customDomain_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string customDomain = 4;</code>
+     */
+    public Builder setCustomDomain(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      customDomain_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string customDomain = 4;</code>
+     */
+    public Builder clearCustomDomain() {
+      
+      customDomain_ = getDefaultInstance().getCustomDomain();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string customDomain = 4;</code>
+     */
+    public Builder setCustomDomainBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      customDomain_ = value;
+      onChanged();
+      return this;
+    }
+
+    private int serverExport_ ;
+    /**
+     * <code>int32 serverExport = 5;</code>
+     */
+    public int getServerExport() {
+      return serverExport_;
+    }
+    /**
+     * <code>int32 serverExport = 5;</code>
+     */
+    public Builder setServerExport(int value) {
+      
+      serverExport_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 serverExport = 5;</code>
+     */
+    public Builder clearServerExport() {
+      
+      serverExport_ = 0;
+      onChanged();
+      return this;
+    }
     @java.lang.Override
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {
-      return super.setUnknownFields(unknownFields);
+      return super.setUnknownFieldsProto3(unknownFields);
     }
 
     @java.lang.Override

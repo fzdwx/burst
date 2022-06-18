@@ -17,7 +17,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sky.version>0.11.3.1</sky.version>
-        <lambda.version>0.10.8</lambda.version>
+        <lambda.version>0.10.9</lambda.version>
         <lombok.version>1.18.22</lombok.version>
         <spring.boot.version>2.7.0</spring.boot.version>
         <redisson.version>3.17.0</redisson.version>
