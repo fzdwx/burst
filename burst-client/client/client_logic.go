@@ -64,6 +64,7 @@ func handlerRemoveProxyInfo(message *protocol.BurstMessage, client *Client) {
 	client.RemoveProxyPorts(port)
 }
 
+// handlerUserConnect Listening to Intranet Services
 func handlerUserConnect(message *protocol.BurstMessage, client *Client) {
 	serverExportPort, err := protocol.GetServerExportPort(message)
 	if err != nil {
@@ -71,10 +72,27 @@ func handlerUserConnect(message *protocol.BurstMessage, client *Client) {
 		return
 	}
 
-	proxy, ok := client.GetProxy(serverExportPort)
-	if !ok {
-		log.Error("local port not found ", serverExportPort)
+	domain, err := protocol.GetCustomDomain(message)
+	if err != nil {
+		log.Error("parse custom domain error ", err)
 		return
+	}
+
+	var proxy *protocol.Proxy
+	var ok bool
+	if domain == "" {
+		// 这里可能要在加一个根据custom domain 找的
+		proxy, ok = client.GetProxy(serverExportPort)
+		if !ok {
+			log.Error("local port not found ", serverExportPort)
+			return
+		}
+	} else {
+		proxy, ok = client.GetProxyByCustomDomain(domain)
+		if !ok {
+			log.Error("local port not found ", domain)
+			return
+		}
 	}
 
 	userConnectId, err := protocol.GetUserConnectId(message)

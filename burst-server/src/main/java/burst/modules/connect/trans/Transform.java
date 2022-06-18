@@ -1,8 +1,9 @@
 package burst.modules.connect.trans;
 
+import burst.domain.ProxyInfo;
 import burst.domain.ServerUserConnectContainer;
 import burst.domain.model.request.RegisterClientReq;
-import burst.domain.ProxyInfo;
+import burst.modules.connect.ext.ProxyHandler;
 import burst.protocol.BurstFactory;
 import burst.protocol.BurstMessage;
 import burst.protocol.BurstType;
@@ -14,15 +15,14 @@ import io.github.fzdwx.lambada.Collections;
 import io.github.fzdwx.lambada.Exceptions;
 import io.github.fzdwx.lambada.Lang;
 import io.github.fzdwx.lambada.Seq;
-import io.github.fzdwx.lambada.anno.Nullable;
 import io.netty.channel.Channel;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.handler.codec.bytes.ByteArrayDecoder;
-import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import util.AvailablePort;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,27 +31,29 @@ import java.util.Set;
  * @date 2022/5/22 12:44
  */
 @Slf4j
-public class Transform {
+public class Transform implements ApplicationContextAware {
 
-    private static final NioEventLoopGroup boss = new NioEventLoopGroup();
-    private static final NioEventLoopGroup worker = new NioEventLoopGroup();
     private static final Map<String, ServerUserConnectContainer> serverContainer = Collections.map();
+    private static final Map<String, ServerUserConnectContainer> customDomainMappingClient = Collections.map();
+    private static Map<String, ProxyHandler> proxyHandlers;
 
-    /**
-     * get user connect container by token
-     * @param token token
-     * @return {@link ServerUserConnectContainer }
-     */
-    @Nullable
-    public static ServerUserConnectContainer getContainer(String token) {
-        return serverContainer.get(token);
+    public static boolean hasCustomDomain(String customDomain) {
+        return customDomainMappingClient.containsKey(customDomain);
+    }
+
+    public static ServerUserConnectContainer getContainer(String customDomain) {
+        return customDomainMappingClient.get(customDomain);
+    }
+
+    public static ServerUserConnectContainer saveCustomerMappingContainer(String customDomain, ServerUserConnectContainer container) {
+        return customDomainMappingClient.put(customDomain, container);
     }
 
     /**
      * 初始化客户端的代理信息
      */
     public static void init(RegisterClientReq req, WebSocket ws, String token) {
-        final var container = ServerUserConnectContainer.create(ws);
+        final var container = ServerUserConnectContainer.create(ws,token);
         final var older = serverContainer.put(token, container);
 
         addProxyInfo(token, req.getProxies());
@@ -107,12 +109,7 @@ public class Transform {
 
         final var ws = container.safetyWs();
 
-        final var serverPorts = Seq.of(proxies)
-                .map(container::getServer)
-                .nonNull()
-                .and(container::close)
-                .map(Server::port)
-                .toList();
+        final var serverPorts = Seq.of(proxies).map(container::getServer).nonNull().and(container::close).map(Server::port).toList();
 
         if (serverPorts.isEmpty()) {
             throw Exceptions.newIllegalState("没有需要关闭的服务端端口映射!");
@@ -174,34 +171,37 @@ public class Transform {
         log.debug("user not active:{}", userConnectId);
     }
 
+    @Override
+    public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
+        proxyHandlers = Seq.toMap((List<ProxyHandler>) applicationContext.getBean("proxyHandlers"), ProxyHandler::supportType);
+    }
+
     private static Map<Integer, ProxyInfo> listenAndGetPortMapping(ServerUserConnectContainer container, final String token,
                                                                    final Set<ProxyInfo> proxies) {
         final var ws = container.safetyWs();
         final var portsMap = Collections.<Integer, ProxyInfo>map();
         final var servers = Collections.<ProxyInfo, Server>map();
-        for (ProxyInfo proxyInfo : proxies) {
-            final var availablePort = AvailablePort.random();
-            if (availablePort == null) {
-                log.error("[init] token={},host={}  port not available", token, proxyInfo);
-                ServerUserConnectContainer.closeServers(servers.values());
-                throw Exceptions.newIllegalState("服务端暂无可用端口");
+        try {
+            for (ProxyInfo proxyInfo : proxies) {
+                final var proxyHandler = proxyHandlers.get(proxyInfo.type);
+                if (proxyHandler == null) {
+                    Exceptions.illegalArgument("unSupport type:" + proxyInfo.type);
+                }
+
+                final var server = proxyHandler.apply(token, container, proxyInfo);
+                if (server != null) {
+                    servers.put(proxyInfo, server);
+                }
+
+                portsMap.put(proxyInfo.getServerExport(), proxyInfo);
             }
-
-            final Server server = getServer(token, ws, availablePort);
-
-            servers.put(proxyInfo, server);
-            portsMap.put(availablePort, proxyInfo);
+        } catch (Exception e) {
+            ServerUserConnectContainer.closeServers(servers.values());
+            log.error("get server error", e);
         }
+
         container.addServer(servers);
 
         return portsMap;
-    }
-
-    private static Server getServer(final String token, final WebSocket ws, final Integer availablePort) {
-        final Server server = new Server()
-                .group(boss, worker)
-                .childHandler(ch -> ch.pipeline().addLast(new ByteArrayDecoder(), new ByteArrayEncoder(), new DefaultTransformHandler(availablePort, ws, token)));
-        server.listen(availablePort);
-        return server;
     }
 }

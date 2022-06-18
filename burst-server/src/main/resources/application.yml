@@ -2,8 +2,7 @@ server:
   port: 10086
   sky:
     debug: on
-  burst:
-    http-port: 8888
+#      enable: false
 
 spring:
   profiles:

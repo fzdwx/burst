@@ -1,6 +1,7 @@
 package burst.modules.connect.trans;
 
 import burst.inf.props.BurstProps;
+import burst.protocol.BurstFactory;
 import cn.hutool.core.io.IoUtil;
 import io.github.fzdwx.lambada.Io;
 import io.netty.channel.Channel;
@@ -20,26 +21,38 @@ import static cn.hutool.core.io.IoUtil.lineIter;
 public class HttpTransformHandler extends BurstChannelHandler {
 
     final static AtomicIntegerFieldUpdater<HttpTransformHandler> PARSED_STATE = AtomicIntegerFieldUpdater.newUpdater(HttpTransformHandler.class, "parsed");
-
     private final BurstProps burstProps;
-    private String host;
+    private String customDomain;
     private volatile int parsed = 0;
+    private String userConnectId;
 
-    public HttpTransformHandler(final String token, final BurstProps burstProps) {
+    public HttpTransformHandler(final BurstProps burstProps) {
         this.burstProps = burstProps;
     }
 
     @Override
     protected void onUserConnect(final Channel channel) {
-        // todo 根据custom domain 获取websocket连接
     }
 
     @Override
     protected void onUserRequest(final Channel channel, final byte[] bytes) {
-        if (initHost(bytes)) {
+        if (initHost(bytes, channel)) {
             log.error("discard message: {}", channel.remoteAddress());
+            return;
         }
+
+        final var data = BurstFactory.userRequest(userConnectId, bytes);
+        Transform.getContainer(this.customDomain).safetyWs().sendBinary(data);
+        log.info("user request size {}", bytes.length);
     }
+
+    private void onUserConnect0(final Channel channel) {
+        final var container = Transform.getContainer(this.customDomain);
+        userConnectId = Transform.add(channel, container.getToken());
+        final var data = BurstFactory.userConnect(this.burstProps.http.port, userConnectId, customDomain);
+        container.safetyWs().sendBinary(data);
+    }
+
     // GET / HTTP/1.1
     // Host: qwe.com:9999
     // Connection: keep-alive
@@ -48,10 +61,8 @@ public class HttpTransformHandler extends BurstChannelHandler {
     // User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36
     // Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
     // Accept-Encoding: gzip, deflate
-
     // Accept-Language: zh-CN,zh;q=0.9
-
-    public boolean initHost(byte[] bytes) {
+    private boolean initHost(byte[] bytes, final Channel channel) {
         if (PARSED_STATE.compareAndSet(this, 0, 1)) {
 
             final BufferedReader reader = IoUtil.getReader(new InputStreamReader(Io.wrap(bytes)));
@@ -63,13 +74,13 @@ public class HttpTransformHandler extends BurstChannelHandler {
                 }
 
                 if (burstProps.hostKeys.contains(split[0])) {
-                    host = split[1];
-                    onUserConnect(null);
+                    customDomain = split[1].split(":")[0];
+                    onUserConnect0(channel);
                     break;
                 }
             }
         }
 
-        return host == null;
+        return customDomain == null;
     }
 }

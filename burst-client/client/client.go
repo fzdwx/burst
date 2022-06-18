@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 )
 
 type (
@@ -19,8 +20,10 @@ type (
 		token          string
 		onText         OnText
 		onBinary       OnBinary
-		// proxyInfo mapping: key serverPort ; value ip:port.
+		// proxyInfo mapping: key serverPort
 		proxyInfo map[int32]*protocol.Proxy
+		// httpProxyInfo key:custom domain
+		httpProxyInfo map[string]*protocol.Proxy
 	}
 
 	// OnText is a callback method that will be called back when there is a text type message.
@@ -28,6 +31,11 @@ type (
 
 	// OnBinary is a callback method that will be called back when there is a binary type message.
 	OnBinary func([]byte, *Client)
+)
+
+const (
+	TCP  = "tcp"
+	HTTP = "http"
 )
 
 // Connect to Server,will return new Client.
@@ -49,7 +57,8 @@ func Connect(url url.URL) (*Client, *http.Response, error) {
 		onBinary: func(bytes []byte, c *Client) {
 			log.Debugln("onBinary:", common.WrapGreen(string(bytes)))
 		},
-		proxyInfo: map[int32]*protocol.Proxy{},
+		proxyInfo:     map[int32]*protocol.Proxy{},
+		httpProxyInfo: map[string]*protocol.Proxy{},
 	}, nil, nil
 }
 
@@ -100,7 +109,11 @@ func (c *Client) MountTextHandler(f OnText) {
 // AddProxyInfo set ports mapping.
 func (c *Client) AddProxyInfo(proxyInfo map[int32]*protocol.Proxy) {
 	for k, proxy := range proxyInfo {
-		c.proxyInfo[k] = proxy
+		if strings.Compare(proxy.GetType(), HTTP) == 0 {
+			c.httpProxyInfo[proxy.GetCustomDomain()] = proxy
+		} else {
+			c.proxyInfo[k] = proxy
+		}
 	}
 }
 
@@ -118,14 +131,14 @@ func (c *Client) RemoveProxyPorts(port []int32) {
 	}
 }
 
-// ProxyInfo get ports mapping.
-func (c *Client) ProxyInfo() map[int32]*protocol.Proxy {
-	return c.proxyInfo
-}
-
 // GetProxy Get the local port(ip:port) corresponding to the server port.
 func (c Client) GetProxy(serverExportPort int32) (*protocol.Proxy, bool) {
 	v, ok := c.proxyInfo[serverExportPort]
+	return v, ok
+}
+
+func (c Client) GetProxyByCustomDomain(customDomain string) (*protocol.Proxy, bool) {
+	v, ok := c.httpProxyInfo[customDomain]
 	return v, ok
 }
 
