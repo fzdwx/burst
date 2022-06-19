@@ -4,7 +4,7 @@ server:
     debug: on
     http:
       # 是否开启http使用单独的端口
-      enable: false
+      enable: true
       # 所有http类型的端口
       port: 39399
       # 路由的key
