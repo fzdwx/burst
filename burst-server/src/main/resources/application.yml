@@ -2,6 +2,7 @@ server:
   port: 10086
   sky:
     debug: on
+    http:
       # 是否开启http使用单独的端口
       enable: false
       # 所有http类型的端口
