@@ -1,5 +1,6 @@
 package burst.domain;
 
+import burst.modules.connect.trans.Transform;
 import core.Server;
 import core.group.DefaultSocketGroup;
 import core.group.SocketGroup;

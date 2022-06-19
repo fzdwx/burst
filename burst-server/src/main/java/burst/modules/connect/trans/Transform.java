@@ -113,7 +113,6 @@ public class Transform implements ApplicationContextAware {
             return;
         }
 
-        log.info("client add proxy ports:{}", portsMap);
         ws.sendBinary(BurstFactory.successForPort(portsMap));
     }
 

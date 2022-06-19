@@ -44,6 +44,7 @@ public class TcpProxyHandler implements ProxyHandler {
                         new DefaultTransformHandler(availablePort, container.safetyWs(), token)));
         server.listen(availablePort);
         proxyInfo.setServerExport(availablePort);
+        log.info("client={},add {} proxy {} to {}", token, proxyInfo.type, proxyInfo.ip + ":" + proxyInfo.port, "localhost:" + server.port());
         return server;
     }
 }

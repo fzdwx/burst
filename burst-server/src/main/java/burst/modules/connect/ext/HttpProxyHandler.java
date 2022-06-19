@@ -10,15 +10,19 @@ import core.Server;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author <a href="mailto:likelovec@gmail.com">fzdwx</a>
  * @date 2022/6/18 21:55
  */
+@Slf4j
 public class HttpProxyHandler implements ProxyHandler {
 
+    private final int port;
+
     public HttpProxyHandler(final NioEventLoopGroup boss, final NioEventLoopGroup worker, final BurstProps burstProps) {
-        startServer(boss, worker, burstProps).port();
+        this.port = startServer(boss, worker, burstProps).port();
     }
 
     @Override
@@ -31,6 +35,7 @@ public class HttpProxyHandler implements ProxyHandler {
         Transform.saveCustomerMappingContainer(proxyInfo.customDomain, container);
         // fake
         proxyInfo.setServerExport(Transform.getFakePort(proxyInfo.customDomain));
+        log.info("client={},add {} proxy {} to {}", token, proxyInfo.type, proxyInfo.ip + ":" + proxyInfo.port, "http://" + proxyInfo.customDomain + ":" + this.port);
         return null;
     }
 
@@ -39,6 +44,7 @@ public class HttpProxyHandler implements ProxyHandler {
                 .group(boss, worker)
                 .childHandler(ch -> ch.pipeline().addLast(new ByteArrayDecoder(), new ByteArrayEncoder(), new HttpTransformHandler(burstProps)));
         server.listen(burstProps.http.port);
+        Runtime.getRuntime().addShutdownHook(new Thread(server::shutdown));
         return server;
     }
 }
