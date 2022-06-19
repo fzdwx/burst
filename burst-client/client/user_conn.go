@@ -50,14 +50,20 @@ func (u UserConnect) React(client *Client) {
 	}()
 
 	for {
-		buf := make([]byte, 1024)
+		// 每次从本地 最大读取8K
+		buf := make([]byte, 8192)
 		read, err := conn.Read(buf)
 		if err != nil {
 			// todo 是否要判断？strings.Contains 还是所有都直接打印日志
-			if !strings.Contains(err.Error(), "use of closed network connection") {
-				log.WithFields(log.Fields{"status": "read from intranet error", "cause": err, "userConnectId": userConnectId}).Errorf("forward to %s  :", common.WrapRed("server"))
+			if strings.Contains(err.Error(), "use of closed network connection") {
+				return
 			}
-			return
+
+			if strings.Contains(err.Error(), "EOF") {
+				continue
+			}
+
+			log.WithFields(log.Fields{"status": "read from intranet error", "cause": err, "userConnectId": userConnectId}).Errorf("forward to %s  :", common.WrapRed("server"))
 		}
 
 		// forward to server

@@ -6,7 +6,7 @@ package protocol;
 option java_multiple_files = true;
 option java_package = "burst.protocol";
 option java_outer_classname = "Burst";
-option go_package ="burst.protocol";
+option go_package = "burst.protocol";
 
 import "google/protobuf/any.proto";
 
@@ -47,8 +47,10 @@ message BurstMessage {
 }
 
 message Proxy{
+  // 内网服务的ip
   string ip = 1;
-  int32 port = 2;
+  // 内网服务的port
+  int32  port = 2;
 }
 
 message Ports{

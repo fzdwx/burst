@@ -1,8 +1,19 @@
 server:
   port: 10086
   sky:
-    path: 33333333333
     debug: on
+      # 是否开启http使用单独的端口
+      enable: false
+      # 所有http类型的端口
+      port: 39399
+      # 路由的key
+      host-keys:
+        - Host
+        - :authority
+
 spring:
   profiles:
     active: @profiles.active@
+  main:
+    allow-bean-definition-overriding: true
+    banner-mode: off

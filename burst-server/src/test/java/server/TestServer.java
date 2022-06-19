@@ -1,15 +1,17 @@
 package server;
 
+import burst.inf.props.BurstProps;
+import burst.modules.connect.trans.HttpTransformHandler;
 import core.Server;
 import io.github.fzdwx.lambada.Collections;
 import io.github.fzdwx.lambada.Seq;
 import io.github.fzdwx.lambada.lang.StopWatch;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.handler.codec.bytes.ByteArrayDecoder;
+import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.TreeSet;
 
 /**
@@ -30,6 +32,17 @@ public class TestServer {
     //             .listen(0)
     //             .dispose();
     //
+    private static final NioEventLoopGroup boss = new NioEventLoopGroup();
+    private static final NioEventLoopGroup worker = new NioEventLoopGroup();
+
+    @Test
+    void test_http() {
+        new Server()
+                .group(boss, worker)
+                .childHandler(ch -> ch.pipeline().addLast(new ByteArrayDecoder(), new ByteArrayEncoder(), new HttpTransformHandler(BurstProps.INS)))
+                .listen(9999)
+                .dispose();
+    }
 
     @Test
     void test_map_add() {

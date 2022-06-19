@@ -1,6 +1,6 @@
 package burst.protocol;
 
-import burst.modules.user.domain.po.ProxyInfo;
+import burst.domain.ProxyInfo;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Int32Value;
@@ -28,9 +28,11 @@ public class BurstFactory {
         final Map<Integer, Proxy> proxyMap = Collections.map();
 
         portMap.forEach((k, v) -> {
-            proxyMap.put(k, Proxy.newBuilder().setPort(v.getPort()).setIp(v.getIp()).build());
+            proxyMap.put(k, Proxy.newBuilder()
+                    .setPort(v.getPort())
+                    .setIp(v.getIp())
+                    .build());
         });
-
 
         final var pack = Any.pack(Ports.newBuilder().putAllPorts(proxyMap).build());
         return BurstMessage.newBuilder()

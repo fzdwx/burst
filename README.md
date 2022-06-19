@@ -11,6 +11,7 @@
 1. 支持所有基于tcp的协议 ( Support all tcp-based protocols )
 2. 可以代理局域网(也可以理解成server可以访问的任意机器)内任意一台机器 (Proxy any machine in the LAN)
 3. 动态添加以及关闭代理端口( Dynamically add and close proxy ports ) https://github.com/fzdwx/burst/issues/10#issuecomment-1153122850
+4. HTTP服务统一监听一个端口(也可以理解为自定义域名) https://github.com/fzdwx/burst/issues/17#issuecomment-1159609844
 5. ...
 
 <br>

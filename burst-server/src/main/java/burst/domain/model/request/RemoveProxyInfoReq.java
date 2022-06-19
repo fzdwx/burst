@@ -1,20 +1,18 @@
-package burst.modules.user.domain.model.request;
+package burst.domain.model.request;
 
-import burst.modules.user.domain.po.ProxyInfo;
+import burst.domain.ProxyInfo;
 import burst.temp.Cache;
 import io.github.fzdwx.lambada.Assert;
-import io.github.fzdwx.lambada.Exceptions;
-import io.github.fzdwx.lambada.Lang;
 import lombok.Data;
 
 import java.util.Set;
 
 /**
  * @author <a href="mailto:likelovec@gmail.com">fzdwx</a>
- * @date 2022/6/12 13:56
+ * @date 2022/6/13 22:44
  */
 @Data
-public class AddProxyInfoReq {
+public class RemoveProxyInfoReq {
 
     /**
      * 令牌
@@ -22,7 +20,7 @@ public class AddProxyInfoReq {
     private String token;
 
     /**
-     * 想要添加的代理信息
+     * 想要删除(关闭)的代理信息
      */
     private Set<ProxyInfo> proxies;
 
@@ -32,12 +30,13 @@ public class AddProxyInfoReq {
         final var registerClientReq = Cache.<RegisterClientReq>get(token);
         Assert.nonNull(registerClientReq, "token is not valid");
 
-        Assert.notEmpty(proxies,"添加的代理信息为空");
+        Assert.notEmpty(proxies,"需要删除的代理信息为空");
 
         for (final ProxyInfo proxy : proxies) {
-            proxy.preCheck();
+            proxy.preCheckForRemove();
         }
 
         return registerClientReq;
     }
+
 }

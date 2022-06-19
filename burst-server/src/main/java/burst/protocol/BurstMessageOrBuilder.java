@@ -9,12 +9,10 @@ public interface BurstMessageOrBuilder extends
 
   /**
    * <code>.protocol.BurstType type = 1;</code>
-   * @return The enum numeric value on the wire for type.
    */
   int getTypeValue();
   /**
    * <code>.protocol.BurstType type = 1;</code>
-   * @return The type.
    */
   burst.protocol.BurstType getType();
 
@@ -54,7 +52,6 @@ public interface BurstMessageOrBuilder extends
 
   /**
    * <code>bytes data = 3;</code>
-   * @return The data.
    */
   com.google.protobuf.ByteString getData();
 
@@ -64,7 +61,6 @@ public interface BurstMessageOrBuilder extends
    * </pre>
    *
    * <code>repeated int32 serverPort = 4;</code>
-   * @return A list containing the serverPort.
    */
   java.util.List<java.lang.Integer> getServerPortList();
   /**
@@ -73,7 +69,6 @@ public interface BurstMessageOrBuilder extends
    * </pre>
    *
    * <code>repeated int32 serverPort = 4;</code>
-   * @return The count of serverPort.
    */
   int getServerPortCount();
   /**
@@ -82,8 +77,6 @@ public interface BurstMessageOrBuilder extends
    * </pre>
    *
    * <code>repeated int32 serverPort = 4;</code>
-   * @param index The index of the element to return.
-   * @return The serverPort at the given index.
    */
   int getServerPort(int index);
 }

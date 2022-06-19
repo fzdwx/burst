@@ -13,12 +13,13 @@ import (
 type (
 	// Client related operations and information.
 	Client struct {
-		//
-		conn     *websocket.Conn
-		token    string
-		onText   OnText
-		onBinary OnBinary
-		// proxyInfo mapping: key serverPort ; value ip:port.
+		// conn to server
+		conn           *websocket.Conn
+		serverHostName string
+		token          string
+		onText         OnText
+		onBinary       OnBinary
+		// proxyInfo mapping: key serverPort
 		proxyInfo map[int32]*protocol.Proxy
 	}
 
@@ -27,6 +28,11 @@ type (
 
 	// OnBinary is a callback method that will be called back when there is a binary type message.
 	OnBinary func([]byte, *Client)
+)
+
+const (
+	TCP  = "tcp"
+	HTTP = "http"
 )
 
 // Connect to Server,will return new Client.
@@ -39,8 +45,9 @@ func Connect(url url.URL) (*Client, *http.Response, error) {
 	}
 
 	return &Client{
-		conn:  c,
-		token: url.Query().Get("token"),
+		conn:           c,
+		serverHostName: url.Hostname(),
+		token:          url.Query().Get("token"),
 		onText: func(s string, c *Client) {
 			log.Debugln("onText:", common.WrapGreen(s))
 		},
@@ -114,11 +121,6 @@ func (c *Client) RemoveProxyPorts(port []int32) {
 
 		log.WithFields(log.Fields{"serverPort": p, "intranet": proxy.Host()}).Infoln("remove proxy port")
 	}
-}
-
-// ProxyInfo get ports mapping.
-func (c *Client) ProxyInfo() map[int32]*protocol.Proxy {
-	return c.proxyInfo
 }
 
 // GetProxy Get the local port(ip:port) corresponding to the server port.

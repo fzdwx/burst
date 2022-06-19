@@ -1,5 +1,7 @@
 package burst;
 
+import burst.inf.props.BurstProps;
+import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;

@@ -1,8 +1,8 @@
 package burst.modules.user.controller;
 
-import burst.modules.user.domain.model.request.AddProxyInfoReq;
-import burst.modules.user.domain.model.request.RegisterClientReq;
-import burst.modules.user.domain.model.request.RemoveProxyInfoReq;
+import burst.domain.model.request.AddProxyInfoReq;
+import burst.domain.model.request.RegisterClientReq;
+import burst.domain.model.request.RemoveProxyInfoReq;
 import burst.modules.user.service.RegisterService;
 import burst.temp.Cache;
 import core.http.response.HttpResponse;
