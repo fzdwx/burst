@@ -6,6 +6,7 @@ import burst.domain.ServerUserConnectContainer;
 import burst.modules.connect.trans.DefaultTransformHandler;
 import core.Server;
 import io.github.fzdwx.lambada.Exceptions;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
@@ -21,8 +22,8 @@ import util.AvailablePort;
 @RequiredArgsConstructor
 public class TcpProxyHandler implements ProxyHandler {
 
-    private final NioEventLoopGroup boss;
-    private final NioEventLoopGroup worker;
+    private final EventLoopGroup boss;
+    private final EventLoopGroup worker;
 
     @Override
     public String supportType() {

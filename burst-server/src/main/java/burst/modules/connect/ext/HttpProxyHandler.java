@@ -7,6 +7,7 @@ import burst.inf.props.BurstProps;
 import burst.modules.connect.trans.HttpTransformHandler;
 import burst.modules.connect.trans.Transform;
 import core.Server;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
@@ -21,7 +22,7 @@ public class HttpProxyHandler implements ProxyHandler {
 
     private final int port;
 
-    public HttpProxyHandler(final NioEventLoopGroup boss, final NioEventLoopGroup worker, final BurstProps burstProps) {
+    public HttpProxyHandler(final EventLoopGroup boss, final EventLoopGroup worker, final BurstProps burstProps) {
         this.port = startServer(boss, worker, burstProps).port();
     }
 
@@ -39,10 +40,16 @@ public class HttpProxyHandler implements ProxyHandler {
         return null;
     }
 
-    private Server startServer(final NioEventLoopGroup boss, final NioEventLoopGroup worker, final BurstProps burstProps) {
+    private Server startServer(final EventLoopGroup boss, final EventLoopGroup worker, final BurstProps burstProps) {
         final var server = new Server()
                 .group(boss, worker)
-                .childHandler(ch -> ch.pipeline().addLast(new ByteArrayDecoder(), new ByteArrayEncoder(), new HttpTransformHandler(burstProps)));
+                .childHandler(ch -> ch.pipeline().addLast(new ByteArrayDecoder(), new ByteArrayEncoder(), new HttpTransformHandler(burstProps)))
+                .onSuccess(s -> {
+                    log.info("http port start success");
+                })
+                .onFailure(f -> {
+                    log.error("http port start failure", f);
+                });
         server.listen(burstProps.http.port);
         Runtime.getRuntime().addShutdownHook(new Thread(server::shutdown));
         return server;
