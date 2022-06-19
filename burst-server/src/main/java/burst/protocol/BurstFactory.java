@@ -31,8 +31,6 @@ public class BurstFactory {
             proxyMap.put(k, Proxy.newBuilder()
                     .setPort(v.getPort())
                     .setIp(v.getIp())
-                    .setCustomDomain(v.getCustomDomain())
-                    .setType(v.getType())
                     .build());
         });
 
@@ -49,18 +47,6 @@ public class BurstFactory {
                 .setType(BurstType.USER_CONNECT)
                 .putHeader(Headers.SERVER_EXPORT_PORT.getNumber(), port)
                 .putHeader(Headers.USER_CONNECT_ID.getNumber(), userConnectId)
-                .build().toByteArray();
-    }
-
-    public static byte[] userConnect(final Integer serverExportPort, final String userConnectIdStr, final String customDomainStr) {
-        final var userConnectId = Any.pack(StringValue.of(userConnectIdStr));
-        final var port = Any.pack(Int32Value.of(serverExportPort));
-        final var customDomain = Any.pack(StringValue.of(customDomainStr));
-        return BurstMessage.newBuilder()
-                .setType(BurstType.USER_CONNECT)
-                .putHeader(Headers.SERVER_EXPORT_PORT.getNumber(), port)
-                .putHeader(Headers.USER_CONNECT_ID.getNumber(), userConnectId)
-                .putHeader(Headers.CUSTOM_DOMAIN.getNumber(), customDomain)
                 .build().toByteArray();
     }
 

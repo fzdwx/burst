@@ -48,14 +48,6 @@ public enum Headers
    * <code>TOKEN = 4;</code>
    */
   TOKEN(4),
-  /**
-   * <pre>
-   * custom domain
-   * </pre>
-   *
-   * <code>CUSTOM_DOMAIN = 5;</code>
-   */
-  CUSTOM_DOMAIN(5),
   UNRECOGNIZED(-1),
   ;
 
@@ -99,14 +91,6 @@ public enum Headers
    * <code>TOKEN = 4;</code>
    */
   public static final int TOKEN_VALUE = 4;
-  /**
-   * <pre>
-   * custom domain
-   * </pre>
-   *
-   * <code>CUSTOM_DOMAIN = 5;</code>
-   */
-  public static final int CUSTOM_DOMAIN_VALUE = 5;
 
 
   public final int getNumber() {
@@ -132,7 +116,6 @@ public enum Headers
       case 2: return SERVER_EXPORT_PORT;
       case 3: return USER_CONNECT_ID;
       case 4: return TOKEN;
-      case 5: return CUSTOM_DOMAIN;
       default: return null;
     }
   }

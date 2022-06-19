@@ -49,8 +49,10 @@ public class HttpTransformHandler extends BurstChannelHandler {
     private void onUserConnect0(final Channel channel) {
         final var container = Transform.getContainer(this.customDomain);
         userConnectId = Transform.add(channel, container.getToken());
-        final var data = BurstFactory.userConnect(this.burstProps.http.port, userConnectId, customDomain);
+        final var fakePort = Transform.getFakePort(customDomain);
+        final var data = BurstFactory.userConnect(fakePort, userConnectId);
         container.safetyWs().sendBinary(data);
+        log.info("user connect : customDomain={},fakePort={}", this.customDomain, fakePort);
     }
 
     // GET / HTTP/1.1

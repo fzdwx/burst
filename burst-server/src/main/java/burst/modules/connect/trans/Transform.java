@@ -25,6 +25,7 @@ import org.springframework.context.ApplicationContextAware;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * @author <a href="mailto:likelovec@gmail.com">fzdwx</a>
@@ -35,7 +36,25 @@ public class Transform implements ApplicationContextAware {
 
     private static final Map<String, ServerUserConnectContainer> serverContainer = Collections.map();
     private static final Map<String, ServerUserConnectContainer> customDomainMappingClient = Collections.map();
+    /**
+     * port is fake
+     */
+    private static final Map<String, Integer> customDomainMappingPort = Collections.map();
+    private static final LongAdder ADDER = new LongAdder();
     private static Map<String, ProxyHandler> proxyHandlers;
+
+    public static Integer putCustomDomain(String domain) {
+        ADDER.decrement();
+        return customDomainMappingPort.put(domain, ADDER.intValue());
+    }
+
+    public static Integer getFakePort(String domain) {
+        final var fakePort = customDomainMappingPort.get(domain);
+        if (fakePort == null || fakePort >= 0) {
+            return putCustomDomain(domain);
+        }
+        return fakePort;
+    }
 
     public static boolean hasCustomDomain(String customDomain) {
         return customDomainMappingClient.containsKey(customDomain);
@@ -53,7 +72,7 @@ public class Transform implements ApplicationContextAware {
      * 初始化客户端的代理信息
      */
     public static void init(RegisterClientReq req, WebSocket ws, String token) {
-        final var container = ServerUserConnectContainer.create(ws,token);
+        final var container = ServerUserConnectContainer.create(ws, token);
         final var older = serverContainer.put(token, container);
 
         addProxyInfo(token, req.getProxies());

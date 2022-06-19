@@ -18,9 +18,6 @@ private static final long serialVersionUID = 0L;
   private Proxy() {
     ip_ = "";
     port_ = 0;
-    type_ = "";
-    customDomain_ = "";
-    serverExport_ = 0;
   }
 
   @java.lang.Override
@@ -56,23 +53,6 @@ private static final long serialVersionUID = 0L;
           case 16: {
 
             port_ = input.readInt32();
-            break;
-          }
-          case 26: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            type_ = s;
-            break;
-          }
-          case 34: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            customDomain_ = s;
-            break;
-          }
-          case 40: {
-
-            serverExport_ = input.readInt32();
             break;
           }
           default: {
@@ -150,83 +130,6 @@ private static final long serialVersionUID = 0L;
     return port_;
   }
 
-  public static final int TYPE_FIELD_NUMBER = 3;
-  private volatile java.lang.Object type_;
-  /**
-   * <code>string type = 3;</code>
-   */
-  public java.lang.String getType() {
-    java.lang.Object ref = type_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      type_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string type = 3;</code>
-   */
-  public com.google.protobuf.ByteString
-      getTypeBytes() {
-    java.lang.Object ref = type_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      type_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int CUSTOMDOMAIN_FIELD_NUMBER = 4;
-  private volatile java.lang.Object customDomain_;
-  /**
-   * <code>string customDomain = 4;</code>
-   */
-  public java.lang.String getCustomDomain() {
-    java.lang.Object ref = customDomain_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      customDomain_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string customDomain = 4;</code>
-   */
-  public com.google.protobuf.ByteString
-      getCustomDomainBytes() {
-    java.lang.Object ref = customDomain_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      customDomain_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int SERVEREXPORT_FIELD_NUMBER = 5;
-  private int serverExport_;
-  /**
-   * <code>int32 serverExport = 5;</code>
-   */
-  public int getServerExport() {
-    return serverExport_;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -247,15 +150,6 @@ private static final long serialVersionUID = 0L;
     if (port_ != 0) {
       output.writeInt32(2, port_);
     }
-    if (!getTypeBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, type_);
-    }
-    if (!getCustomDomainBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, customDomain_);
-    }
-    if (serverExport_ != 0) {
-      output.writeInt32(5, serverExport_);
-    }
     unknownFields.writeTo(output);
   }
 
@@ -271,16 +165,6 @@ private static final long serialVersionUID = 0L;
     if (port_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, port_);
-    }
-    if (!getTypeBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, type_);
-    }
-    if (!getCustomDomainBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, customDomain_);
-    }
-    if (serverExport_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(5, serverExport_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -302,12 +186,6 @@ private static final long serialVersionUID = 0L;
         .equals(other.getIp());
     result = result && (getPort()
         == other.getPort());
-    result = result && getType()
-        .equals(other.getType());
-    result = result && getCustomDomain()
-        .equals(other.getCustomDomain());
-    result = result && (getServerExport()
-        == other.getServerExport());
     result = result && unknownFields.equals(other.unknownFields);
     return result;
   }
@@ -323,12 +201,6 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getIp().hashCode();
     hash = (37 * hash) + PORT_FIELD_NUMBER;
     hash = (53 * hash) + getPort();
-    hash = (37 * hash) + TYPE_FIELD_NUMBER;
-    hash = (53 * hash) + getType().hashCode();
-    hash = (37 * hash) + CUSTOMDOMAIN_FIELD_NUMBER;
-    hash = (53 * hash) + getCustomDomain().hashCode();
-    hash = (37 * hash) + SERVEREXPORT_FIELD_NUMBER;
-    hash = (53 * hash) + getServerExport();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -466,12 +338,6 @@ private static final long serialVersionUID = 0L;
 
       port_ = 0;
 
-      type_ = "";
-
-      customDomain_ = "";
-
-      serverExport_ = 0;
-
       return this;
     }
 
@@ -500,9 +366,6 @@ private static final long serialVersionUID = 0L;
       burst.protocol.Proxy result = new burst.protocol.Proxy(this);
       result.ip_ = ip_;
       result.port_ = port_;
-      result.type_ = type_;
-      result.customDomain_ = customDomain_;
-      result.serverExport_ = serverExport_;
       onBuilt();
       return result;
     }
@@ -557,17 +420,6 @@ private static final long serialVersionUID = 0L;
       }
       if (other.getPort() != 0) {
         setPort(other.getPort());
-      }
-      if (!other.getType().isEmpty()) {
-        type_ = other.type_;
-        onChanged();
-      }
-      if (!other.getCustomDomain().isEmpty()) {
-        customDomain_ = other.customDomain_;
-        onChanged();
-      }
-      if (other.getServerExport() != 0) {
-        setServerExport(other.getServerExport());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -689,170 +541,6 @@ private static final long serialVersionUID = 0L;
     public Builder clearPort() {
       
       port_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object type_ = "";
-    /**
-     * <code>string type = 3;</code>
-     */
-    public java.lang.String getType() {
-      java.lang.Object ref = type_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        type_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string type = 3;</code>
-     */
-    public com.google.protobuf.ByteString
-        getTypeBytes() {
-      java.lang.Object ref = type_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        type_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string type = 3;</code>
-     */
-    public Builder setType(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      type_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string type = 3;</code>
-     */
-    public Builder clearType() {
-      
-      type_ = getDefaultInstance().getType();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string type = 3;</code>
-     */
-    public Builder setTypeBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      type_ = value;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object customDomain_ = "";
-    /**
-     * <code>string customDomain = 4;</code>
-     */
-    public java.lang.String getCustomDomain() {
-      java.lang.Object ref = customDomain_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        customDomain_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string customDomain = 4;</code>
-     */
-    public com.google.protobuf.ByteString
-        getCustomDomainBytes() {
-      java.lang.Object ref = customDomain_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        customDomain_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string customDomain = 4;</code>
-     */
-    public Builder setCustomDomain(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      customDomain_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string customDomain = 4;</code>
-     */
-    public Builder clearCustomDomain() {
-      
-      customDomain_ = getDefaultInstance().getCustomDomain();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string customDomain = 4;</code>
-     */
-    public Builder setCustomDomainBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      customDomain_ = value;
-      onChanged();
-      return this;
-    }
-
-    private int serverExport_ ;
-    /**
-     * <code>int32 serverExport = 5;</code>
-     */
-    public int getServerExport() {
-      return serverExport_;
-    }
-    /**
-     * <code>int32 serverExport = 5;</code>
-     */
-    public Builder setServerExport(int value) {
-      
-      serverExport_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 serverExport = 5;</code>
-     */
-    public Builder clearServerExport() {
-      
-      serverExport_ = 0;
       onChanged();
       return this;
     }

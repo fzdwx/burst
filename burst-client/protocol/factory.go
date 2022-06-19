@@ -63,10 +63,6 @@ func GetServerExportPort(message *BurstMessage) (int32, error) {
 	return getInt32(message, Headers_SERVER_EXPORT_PORT)
 }
 
-func GetCustomDomain(message *BurstMessage) (string, error) {
-	return getString(message, Headers_CUSTOM_DOMAIN)
-}
-
 func GetUserConnectId(message *BurstMessage) (string, error) {
 	return getString(message, Headers_USER_CONNECT_ID)
 }

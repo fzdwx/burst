@@ -57,6 +57,8 @@ public class ProxyInfo {
             if (Transform.hasCustomDomain(this.customDomain)) {
                 Exceptions.illegalArgument("the customDomain is duplicated");
             }
+
+            Transform.putCustomDomain(this.customDomain);
         }
     }
 

@@ -35,8 +35,6 @@ enum Headers{
   USER_CONNECT_ID = 3;
   // register token string
   TOKEN = 4;
-  // custom domain
-  CUSTOM_DOMAIN = 5;
 }
 
 message BurstMessage {
@@ -51,9 +49,6 @@ message BurstMessage {
 message Proxy{
   string ip = 1;
   int32  port = 2;
-  string type = 3;
-  string customDomain = 4;
-  int32  serverExport = 5;
 }
 
 message Ports{
