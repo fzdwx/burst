@@ -42,7 +42,13 @@ public class HttpProxyHandler implements ProxyHandler {
     private Server startServer(final NioEventLoopGroup boss, final NioEventLoopGroup worker, final BurstProps burstProps) {
         final var server = new Server()
                 .group(boss, worker)
-                .childHandler(ch -> ch.pipeline().addLast(new ByteArrayDecoder(), new ByteArrayEncoder(), new HttpTransformHandler(burstProps)));
+                .childHandler(ch -> ch.pipeline().addLast(new ByteArrayDecoder(), new ByteArrayEncoder(), new HttpTransformHandler(burstProps)))
+                .onSuccess(s -> {
+                    log.info("http port start success");
+                })
+                .onFailure(f -> {
+                    log.error("http port start failure", f);
+                });
         server.listen(burstProps.http.port);
         Runtime.getRuntime().addShutdownHook(new Thread(server::shutdown));
         return server;
