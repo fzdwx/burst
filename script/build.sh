@@ -2,6 +2,8 @@ VERSION=1.4
 ACTION=$1
 
 function build_server() {
+    echo "start build server jar"
+    mvn -f ../pom.xml clean package
     echo "start build server docker image"
     cd `dirname $0`
     CURRENT_DIR=`pwd`
