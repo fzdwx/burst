@@ -6,6 +6,9 @@ import burst.modules.connect.ext.ProxyHandler;
 import burst.modules.connect.ext.TcpProxyHandler;
 import burst.modules.connect.trans.Transform;
 import io.github.fzdwx.lambada.Collections;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -23,12 +26,18 @@ import java.util.List;
 public class BurstAutoConfiguration {
 
     @Bean(destroyMethod = "shutdownGracefully")
-    public NioEventLoopGroup boss(BurstProps burstProps) {
+    public EventLoopGroup boss(BurstProps burstProps) {
+        if (Epoll.isAvailable()) {
+            return new EpollEventLoopGroup(burstProps.bossCount);
+        }
         return new NioEventLoopGroup(burstProps.bossCount);
     }
 
     @Bean(destroyMethod = "shutdownGracefully")
-    public NioEventLoopGroup worker(BurstProps burstProps) {
+    public EventLoopGroup worker(BurstProps burstProps) {
+        if (Epoll.isAvailable()) {
+            return new EpollEventLoopGroup(burstProps.workerCount);
+        }
         return new NioEventLoopGroup(burstProps.workerCount);
     }
 
@@ -36,8 +45,8 @@ public class BurstAutoConfiguration {
      * @see Transform#setApplicationContext(ApplicationContext)
      */
     @Bean
-    public List<ProxyHandler> proxyHandlers(NioEventLoopGroup boss,
-                                            NioEventLoopGroup worker,
+    public List<ProxyHandler> proxyHandlers(EventLoopGroup boss,
+                                            EventLoopGroup worker,
                                             BurstProps burstProps) {
         final var tcpProxyHandler = new TcpProxyHandler(boss, worker);
         final var list = Collections.<ProxyHandler>list(tcpProxyHandler);
