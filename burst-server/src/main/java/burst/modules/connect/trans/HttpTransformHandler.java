@@ -103,7 +103,7 @@ public class HttpTransformHandler extends BurstChannelHandler {
                     continue;
                 }
 
-                if (burstProps.hostKeys.contains(split[0])) {
+                if (burstProps.http.hostKeys.contains(split[0])) {
                     customDomain = split[1].split(":")[0];
                     onUserConnect0(channel);
                     break;

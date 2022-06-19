@@ -15,7 +15,7 @@ import (
 var (
 	serverIp   = flag.String("sip", "localhost", "server ip")
 	serverPort = flag.Int("sp", 10086, "server serverPort")
-	token      = flag.String("t", "1e1f859dbabb45c8a4a238c0eac18bc6", "your key, you can get it from server")
+	token      = flag.String("t", "f473223ba13c4454b3cd7f5122e40b25", "your key, you can get it from server")
 	usage      = flag.Bool("h", false, "help")
 	debug      = flag.Bool("d", true, "log level use debug")
 	serverAddr string

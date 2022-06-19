@@ -47,7 +47,9 @@ message BurstMessage {
 }
 
 message Proxy{
+  // 内网服务的ip
   string ip = 1;
+  // 内网服务的port
   int32  port = 2;
 }
 
