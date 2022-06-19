@@ -1,4 +1,4 @@
-VERSION=1.4
+VERSION=1.5
 ACTION=$1
 
 function build_server() {
