@@ -33,7 +33,7 @@ public class RemoveProxyInfoReq {
         Assert.notEmpty(proxies,"需要删除的代理信息为空");
 
         for (final ProxyInfo proxy : proxies) {
-            proxy.preCheck();
+            proxy.preCheckForRemove();
         }
 
         return registerClientReq;

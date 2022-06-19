@@ -18,8 +18,6 @@ public class BurstServerApplication {
 
     public static void main(String[] args) {
         final ConfigurableApplicationContext run = SpringApplication.run(BurstServerApplication.class);
-        final BurstProps bean = SpringUtil.getBean(BurstProps.class);
-        System.out.println(bean.http.enable);
     }
 
 }

@@ -6,6 +6,7 @@ import cn.hutool.core.io.IoUtil;
 import io.github.fzdwx.lambada.Io;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
+import util.Netty;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -41,15 +42,34 @@ public class HttpTransformHandler extends BurstChannelHandler {
             return;
         }
 
+        if (userConnectId == null) {
+            notFound(channel);
+            return;
+        }
+
+        final var container = Transform.getContainer(this.customDomain);
+        if (container == null) {
+            notFound(channel);
+            return;
+        }
+
         final var data = BurstFactory.userRequest(userConnectId, bytes);
-        Transform.getContainer(this.customDomain).safetyWs().sendBinary(data);
+        container.safetyWs().sendBinary(data);
         log.info("user request size {}", bytes.length);
     }
 
     private void onUserConnect0(final Channel channel) {
-        final var container = Transform.getContainer(this.customDomain);
-        userConnectId = Transform.add(channel, container.getToken());
         final var fakePort = Transform.getFakePort(customDomain);
+        if (fakePort == null) {
+            return;
+        }
+
+        final var container = Transform.getContainer(this.customDomain);
+        if (container == null) {
+            return;
+        }
+
+        userConnectId = Transform.add(channel, container.getToken());
         final var data = BurstFactory.userConnect(fakePort, userConnectId);
         container.safetyWs().sendBinary(data);
         log.info("user connect : customDomain={},fakePort={}", this.customDomain, fakePort);
@@ -84,5 +104,17 @@ public class HttpTransformHandler extends BurstChannelHandler {
         }
 
         return customDomain == null;
+    }
+
+    private void notFound(final Channel channel) {
+        final var resp = """
+                HTTP/1.1 404 NOT FOUND\r
+                transfer-encoding: chunked\r
+                content-type: text/plain\r
+                server: burst\r
+                                
+                0\r\n\r\n
+                """;
+        channel.writeAndFlush(Netty.wrap(channel.alloc(), resp));
     }
 }

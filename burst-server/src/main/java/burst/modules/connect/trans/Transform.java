@@ -1,6 +1,7 @@
 package burst.modules.connect.trans;
 
 import burst.domain.ProxyInfo;
+import burst.domain.ProxyType;
 import burst.domain.ServerUserConnectContainer;
 import burst.domain.model.request.RegisterClientReq;
 import burst.modules.connect.ext.ProxyHandler;
@@ -15,6 +16,7 @@ import io.github.fzdwx.lambada.Collections;
 import io.github.fzdwx.lambada.Exceptions;
 import io.github.fzdwx.lambada.Lang;
 import io.github.fzdwx.lambada.Seq;
+import io.github.fzdwx.lambada.anno.Nullable;
 import io.netty.channel.Channel;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -48,12 +50,13 @@ public class Transform implements ApplicationContextAware {
         return customDomainMappingPort.put(domain, ADDER.intValue());
     }
 
-    public static Integer getFakePort(String domain) {
-        final var fakePort = customDomainMappingPort.get(domain);
-        if (fakePort == null || fakePort >= 0) {
-            return putCustomDomain(domain);
-        }
-        return fakePort;
+    @Nullable
+    public static Integer getFakePort(String customDomain) {
+        return customDomainMappingPort.get(customDomain);
+    }
+
+    public static Integer removeFakePort(String customDomain) {
+        return customDomainMappingPort.remove(customDomain);
     }
 
     public static boolean hasCustomDomain(String customDomain) {
@@ -62,6 +65,10 @@ public class Transform implements ApplicationContextAware {
 
     public static ServerUserConnectContainer getContainer(String customDomain) {
         return customDomainMappingClient.get(customDomain);
+    }
+
+    public static ServerUserConnectContainer removeCustomerContainerMapping(String customDomain) {
+        return customDomainMappingClient.remove(customDomain);
     }
 
     public static ServerUserConnectContainer saveCustomerMappingContainer(String customDomain, ServerUserConnectContainer container) {
@@ -128,7 +135,22 @@ public class Transform implements ApplicationContextAware {
 
         final var ws = container.safetyWs();
 
-        final var serverPorts = Seq.of(proxies).map(container::getServer).nonNull().and(container::close).map(Server::port).toList();
+        final var serverPorts = Seq.of(proxies).map(proxyInfo -> {
+            final var server = container.getServer(proxyInfo);
+            if (server != null) {
+                server.close();
+            }
+
+            if (proxyInfo.getType().equals(ProxyType.HTTP)) {
+                final var fakePort = getFakePort(proxyInfo.customDomain);
+                removeFakePort(proxyInfo.customDomain);
+                removeCustomerContainerMapping(proxyInfo.customDomain);
+                return fakePort;
+            }
+
+            // not null.
+            return server.port();
+        }).toList();
 
         if (serverPorts.isEmpty()) {
             throw Exceptions.newIllegalState("没有需要关闭的服务端端口映射!");

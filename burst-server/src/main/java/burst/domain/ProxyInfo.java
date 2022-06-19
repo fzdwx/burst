@@ -6,12 +6,14 @@ import io.github.fzdwx.lambada.Assert;
 import io.github.fzdwx.lambada.Exceptions;
 import io.github.fzdwx.lambada.Lang;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author <a href="mailto:likelovec@gmail.com">fzdwx</a>
  * @date 2022/6/12 13:36
  */
 @Data
+@EqualsAndHashCode(exclude = "serverExport")
 public class ProxyInfo {
 
     /**
@@ -59,6 +61,21 @@ public class ProxyInfo {
             }
 
             Transform.putCustomDomain(this.customDomain);
+        }
+    }
+
+    public void preCheckForRemove() {
+        Assert.notBlank(ip, "ip is required");
+        Assert.notBlank(this.type, "the type is required");
+
+        if (port < 0 || port > 65535) {
+            Exceptions.illegalArgument("port is not valid,must between 0 and 65535");
+        }
+
+        if (Lang.eq(this.type, ProxyType.HTTP)) {
+            if (Lang.isBlank(this.customDomain)) {
+                Exceptions.illegalArgument("type is http,must set customDomain");
+            }
         }
     }
 
