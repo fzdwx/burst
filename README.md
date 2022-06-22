@@ -20,7 +20,7 @@
 0. 准备服务端
    - 当前提供了一个公有云的服务端: `114.132.249.192:10086` 
    - 或者使用docker自建一个服务端: `docker run --name burst-server -p 10086:10086 -p 39399:39399 -d likelovec/burst-server:1.4`
-1. [下载客户端](https://github.com/fzdwx/burst/releases/tag/v1.0)
+1. [下载客户端](https://github.com/fzdwx/burst/releases)
 2. 注册，获取`token`(设置你想要被代理的机器的ip以及端口，可以输入多个)
 
 ```shell
