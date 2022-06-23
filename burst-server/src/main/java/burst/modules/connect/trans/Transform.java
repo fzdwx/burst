@@ -4,6 +4,7 @@ import burst.domain.ProxyInfo;
 import burst.domain.ProxyType;
 import burst.domain.ServerUserConnectContainer;
 import burst.domain.model.request.RegisterClientReq;
+import burst.inf.metrics.MetricsRecorder;
 import burst.modules.connect.ext.ProxyHandler;
 import burst.protocol.BurstFactory;
 import burst.protocol.BurstMessage;
@@ -44,6 +45,7 @@ public class Transform implements ApplicationContextAware {
     private static final Map<String, Integer> customDomainMappingPort = Collections.map();
     private static final LongAdder ADDER = new LongAdder();
     private static Map<String, ProxyHandler> proxyHandlers;
+    private static MetricsRecorder metricsRecorder;
 
     public static Integer putCustomDomain(String domain) {
         ADDER.decrement();
@@ -204,7 +206,13 @@ public class Transform implements ApplicationContextAware {
 
         if (socket.channel().isActive()) {
             final var binary = burstMessage.getData().toByteArray();
-            socket.send(binary);
+            socket.send(binary).addListener(f -> {
+                if (f.isSuccess()) {
+                    metricsRecorder.readFromClient(token, userConnectId, binary.length);
+                } else {
+                    metricsRecorder.writeToUserError(token, userConnectId, f.cause());
+                }
+            });
             return;
         }
 
@@ -214,6 +222,7 @@ public class Transform implements ApplicationContextAware {
     @Override
     public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
         proxyHandlers = Seq.toMap((List<ProxyHandler>) applicationContext.getBean("proxyHandlers"), ProxyHandler::supportType);
+        metricsRecorder = applicationContext.getBean(MetricsRecorder.class);
     }
 
     private static Map<Integer, ProxyInfo> listenAndGetPortMapping(ServerUserConnectContainer container, final String token,

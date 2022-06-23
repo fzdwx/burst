@@ -15,9 +15,9 @@ import (
 var (
 	serverIp   = flag.String("sip", "localhost", "server ip")
 	serverPort = flag.Int("sp", 10086, "server serverPort")
-	token      = flag.String("t", "f473223ba13c4454b3cd7f5122e40b25", "your key, you can get it from server")
+	token      = flag.String("t", "ce5993a7982743acad0cfa02aee8ae57", "your key, you can get it from server")
 	usage      = flag.Bool("h", false, "help")
-	debug      = flag.Bool("d", true, "log level use debug")
+	debug      = flag.Bool("d", false, "log level use debug")
 	serverAddr string
 )
 
@@ -58,7 +58,6 @@ func main() {
 			data, _ := ioutil.ReadAll(body)
 			log.Fatal(string(data))
 		}
-
 		client.MountBinaryHandler(burst.HandlerBinaryData())
 
 		go func() {

@@ -1,5 +1,7 @@
 package burst.inf.config;
 
+import burst.inf.metrics.MemoryMetricsRecorder;
+import burst.inf.metrics.MetricsRecorder;
 import burst.inf.props.BurstProps;
 import burst.modules.connect.ext.HttpProxyHandler;
 import burst.modules.connect.ext.ProxyHandler;
@@ -47,11 +49,12 @@ public class BurstAutoConfiguration {
     @Bean
     public List<ProxyHandler> proxyHandlers(EventLoopGroup boss,
                                             EventLoopGroup worker,
-                                            BurstProps burstProps) {
-        final var tcpProxyHandler = new TcpProxyHandler(boss, worker);
+                                            BurstProps burstProps,
+                                            MetricsRecorder metricsRecorder) {
+        final var tcpProxyHandler = new TcpProxyHandler(boss, worker, metricsRecorder);
         final var list = Collections.<ProxyHandler>list(tcpProxyHandler);
         if (burstProps.http.enable) {
-            list.add(new HttpProxyHandler(boss, worker, burstProps));
+            list.add(new HttpProxyHandler(boss, worker, burstProps, metricsRecorder));
         }
         return list;
     }
@@ -59,5 +62,10 @@ public class BurstAutoConfiguration {
     @Bean
     public Transform transform() {
         return new Transform();
+    }
+
+    @Bean
+    public MemoryMetricsRecorder metricsRecorder() {
+        return new MemoryMetricsRecorder();
     }
 }

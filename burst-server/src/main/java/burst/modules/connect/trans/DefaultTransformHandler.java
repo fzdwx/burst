@@ -1,5 +1,6 @@
 package burst.modules.connect.trans;
 
+import burst.inf.metrics.MetricsRecorder;
 import burst.protocol.BurstFactory;
 import core.http.ext.WebSocket;
 import io.netty.channel.Channel;
@@ -18,12 +19,17 @@ public class DefaultTransformHandler extends BurstChannelHandler {
     private final Integer serverExportPort;
     private final WebSocket ws;
     private final String token;
+    private final MetricsRecorder metricsRecorder;
     private String userConnectId;
 
-    public DefaultTransformHandler(final Integer serverExportPort, final WebSocket webSocket, final String token) {
+    public DefaultTransformHandler(final Integer serverExportPort,
+                                   final WebSocket webSocket,
+                                   final String token,
+                                   final MetricsRecorder metricsRecorder) {
         this.serverExportPort = serverExportPort;
         this.ws = webSocket;
         this.token = token;
+        this.metricsRecorder = metricsRecorder;
     }
 
     @Override
@@ -49,7 +55,13 @@ public class DefaultTransformHandler extends BurstChannelHandler {
     @Override
     protected void onUserRequest(final Channel channel, final byte[] bytes) {
         final var data = BurstFactory.userRequest(userConnectId, bytes);
-        ws.sendBinary(data);
+        ws.sendBinary(data).addListener(f -> {
+            if (f.isSuccess()) {
+                metricsRecorder.writeToClient(token, userConnectId, data.length);
+            } else {
+                metricsRecorder.writeToClientError(token, userConnectId, f.cause());
+            }
+        });
         log.info("user request size {}", bytes.length);
     }
 }

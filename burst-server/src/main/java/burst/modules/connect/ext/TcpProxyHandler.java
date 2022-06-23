@@ -3,11 +3,11 @@ package burst.modules.connect.ext;
 import burst.domain.ProxyInfo;
 import burst.domain.ProxyType;
 import burst.domain.ServerUserConnectContainer;
+import burst.inf.metrics.MetricsRecorder;
 import burst.modules.connect.trans.DefaultTransformHandler;
 import core.Server;
 import io.github.fzdwx.lambada.Exceptions;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +24,8 @@ public class TcpProxyHandler implements ProxyHandler {
 
     private final EventLoopGroup boss;
     private final EventLoopGroup worker;
+
+    private final MetricsRecorder metricsRecorder;
 
     @Override
     public String supportType() {
@@ -42,7 +44,7 @@ public class TcpProxyHandler implements ProxyHandler {
                 .childHandler(ch -> ch.pipeline().addLast(
                         new ByteArrayDecoder(),
                         new ByteArrayEncoder(),
-                        new DefaultTransformHandler(availablePort, container.safetyWs(), token)));
+                        new DefaultTransformHandler(availablePort, container.safetyWs(), token,metricsRecorder)));
         server.listen(availablePort);
         proxyInfo.setServerExport(availablePort);
         log.info("client={},add {} proxy {} to {}", token, proxyInfo.type, proxyInfo.ip + ":" + proxyInfo.port, "localhost:" + server.port());
