@@ -16,6 +16,7 @@ var (
 	serverIp   = flag.String("sip", "localhost", "server ip")
 	serverPort = flag.Int("sp", 10086, "server serverPort")
 	token      = flag.String("t", "ce5993a7982743acad0cfa02aee8ae57", "your key, you can get it from server")
+	bufferSize = flag.Int("b", 8192, "the maximum length of each write to the server")
 	usage      = flag.Bool("h", false, "help")
 	debug      = flag.Bool("d", false, "log level use debug")
 	serverAddr string
@@ -51,7 +52,7 @@ func init() {
 func main() {
 	common.Run(func(cancelFunc context.CancelFunc) {
 		u := url.URL{Scheme: "ws", Host: serverAddr, Path: "/connect", RawQuery: "token=" + *token}
-		client, resp, err := burst.Connect(u)
+		client, resp, err := burst.Connect(u, *bufferSize)
 		if err != nil {
 			body := resp.Body
 			defer body.Close()

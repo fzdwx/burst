@@ -21,6 +21,8 @@ type (
 		onBinary       OnBinary
 		// proxyInfo mapping: key serverPort
 		proxyInfo map[int32]*protocol.Proxy
+		// bufferSize the maximum length of each write to the server
+		bufferSize int
 	}
 
 	// OnText is a callback method that will be called back when there is a text type message.
@@ -36,7 +38,7 @@ const (
 )
 
 // Connect to Server,will return new Client.
-func Connect(url url.URL) (*Client, *http.Response, error) {
+func Connect(url url.URL, bufferSize int) (*Client, *http.Response, error) {
 	log.Infoln("start connecting to:", common.WrapGreen(url.String()))
 	c, resp, err := websocket.DefaultDialer.Dial(url.String(), nil)
 

@@ -50,8 +50,7 @@ func (u UserConnect) React(client *Client) {
 	}()
 
 	for {
-		// 每次从本地 最大读取8K
-		buf := make([]byte, 8192)
+		buf := make([]byte, client.bufferSize)
 		read, err := conn.Read(buf)
 		if err != nil {
 			// todo 是否要判断？strings.Contains 还是所有都直接打印日志
