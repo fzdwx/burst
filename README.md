@@ -4,7 +4,7 @@
 
 基于Java(Netty) & Go(net) 的内网穿透 or 反向代理程序。 [关于burst](https://github.com/fzdwx/burst/issues/6)
 
-<br>
+API文档: https://www.apifox.cn/apidoc/shared-26c550f7-70a4-428b-8964-8f23c98b9abc/api-20962841
 
 ## ✨ Features
 
@@ -14,7 +14,6 @@
 4. HTTP服务统一监听一个端口(也可以理解为自定义域名) https://github.com/fzdwx/burst/issues/17#issuecomment-1159609844
 5. ...
 
-<br>
 
 ## 🚀 Quick Start
 0. 准备服务端
