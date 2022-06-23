@@ -32,11 +32,6 @@ type (
 	OnBinary func([]byte, *Client)
 )
 
-const (
-	TCP  = "tcp"
-	HTTP = "http"
-)
-
 // Connect to Server,will return new Client.
 func Connect(url url.URL, bufferSize int) (*Client, *http.Response, error) {
 	log.Infoln("start connecting to:", common.WrapGreen(url.String()))
