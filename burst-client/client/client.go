@@ -56,7 +56,8 @@ func Connect(url url.URL, bufferSize int) (*Client, *http.Response, error) {
 		onBinary: func(bytes []byte, c *Client) {
 			log.Debugln("onBinary:", common.WrapGreen(string(bytes)))
 		},
-		proxyInfo: map[int32]*protocol.Proxy{},
+		proxyInfo:  map[int32]*protocol.Proxy{},
+		bufferSize: bufferSize,
 	}, nil, nil
 }
 
