@@ -11,8 +11,9 @@ function build_server() {
     cd ../burst-server/target
     CONTEXT_DIR=`pwd`
     echo $CONTEXT_DIR
-    echo "docker build -t fzdwx/burst-server:$VERSION -f $CURRENT_DIR/Dockerfile $CONTEXT_DIR"
-    docker build -t fzdwx/burst-server:$VERSION -f $CURRENT_DIR/Dockerfile $CONTEXT_DIR
+    nohup java -jar burst-server-$VERSION.jar > /root/burst-server.log 2>&1 &
+#    echo "docker build -t fzdwx/burst-server:$VERSION -f $CURRENT_DIR/Dockerfile $CONTEXT_DIR"
+#    docker build -t fzdwx/burst-server:$VERSION -f $CURRENT_DIR/Dockerfile $CONTEXT_DIR
 }
 
 case "$ACTION" in
