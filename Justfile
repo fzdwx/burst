@@ -1,6 +1,6 @@
 #!/usr/bin/env just --justfile
-#mvn_setting_path := "/mnt/c/Users/98065/.m2/settings.xml"
-mvn_setting_path := "/e/devTool/repo/settings.xml"
+mvn_setting_path := "/mnt/c/Users/98065/.m2/settings.xml"
+#mvn_setting_path := "/e/devTool/repo/settings.xml"
 
 target_path := "/root/burst-server.jar"
 log_path := "/root/burst-server.log"
@@ -10,13 +10,17 @@ go := "/mnt/c/Users/98065/go/go1.18/bin/go.exe"
 l:
    @just -l
 
+bc:
+    cd burst-client && GOOS=windows GOARCH=amd64 go build .
+    cd burst-client && GOOS=linux GOARCH=amd64 go build .
+
 # 启动burst客户端
 client:
     cd burst-client && {{go}} run main.go
 
 # build burst-server
-build:
-   mvn -s {{mvn_setting_path}} -DskipTests clean package -Pprod
+bs:
+   mvn -s {{mvn_setting_path}} -DskipTests clean package
 
 runServer:
    java -jar burst-server/target/burst-server-1.0-SNAPSHOT.jar
