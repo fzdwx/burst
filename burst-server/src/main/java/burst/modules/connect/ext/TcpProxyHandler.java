@@ -35,7 +35,7 @@ public class TcpProxyHandler implements ProxyHandler {
     @Override
     public Server apply(final String token, final ServerUserConnectContainer container, final ProxyInfo proxyInfo) {
         // todo 修改为配置化的
-        final var availablePort = AvailablePort.random(20000,58000);
+        final var availablePort = AvailablePort.random();
         if (availablePort == null) {
             log.error("[init] token={},host={}  port not available", token, proxyInfo);
             throw Exceptions.newIllegalState("服务端暂无可用端口");
@@ -45,7 +45,7 @@ public class TcpProxyHandler implements ProxyHandler {
                 .childHandler(ch -> ch.pipeline().addLast(
                         new ByteArrayDecoder(),
                         new ByteArrayEncoder(),
-                        new DefaultTransformHandler(availablePort, container.safetyWs(), token,metricsRecorder)));
+                        new DefaultTransformHandler(availablePort, container.safetyWs(), token, metricsRecorder)));
         server.listen(availablePort);
         proxyInfo.setServerExport(availablePort);
         log.info("client={},add {} proxy {} to {}", token, proxyInfo.type, proxyInfo.ip + ":" + proxyInfo.port, "localhost:" + server.port());
