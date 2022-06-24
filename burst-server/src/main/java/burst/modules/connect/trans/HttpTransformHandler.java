@@ -1,10 +1,12 @@
 package burst.modules.connect.trans;
 
+import burst.inf.metrics.MetricsRecorder;
 import burst.inf.props.BurstProps;
 import burst.protocol.BurstFactory;
 import cn.hutool.core.io.IoUtil;
 import io.github.fzdwx.lambada.Io;
 import io.netty.channel.Channel;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import util.Netty;
 
@@ -19,17 +21,16 @@ import static cn.hutool.core.io.IoUtil.lineIter;
  * @date 2022/6/17 12:20
  */
 @Slf4j
+@RequiredArgsConstructor
 public class HttpTransformHandler extends BurstChannelHandler {
 
     final static AtomicIntegerFieldUpdater<HttpTransformHandler> PARSED_STATE = AtomicIntegerFieldUpdater.newUpdater(HttpTransformHandler.class, "parsed");
     private final BurstProps burstProps;
+    private final MetricsRecorder metricsRecorder;
     private String customDomain;
     private volatile int parsed = 0;
     private String userConnectId;
 
-    public HttpTransformHandler(final BurstProps burstProps) {
-        this.burstProps = burstProps;
-    }
 
     @Override
     protected void onUserConnect(final Channel channel) {
@@ -53,8 +54,17 @@ public class HttpTransformHandler extends BurstChannelHandler {
             return;
         }
 
+        final var token = container.getToken();
         final var data = BurstFactory.userRequest(userConnectId, bytes);
-        container.safetyWs().sendBinary(data);
+
+        container.safetyWs().sendBinary(data)
+                .addListener(f -> {
+                    if (f.isSuccess()) {
+                        metricsRecorder.writeToClient(token, userConnectId, bytes.length);
+                    } else {
+                        metricsRecorder.writeToClientError(token, userConnectId, f.cause());
+                    }
+                });
         log.info("user request size {}", bytes.length);
     }
 

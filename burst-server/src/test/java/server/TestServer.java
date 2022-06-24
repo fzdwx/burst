@@ -39,7 +39,7 @@ public class TestServer {
     void test_http() {
         new Server()
                 .group(boss, worker)
-                .childHandler(ch -> ch.pipeline().addLast(new ByteArrayDecoder(), new ByteArrayEncoder(), new HttpTransformHandler(BurstProps.INS)))
+                // .childHandler(ch -> ch.pipeline().addLast(new ByteArrayDecoder(), new ByteArrayEncoder(), new HttpTransformHandler(BurstProps.INS)))
                 .listen(9999)
                 .dispose();
     }

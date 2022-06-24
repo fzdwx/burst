@@ -15,9 +15,10 @@ import (
 var (
 	serverIp   = flag.String("sip", "localhost", "server ip")
 	serverPort = flag.Int("sp", 10086, "server serverPort")
-	token      = flag.String("t", "f473223ba13c4454b3cd7f5122e40b25", "your key, you can get it from server")
+	token      = flag.String("t", "ca8797c9bf0e4f69b86360a12c6d522a", "your key, you can get it from server")
+	bufferSize = flag.Int("b", 8192, "the maximum length of each write to the server")
 	usage      = flag.Bool("h", false, "help")
-	debug      = flag.Bool("d", true, "log level use debug")
+	debug      = flag.Bool("d", false, "log level use debug")
 	serverAddr string
 )
 
@@ -51,14 +52,13 @@ func init() {
 func main() {
 	common.Run(func(cancelFunc context.CancelFunc) {
 		u := url.URL{Scheme: "ws", Host: serverAddr, Path: "/connect", RawQuery: "token=" + *token}
-		client, resp, err := burst.Connect(u)
+		client, resp, err := burst.Connect(u, *bufferSize)
 		if err != nil {
 			body := resp.Body
 			defer body.Close()
 			data, _ := ioutil.ReadAll(body)
 			log.Fatal(string(data))
 		}
-
 		client.MountBinaryHandler(burst.HandlerBinaryData())
 
 		go func() {
