@@ -15,7 +15,7 @@ import (
 var (
 	serverIp   = flag.String("sip", "localhost", "server ip")
 	serverPort = flag.Int("sp", 10086, "server serverPort")
-	token      = flag.String("t", "ca8797c9bf0e4f69b86360a12c6d522a", "your key, you can get it from server")
+	token      = flag.String("t", "ad310d7c92714f468c41e0be7fe48552", "your key, you can get it from server")
 	bufferSize = flag.Int("b", 8192, "the maximum length of each write to the server")
 	usage      = flag.Bool("h", false, "help")
 	debug      = flag.Bool("d", false, "log level use debug")
