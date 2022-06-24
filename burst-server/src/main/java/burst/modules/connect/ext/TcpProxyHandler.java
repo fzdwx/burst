@@ -34,7 +34,7 @@ public class TcpProxyHandler implements ProxyHandler {
 
     @Override
     public Server apply(final String token, final ServerUserConnectContainer container, final ProxyInfo proxyInfo) {
-        final var availablePort = AvailablePort.random();
+        final var availablePort = AvailablePort.random(20000,60000);
         if (availablePort == null) {
             log.error("[init] token={},host={}  port not available", token, proxyInfo);
             throw Exceptions.newIllegalState("服务端暂无可用端口");
