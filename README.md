@@ -1,55 +1,24 @@
-# :bug: **new issues** https://github.com/fzdwx/burst/issues/new
+# :bug: https://github.com/fzdwx/burst/issues/new
 
-# burst
+# burst | [English](https://github.com/fzdwx/burst/blob/main/doc/en/README_EN.md)
 
-基于Java(Netty) & Go(net) 的内网穿透 or 反向代理程序。 [关于burst](https://github.com/fzdwx/burst/issues/6)
-
-<br>
+基于Java(Netty) & Golang(net) 的内网穿透 or 反向代理程序。
 
 ## ✨ Features
 
-1. 支持所有基于tcp的协议 ( Support all tcp-based protocols )
-2. 可以代理局域网(也可以理解成server可以访问的任意机器)内任意一台机器 (Proxy any machine in the LAN)
-3. 动态添加以及关闭代理端口( Dynamically add and close proxy ports ) https://github.com/fzdwx/burst/issues/10#issuecomment-1153122850
+1. 支持所有基于tcp的协议
+2. 可以代理局域网(也可以理解成server可以访问的任意机器)内任意一台机器
+3. 动态添加以及关闭代理端口  https://github.com/fzdwx/burst/issues/10#issuecomment-1153122850
 4. HTTP服务统一监听一个端口(也可以理解为自定义域名) https://github.com/fzdwx/burst/issues/17#issuecomment-1159609844
-5. ...
+5. 简单支持一些监控指标 https://github.com/fzdwx/burst/issues/23#issuecomment-1164430024
+6. ...
 
-<br>
+## 🎨 Documentation
 
-## 🚀 Quick Start
-0. 准备服务端，当前提供了一个公有云的服务端addr: 114.132.249.192:10086
-1. [下载客户端](https://github.com/fzdwx/burst/releases/tag/v1.0)
-2. 注册，获取`token`(设置你想要被代理的机器的ip以及端口，可以输入多个)
+1. [🚀 快速开始](https://github.com/fzdwx/burst/blob/main/doc/quick_start.md)
+2. [📝 写一个简单的burst](https://github.com/fzdwx/burst/issues/6)
+3. [🏷️ API文档](https://www.apifox.cn/apidoc/shared-26c550f7-70a4-428b-8964-8f23c98b9abc/api-20962841)
 
-```shell
-curl --location --request POST 'http://114.132.249.192:10086/register' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "proxies":[
-        {
-             "port":8080,
-             "ip":"192.168.1.72"  # default is localhost
-        }
-    ]
-}'
+## 👷 How to Contributors?
 
-// response
-{"token":"348f952bb76e44d5a818440ef1bec53a"}
-```
-
-3. 启动客户端
-
-```shell
-./burst-client -sip 114.132.249.192 -sp 10086 -t {{token}}
-```
-
-![image](https://user-images.githubusercontent.com/65269574/174085209-b9360ab9-bcd0-4e30-be0d-17018b058bc8.png)
-
-
-_localhost:32988_ 就是最终代理到服务端的地址
-
-<br>
-
-## 👷 Install
-
-[跳转](https://github.com/fzdwx/burst/blob/main/Install.md)
+非常欢迎大家一起参与这个项目，可以从认领[issue](https://github.com/fzdwx/burst/issues)开始！
