@@ -4,5 +4,5 @@ COPY ${JAR_FILE} burst.jar
 EXPOSE 10086
 EXPOSE 39399
 # tcp ports
-EXPOSE 20000 - 60000
+EXPOSE 20000-60000
 ENTRYPOINT ["java","-jar","/burst.jar"]
