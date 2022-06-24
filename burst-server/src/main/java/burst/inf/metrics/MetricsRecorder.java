@@ -9,6 +9,11 @@ package burst.inf.metrics;
 public interface MetricsRecorder {
 
     /**
+     * get {@link MetricsInfo} by {@code token}
+     */
+    MetricsInfo get(String token);
+
+    /**
      * response to user(read from client).
      * 在读取客户端数据时回调
      */

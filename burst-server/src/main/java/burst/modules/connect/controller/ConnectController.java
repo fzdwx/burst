@@ -1,12 +1,14 @@
 package burst.modules.connect.controller;
 
-import burst.modules.connect.trans.Transform;
 import burst.domain.model.request.RegisterClientReq;
+import burst.inf.metrics.MetricsRecorder;
+import burst.modules.connect.trans.Transform;
 import burst.protocol.BurstMessage;
 import burst.temp.Cache;
 import com.google.protobuf.InvalidProtocolBufferException;
 import core.http.ext.HttpServerRequest;
 import core.http.ext.HttpServerResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,9 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
  * @author <a href="mailto:likelovec@gmail.com">fzdw1x</a>
  * @date 2022/5/21 17:09
  */
-@RestController
 @Slf4j
+@RestController
+@RequiredArgsConstructor
 public class ConnectController {
+
+    private MetricsRecorder metricsRecorder;
 
     @GetMapping("connect")
     public void connect(@RequestParam String token, HttpServerRequest request, HttpServerResponse response) {
@@ -37,6 +42,10 @@ public class ConnectController {
 
             ws.mountClose(h -> {
                 Transform.destroy(token);
+            });
+
+            ws.mountError(e -> {
+                log.error("ws error: {}", token, e);
             });
 
             ws.mountBinary(b -> {
