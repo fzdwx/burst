@@ -16,8 +16,24 @@ function build_server() {
 #    docker build -t fzdwx/burst-server:$VERSION -f $CURRENT_DIR/Dockerfile $CONTEXT_DIR
 }
 
+function build_server_image() {
+     echo "start build server jar"
+        mvn -f ../pom.xml clean package
+        echo "start build server docker image"
+        cd `dirname $0`
+        CURRENT_DIR=`pwd`
+        echo $CURRENT_DIR
+        cd ../burst-server/target
+        CONTEXT_DIR=`pwd`
+        echo $CONTEXT_DIR
+        echo "docker build -t fzdwx/burst-server:$VERSION -f $CURRENT_DIR/Dockerfile $CONTEXT_DIR"
+        docker build -t fzdwx/burst-server:$VERSION -f $CURRENT_DIR/Dockerfile $CONTEXT_DIR
+}
+
 case "$ACTION" in
 server)
     build_server
   ;;
+image)
+  build_server_image
 esac
