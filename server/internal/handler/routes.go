@@ -4,7 +4,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/fzdwx/burst/internal/svc"
+	"github.com/fzdwx/burst/server/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )
@@ -15,7 +15,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodGet,
 				Path:    "/from/:name",
-				Handler: BurstHandler(serverCtx),
+				Handler: ServerHandler(serverCtx),
 			},
 		},
 	)

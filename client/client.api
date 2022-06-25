@@ -6,7 +6,7 @@ type Response {
 	Message string `json:"message"`
 }
 
-service burst-api {
-	@handler BurstHandler
+service client-api {
+	@handler ClientHandler
 	get /from/:name(Request) returns (Response)
 }

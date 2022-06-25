@@ -4,15 +4,15 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/fzdwx/burst/internal/config"
-	"github.com/fzdwx/burst/internal/handler"
-	"github.com/fzdwx/burst/internal/svc"
+	"github.com/fzdwx/burst/server/internal/config"
+	"github.com/fzdwx/burst/server/internal/handler"
+	"github.com/fzdwx/burst/server/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "etc/burst-api.yaml", "the config file")
+var configFile = flag.String("f", "etc/server-api.yaml", "the config file")
 
 func main() {
 	flag.Parse()

@@ -1,7 +1,7 @@
 package svc
 
 import (
-	"github.com/fzdwx/burst/internal/config"
+	"github.com/fzdwx/burst/server/internal/config"
 )
 
 type ServiceContext struct {
