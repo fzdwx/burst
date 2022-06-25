@@ -2,7 +2,7 @@
 
 # burst | [English](https://github.com/fzdwx/burst/blob/main/doc/en/README_EN.md)
 
-基于Java(Netty) & Golang(net) 的内网穿透 or 反向代理程序。
+基于Go Zero的内网穿透服务
 
 ## ✨ Features
 
