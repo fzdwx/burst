@@ -24,6 +24,5 @@ func NewBurstLogic(ctx context.Context, svcCtx *svc.ServiceContext) *BurstLogic 
 }
 
 func (l *BurstLogic) Burst(req *types.Request) (resp *types.Response, err error) {
-	// todo: add your logic here and delete this line
-	return
+	return &types.Response{Message: "hello " + req.Name}, nil
 }
