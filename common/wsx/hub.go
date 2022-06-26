@@ -11,6 +11,9 @@ type Hub struct {
 	// Registered clients.
 	clients map[*Client]bool
 
+	// clientsMappingTokens save the mapping between the client and the token.
+	clientsMappingTokens map[string]*Client
+
 	// Inbound messages from the clients.
 	broadcast chan []byte
 
@@ -20,16 +23,17 @@ type Hub struct {
 	// Unregister requests from clients.
 	unregister chan *Client
 
-	upgrader websocket.Upgrader
+	upgrader *websocket.Upgrader
 }
 
-func NewHub(upgrader websocket.Upgrader) *Hub {
+func NewHub(upgrader *websocket.Upgrader) *Hub {
 	return &Hub{
-		broadcast:  make(chan []byte),
-		register:   make(chan *Client),
-		unregister: make(chan *Client),
-		clients:    make(map[*Client]bool),
-		upgrader:   upgrader,
+		broadcast:            make(chan []byte),
+		register:             make(chan *Client),
+		unregister:           make(chan *Client),
+		clients:              make(map[*Client]bool),
+		clientsMappingTokens: make(map[string]*Client),
+		upgrader:             upgrader,
 	}
 }
 
@@ -44,26 +48,31 @@ func (h *Hub) Run() {
 		select {
 		case client := <-h.register:
 			h.clients[client] = true
+			h.clientsMappingTokens[client.token] = client
 		case client := <-h.unregister:
 			if _, ok := h.clients[client]; ok {
-				delete(h.clients, client)
-				close(client.send)
+				h.clear(client)
 			}
 		case message := <-h.broadcast:
 			for client := range h.clients {
 				select {
 				case client.send <- message:
 				default:
-					close(client.send)
-					delete(h.clients, client)
+					h.clear(client)
 				}
 			}
 		}
 	}
 }
 
-func (h *Hub) AddClient(conn *websocket.Conn) *Client {
-	client := NewClient(conn, h)
+func (h *Hub) AddClient(conn *websocket.Conn, token string) *Client {
+	client := NewClient(conn, h, token)
 	h.register <- client
 	return client
+}
+
+func (h *Hub) clear(client *Client) {
+	delete(h.clients, client)
+	delete(h.clientsMappingTokens, client.token)
+	close(client.send)
 }

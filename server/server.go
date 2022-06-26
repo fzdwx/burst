@@ -25,13 +25,13 @@ func main() {
 	defer server.Stop()
 
 	upgrader := wsx.NewUpgrader(c.WsConfig)
-	hub := wsx.NewHub(upgrader)
+	hub := wsx.NewHub(&upgrader)
 	ctx := svc.NewServiceContext(c, hub)
 
 	handler.RegisterHandlers(server, ctx)
 	handler.RegisterCustomHandlers(server, ctx)
 
-	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
+	fmt.Printf("Starting client at %s:%d...\n", c.Host, c.Port)
 	go hub.Run()
 	server.Start()
 }

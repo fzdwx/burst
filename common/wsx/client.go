@@ -2,6 +2,7 @@ package wsx
 
 import (
 	"github.com/zeromicro/go-zero/core/logx"
+	"net"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -10,6 +11,8 @@ import (
 // Client is a middleman between the websocket connection and the hub.
 type Client struct {
 	hub *Hub
+
+	token string
 
 	// The websocket connection.
 	conn *websocket.Conn
@@ -20,35 +23,45 @@ type Client struct {
 	// onText is called when a textMessage is received on the websocket.
 	onText func(string)
 
-	// onError is called when the connection has an error.
-	// return true to close the connection.
-	onError func(error) bool
-
 	// Buffered channel of outbound messages.
 	send chan []byte
 }
 
 func (c *Client) OnBinary(f func(data []byte)) {
+	if f == nil {
+		return
+	}
 	c.onBinary = f
 }
 
 func (c *Client) OnText(f func(data string)) {
+	if f == nil {
+		return
+	}
 	c.onText = f
 }
 
-func (c *Client) OnError(f func(err error) bool) {
-	c.onError = f
-}
-
 func (c Client) Write(binary []byte) {
+	if binary == nil {
+		return
+	}
 	c.send <- binary
 }
 
-func NewClient(conn *websocket.Conn, h *Hub) *Client {
+func (c *Client) Close() error {
+	return c.conn.Close()
+}
+
+func (c Client) RemoteAddr() net.Addr {
+	return c.conn.RemoteAddr()
+}
+
+func NewClient(conn *websocket.Conn, h *Hub, token string) *Client {
 	client := &Client{
-		hub:  h,
-		conn: conn,
-		send: make(chan []byte, bufSize),
+		token: token,
+		hub:   h,
+		conn:  conn,
+		send:  make(chan []byte, bufSize),
 
 		onBinary: func(bytes []byte) {
 			logx.Sloww("onBinary", logx.LogField{
@@ -63,14 +76,6 @@ func NewClient(conn *websocket.Conn, h *Hub) *Client {
 				Value: s,
 			})
 		},
-
-		onError: func(err error) bool {
-			logx.Errorw("onError", logx.LogField{
-				Key:   "err",
-				Value: err,
-			})
-			return false
-		},
 	}
 
 	return client
@@ -84,7 +89,7 @@ func NewClient(conn *websocket.Conn, h *Hub) *Client {
 func (c *Client) ReadPump() {
 	defer func() {
 		c.hub.unregister <- c
-		c.conn.Close()
+		c.Close()
 	}()
 	c.conn.SetReadLimit(maxMessageSize)
 	c.conn.SetReadDeadline(time.Now().Add(pongWait))
@@ -92,9 +97,7 @@ func (c *Client) ReadPump() {
 	for {
 		msgType, message, err := c.conn.ReadMessage()
 		if err != nil {
-			if c.onError(err) {
-				break
-			}
+			break
 		}
 
 		if msgType == websocket.BinaryMessage {
@@ -104,7 +107,7 @@ func (c *Client) ReadPump() {
 		} else if msgType == websocket.CloseMessage {
 			break
 		} else {
-			logx.Info("onSupport message:", msgType, string(message))
+			logx.Info("unSupport message:", msgType, string(message))
 		}
 	}
 }
@@ -118,7 +121,7 @@ func (c *Client) WritePump() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
-		c.conn.Close()
+		c.Close()
 	}()
 
 	for {

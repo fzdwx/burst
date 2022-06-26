@@ -2,20 +2,22 @@ package main
 
 import (
 	"flag"
-	"fmt"
-
+	"github.com/fzdwx/burst/client/internal/client"
 	"github.com/fzdwx/burst/client/internal/config"
-	"github.com/fzdwx/burst/client/internal/handler"
-	"github.com/fzdwx/burst/client/internal/svc"
-
+	"github.com/fzdwx/burst/common/errx"
 	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "etc/client.yaml", "the config file")
+var configFile = flag.String("f", "C:\\Users\\98065\\IdeaProjects\\fzdwx\\burst\\client\\etc\\client.yaml", "the config file")
+var token = flag.String("t", "dev", "the access token")
 
 func main() {
 	flag.Parse()
+	if errx.CheckToken(*token) {
+		logx.Must(errx.TokenIsRequired)
+	}
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
@@ -23,9 +25,6 @@ func main() {
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
-	ctx := svc.NewServiceContext(c)
-	handler.RegisterHandlers(server, ctx)
-
-	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
+	client.Connect(c.Burst.BuildWsUrl(*token), *token)
 	server.Start()
 }
