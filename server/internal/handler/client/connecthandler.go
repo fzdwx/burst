@@ -1,28 +1,41 @@
 package client
 
 import (
+	"errors"
 	"net/http"
 
-	"github.com/fzdwx/burst/server/internal/logic/client"
 	"github.com/fzdwx/burst/server/internal/svc"
-	"github.com/fzdwx/burst/server/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
+)
+
+var (
+	tokenReq = errors.New("token is required")
 )
 
 func ConnectHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.ClientConnectReq
-		if err := httpx.Parse(r, &req); err != nil {
+		token := r.URL.Query().Get("token")
+		if token == "" {
+			httpx.Error(w, tokenReq)
+			return
+		}
+
+		conn, err := svcCtx.Hub.UpgradeToWs(w, r)
+		if err != nil {
 			httpx.Error(w, err)
 			return
 		}
 
-		l := client.NewConnectLogic(r.Context(), svcCtx)
-		resp, err := l.Connect(&req)
-		if err != nil {
-			httpx.Error(w, err)
-		} else {
-			httpx.OkJson(w, resp)
-		}
+		client := svcCtx.Hub.AddClient(conn)
+
+		//client.OnBinary(func(data []byte) {
+		//
+		//})
+		//client.OnText(func(data string) {
+		//
+		//})
+
+		go client.WritePump()
+		go client.ReadPump()
 	}
 }

@@ -1,3 +1,5 @@
 Name: server
 Host: 0.0.0.0
 Port: 10086
+WsConfig:
+  EnableCompression: false

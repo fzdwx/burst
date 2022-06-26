@@ -35,14 +35,3 @@ service server {
 	@handler removeProxy
 	post /remove () returns ()
 }
-
-// ============================= 客户端连接 =============================
-@server(
-	group: client
-)
-
-service server {
-	@doc "connect to server"
-	@handler connectHandler
-	get /connect (ClientConnectReq) returns (ClientConnectResp)
-}
