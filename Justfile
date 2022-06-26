@@ -7,7 +7,7 @@ client:
     go run ./client/client.go -f=./client/etc/client.yaml -t dev
 
 apis:
-    goctl api go -api ./client/desc/client.api -dir ./client/
+    goctl api go -api ./server/desc/server.api -dir ./server/
 
 tidy:
     go mod tidy

@@ -12,3 +12,19 @@ type ClientConnectReq struct {
 type ClientConnectResp struct {
 	Message string `json:"message"`
 }
+
+type AddProxyReq struct {
+	Token string         `path:"token"`
+	Proxy []AddProxyInfo `json:"proxy"`
+}
+
+type AddProxyResp struct {
+	Message string `json:"message"`
+}
+
+type AddProxyInfo struct {
+	Host         string `json:"host,default=localhost"`
+	Port         int    `json:"port"`
+	Type         string `json:"type,default=tcp"`
+	CustomDomain string `json:"customDomain,optional"`
+}

@@ -13,7 +13,7 @@ func ConnectHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		token := r.URL.Query().Get("token")
 		if errx.CheckToken(token) {
-			httpx.Error(w, errx.TokenIsRequired)
+			httpx.Error(w, errx.ErrTokenIsRequired)
 			return
 		}
 

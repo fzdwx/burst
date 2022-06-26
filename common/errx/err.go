@@ -3,7 +3,8 @@ package errx
 import "errors"
 
 var (
-	TokenIsRequired = errors.New("token is required")
+	ErrTokenIsRequired = errors.New("token is required")
+	ErrClientNotFound  = errors.New("client is not found")
 )
 
 func CheckToken(token string) bool {

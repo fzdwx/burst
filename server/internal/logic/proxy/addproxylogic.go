@@ -2,8 +2,11 @@ package proxy
 
 import (
 	"context"
+	"github.com/fzdwx/burst/common/errx"
 
 	"github.com/fzdwx/burst/server/internal/svc"
+	"github.com/fzdwx/burst/server/internal/types"
+
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -21,8 +24,15 @@ func NewAddProxyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddProxy
 	}
 }
 
-func (l *AddProxyLogic) AddProxy() error {
-	// todo: add your logic here and delete this line
+func (l *AddProxyLogic) AddProxy(req *types.AddProxyReq) (resp *types.AddProxyResp, err error) {
+	// todo: add proxy
+	ws := l.svcCtx.Hub.Get(req.Token)
+	if ws == nil {
+		return nil, errx.ErrClientNotFound
+	}
 
-	return nil
+	// todo
+	err = ws.WriteStr("hello world")
+
+	return
 }

@@ -12,6 +12,7 @@ import "types.api"
 
 // ============================= 用户 =============================
 @server(
+	prefix : user,
 	group: user
 )
 service server {
@@ -23,13 +24,14 @@ service server {
 // ============================= 代理 =============================
 
 @server(
+	prefix : proxy
 	group: proxy
 )
 
 service server {
 	@doc "add proxy info"
 	@handler addProxy
-	post /add () returns ()
+	post /add/:token (AddProxyInfo) returns (AddProxyResp)
 	
 	@doc "remove proxy info"
 	@handler removeProxy

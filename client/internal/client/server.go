@@ -23,9 +23,11 @@ func Connect(url url.URL, token string) {
 
 	logx.Infof("connect success: %v", client.RemoteAddr())
 
-	go hub.Run()
+	go hub.React()
 
 	client.OnBinary(func(data []byte) {
 		logx.Infof("binary: %v", data)
 	})
+
+	go client.React()
 }

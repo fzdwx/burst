@@ -41,7 +41,6 @@ func (l *Logic) Accept(token string, r *http.Request, w http.ResponseWriter) {
 
 	})
 
-	go client.WritePump()
-	go client.ReadPump()
+	go client.React()
 
 }

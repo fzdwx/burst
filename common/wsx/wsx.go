@@ -25,7 +25,7 @@ func NewUpgrader(config struct {
 	}
 }
 
-func Connect(url url.URL, token string, hub *Hub) (*Client, *http.Response, error) {
+func Connect(url url.URL, token string, hub *Hub) (*Websocket, *http.Response, error) {
 	conn, resp, err := websocket.DefaultDialer.Dial(url.String(), nil)
 	if err != nil {
 		return nil, resp, err

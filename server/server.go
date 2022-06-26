@@ -32,6 +32,6 @@ func main() {
 	handler.RegisterCustomHandlers(server, ctx)
 
 	fmt.Printf("Starting client at %s:%d...\n", c.Host, c.Port)
-	go hub.Run()
+	go hub.React()
 	server.Start()
 }

@@ -16,7 +16,7 @@ var token = flag.String("t", "dev", "the access token")
 func main() {
 	flag.Parse()
 	if errx.CheckToken(*token) {
-		logx.Must(errx.TokenIsRequired)
+		logx.Must(errx.ErrTokenIsRequired)
 	}
 
 	var c config.Config
