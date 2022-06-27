@@ -22,6 +22,7 @@ func NewConnectLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Logic {
 	}
 }
 
+// Accept connections from clients
 func (l *Logic) Accept(token string, r *http.Request, w http.ResponseWriter) {
 	conn, err := l.svcCtx.Hub.UpgradeToWs(w, r)
 	if err != nil {

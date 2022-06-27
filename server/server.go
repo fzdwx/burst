@@ -4,11 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"github.com/fzdwx/burst/common/wsx"
-
 	"github.com/fzdwx/burst/server/internal/config"
 	"github.com/fzdwx/burst/server/internal/handler"
 	"github.com/fzdwx/burst/server/internal/svc"
-
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
 )
