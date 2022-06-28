@@ -5,5 +5,4 @@
 
 ## stack
 
-1. go-zero
-2. websocket
+1.websocket

@@ -1,7 +1,0 @@
-Name: client
-Host: 0.0.0.0
-Port: 8888
-Burst:
-  Host: 0.0.0.0
-  Port: 10086
-  HttpPort: 39399
