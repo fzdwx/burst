@@ -1,8 +1,0 @@
-Name: client
-Host: 0.0.0.0
-Port: 10086
-Log:
-  Level: info
-  Encoding: plain
-WsConfig:
-  EnableCompression: false
