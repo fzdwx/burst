@@ -1,10 +1,10 @@
 #!/usr/bin/env just --justfile
 
 server:
-    go run ./server/server.go -f=./server/etc/server.yaml
+    go run ./cmd/server.go
 
 client:
-    go run ./client/client.go -f=./client/etc/client.yaml -t dev
+    go run ./cmd/client.go
 
 apis:
     goctl api go -api ./server/desc/server.api -dir ./server/
