@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/fzdwx/burst/pkg/ginx"
+	"github.com/fzdwx/burst/pkg/logx"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,15 +12,22 @@ var db = make(map[string]string)
 
 func setupRouter() *gin.Engine {
 	// Disable Console Color
-	r := gin.Default()
+	logx.UseDebugLevel()
+	r := ginx.Classic()
+
+	//r := gin.Default()
 
 	// Ping test
 	r.GET("/ping", func(c *gin.Context) {
+		logx.Info().Msg("hello world")
+		logx.Warn().Msg("ttttttttttttt")
+		logx.Error().Msg("qqqqqqqqqqq")
 		c.String(http.StatusOK, "pong")
 	})
 
 	// Get user value
 	r.GET("/user/:name", func(c *gin.Context) {
+
 		user := c.Params.ByName("name")
 		value, ok := db[user]
 		if ok {
