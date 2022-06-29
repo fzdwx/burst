@@ -23,6 +23,12 @@ type (
 	}
 )
 
+var (
+	defaultBinary = func(bytes []byte) {
+
+	}
+)
+
 func NewWsx(conn *websocket.Conn, onPeerClose func(code int, text string) error) *Wsx {
 	conn.SetCloseHandler(onPeerClose)
 	return &Wsx{
@@ -102,60 +108,60 @@ func (w *Wsx) StartReading(pongWait time.Duration) {
 // * ping the client in the interval provided as parameter
 // * write messages send by the channel to the client
 // * on errors exit the loop
-func (w *Wsx) startWriteHandler(pingPeriod time.Duration) {
-	pingTicker := time.NewTicker(pingPeriod)
+//func (w *Wsx) startWriteHandler(pingPeriod time.Duration) {
+//	pingTicker := time.NewTicker(pingPeriod)
 
-	dead := false
-	conClosed := func() {
-		dead = true
-		w.Close()
-		pingTicker.Stop()
-	}
-	defer conClosed()
-	defer func() {
-		w.debug().Msg("WebSocket Done")
-	}()
-	for {
-		select {
-		case reason := <-w.info.Close:
-			if reason == CloseDone {
-				return
-			} else {
-				_ = w.conn.CloseHandler()(websocket.CloseNormalClosure, reason)
-				conClosed()
-			}
-		case message := <-w.info.Write:
-			if dead {
-				w.debug().Msg("WebSocket write on dead connection")
-				continue
-			}
-
-			_ = w.conn.SetWriteDeadline(time.Now().Add(writeWait))
-			typed, err := ToTypedOutgoing(message)
-			w.debug().Interface("event", typed.Type).Msg("WebSocket Send")
-			if err != nil {
-				w.debug().Err(err).Msg("could not get typed message, exiting connection.")
-				conClosed()
-				continue
-			}
-
-			if room, ok := message.(outgoing.Room); ok {
-				w.info.RoomID = room.ID
-			}
-
-			if err := writeJSON(w.conn, typed); err != nil {
-				conClosed()
-				w.printWebSocketError("write", err)
-			}
-		case <-pingTicker.C:
-			_ = w.conn.SetWriteDeadline(time.Now().Add(writeWait))
-			if err := ping(w.conn); err != nil {
-				conClosed()
-				w.printWebSocketError("ping", err)
-			}
-		}
-	}
-}
+//dead := false
+//conClosed := func() {
+//	dead = true
+//	w.Close()
+//	pingTicker.Stop()
+//}
+//defer conClosed()
+//defer func() {
+//	w.debug().Msg("WebSocket Done")
+//}()
+//for {
+//	select {
+//	case reason := <-w.info.Close:
+//		if reason == CloseDone {
+//			return
+//		} else {
+//			_ = w.conn.CloseHandler()(websocket.CloseNormalClosure, reason)
+//			conClosed()
+//		}
+//	case message := <-w.info.Write:
+//		if dead {
+//			w.debug().Msg("WebSocket write on dead connection")
+//			continue
+//		}
+//
+//		_ = w.conn.SetWriteDeadline(time.Now().Add(writeWait))
+//		typed, err := ToTypedOutgoing(message)
+//		w.debug().Interface("event", typed.Type).Msg("WebSocket Send")
+//		if err != nil {
+//			w.debug().Err(err).Msg("could not get typed message, exiting connection.")
+//			conClosed()
+//			continue
+//		}
+//
+//		if room, ok := message.(outgoing.Room); ok {
+//			w.info.RoomID = room.ID
+//		}
+//
+//		if err := writeJSON(w.conn, typed); err != nil {
+//			conClosed()
+//			w.printWebSocketError("write", err)
+//		}
+//	case <-pingTicker.C:
+//		_ = w.conn.SetWriteDeadline(time.Now().Add(writeWait))
+//		if err := ping(w.conn); err != nil {
+//			conClosed()
+//			w.printWebSocketError("ping", err)
+//		}
+//	}
+//}
+//}
 
 func (w *Wsx) Close() {
 	if w.onClose != nil {
