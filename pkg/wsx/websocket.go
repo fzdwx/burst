@@ -104,7 +104,7 @@ func (w *Wsx) MountTextFunc(onText func(text string)) *Wsx {
 
 // WriteText write websocket.TextMessage to peer.
 func (w *Wsx) WriteText(text string) {
-	if text == "" {
+	if text == burst.EmptyStr {
 		return
 	}
 

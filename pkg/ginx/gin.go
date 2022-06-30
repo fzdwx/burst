@@ -1,6 +1,7 @@
 package ginx
 
 import (
+	"github.com/fzdwx/burst"
 	"github.com/fzdwx/burst/pkg/logx"
 	"github.com/gin-gonic/gin"
 	"time"
@@ -24,7 +25,7 @@ func Logger() gin.HandlerFunc {
 		// Process request
 		c.Next()
 
-		if raw != "" {
+		if raw != burst.EmptyStr {
 			path = path + "?" + raw
 		}
 
@@ -36,7 +37,7 @@ func Logger() gin.HandlerFunc {
 			Str("clientIp", c.ClientIP())
 
 		s := c.Errors.ByType(gin.ErrorTypePrivate).String()
-		if s == "" {
+		if s == burst.EmptyStr {
 			s = "REQUEST"
 		}
 		log.Msg(s)
