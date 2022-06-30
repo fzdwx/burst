@@ -3,7 +3,7 @@ package logx
 import (
 	"context"
 	"fmt"
-	"github.com/fzdwx/burst/pkg/colorx"
+	"github.com/fzdwx/colorx"
 	"github.com/rs/zerolog"
 	"io"
 	"os"

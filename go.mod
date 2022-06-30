@@ -3,6 +3,7 @@ module github.com/fzdwx/burst
 go 1.18
 
 require (
+	github.com/fzdwx/colorx v0.0.0-20220630130504-df71aadefcf0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/gorilla/websocket v1.5.0
 	github.com/rs/xid v1.4.0

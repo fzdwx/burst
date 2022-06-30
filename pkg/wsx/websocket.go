@@ -104,11 +104,19 @@ func (w *Wsx) MountTextFunc(onText func(text string)) *Wsx {
 
 // WriteText write websocket.TextMessage to peer.
 func (w *Wsx) WriteText(text string) {
+	if text == "" {
+		return
+	}
+
 	w.writeTextChan <- []byte(text)
 }
 
 // WriteBinary write websocket.BinaryMessage to peer.
 func (w *Wsx) WriteBinary(bytes []byte) {
+	if bytes == nil {
+		return
+	}
+
 	w.writeBinaryChan <- bytes
 }
 
@@ -168,6 +176,9 @@ func (w *Wsx) StartWriteHandler(pingPeriod time.Duration) {
 	for {
 		select {
 		case message := <-w.writeTextChan:
+			if message == nil {
+				return
+			}
 			if dead {
 				w.debug().Msg("WebSocket write on dead connection")
 				return
@@ -181,6 +192,10 @@ func (w *Wsx) StartWriteHandler(pingPeriod time.Duration) {
 				w.debug().Int("write", len(message)).Msg("WebSocket Send Text")
 			}
 		case message := <-w.writeBinaryChan:
+			if message == nil {
+				return
+			}
+
 			if dead {
 				w.debug().Msg("WebSocket write on dead connection")
 				return
