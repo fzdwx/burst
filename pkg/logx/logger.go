@@ -7,7 +7,6 @@ import (
 	"github.com/rs/zerolog"
 	"io"
 	"os"
-	"strings"
 )
 
 func UseDebugLevel() {
@@ -28,20 +27,20 @@ func InitLogger(writer ...io.Writer) {
 }
 
 func init() {
-	consoleWriter := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: "2006/01/02 - 15:04:05"}
-	consoleWriter.FormatLevel = func(i interface{}) string {
-		return fmt.Sprintf("|%s %-6s%s|", getLevel(i), strings.ToUpper(i.(string)), colorx.ResetRaw)
-	}
-	consoleWriter.FormatMessage = func(i interface{}) string {
-		return fmt.Sprintf("%s", i)
-	}
-	consoleWriter.FormatFieldName = func(i interface{}) string {
-		return fmt.Sprintf("%s=", colorx.Colorize(i, colorx.ColorDarkGray))
-	}
-	consoleWriter.FormatFieldValue = func(i interface{}) string {
-		return fmt.Sprintf("%s", i)
-	}
-	InitLogger(consoleWriter)
+	//consoleWriter := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: "2006/01/02 - 15:04:05"}
+	//consoleWriter.FormatLevel = func(i interface{}) string {
+	//	return fmt.Sprintf("|%s %-6s%s|", getLevel(i), strings.ToUpper(i.(string)), colorx.ResetRaw)
+	//}
+	//consoleWriter.FormatMessage = func(i interface{}) string {
+	//	return fmt.Sprintf("%s", i)
+	//}
+	//consoleWriter.FormatFieldName = func(i interface{}) string {
+	//	return fmt.Sprintf("%s=", colorx.Colorize(i, colorx.ColorDarkGray))
+	//}
+	//consoleWriter.FormatFieldValue = func(i interface{}) string {
+	//	return fmt.Sprintf("%s", i)
+	//}
+	InitLogger(os.Stdout)
 }
 
 func getLevel(level interface{}) string {
