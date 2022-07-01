@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/websocket"
 	"io/ioutil"
 	"net/url"
+	"time"
 )
 
 type Client struct {
@@ -32,6 +33,7 @@ func (c *Client) Connect() {
 		RawQuery: "token=" + c.token,
 	}
 
+	// connect to server and check not error
 	conn, resp, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
 		if resp.Body != nil {
@@ -44,5 +46,9 @@ func (c *Client) Connect() {
 		}
 		return
 	}
+
 	c.Wsx = wsx.NewClassicWsx(conn)
+
+	go c.Wsx.StartReading(time.Second * 20)
+	go c.Wsx.StartWriteHandler(time.Second * 5)
 }

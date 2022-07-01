@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+// Accept  todo save client to cache
 func Accept(svcContext *svc.ServiceContext) (string, gin.HandlerFunc) {
 	return "/accept", func(context *gin.Context) {
 		// check token

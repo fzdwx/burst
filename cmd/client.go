@@ -8,7 +8,6 @@ import (
 	"github.com/jinzhu/configor"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
 var (
@@ -46,9 +45,6 @@ func main() {
 	client := client.NewClient(token, cConfig)
 
 	client.Connect()
-
-	go client.StartReading(time.Second * 20)
-	go client.StartWriteHandler(time.Second * 5)
 	client.WriteText("hello world")
 	select {}
 }
