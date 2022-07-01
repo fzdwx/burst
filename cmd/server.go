@@ -2,23 +2,18 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"github.com/fzdwx/burst/pkg/ginx"
 	"github.com/fzdwx/burst/pkg/logx"
-	"github.com/fzdwx/burst/pkg/wsx"
 	"github.com/fzdwx/burst/server"
-	"github.com/gorilla/websocket"
+	"github.com/fzdwx/burst/server/api"
+	"github.com/fzdwx/burst/server/svc"
 	"github.com/jinzhu/configor"
-	"net/http"
-	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
-var db = make(map[string]string)
-
-var c = flag.String("c", "server.yml", "the config file path")
-var sConfig = server.Config{}
+var (
+	c       = flag.String("c", "server.yml", "the config file path")
+	sConfig = server.Config{}
+)
 
 func init() {
 	flag.Parse()
@@ -28,48 +23,18 @@ func init() {
 		logx.Fatal().Msg(err.Error())
 	}
 
+	level := logx.GetLogLevel(sConfig.LogLevel)
+	logx.UseLogLevel(level)
 }
 
 func main() {
-	r := setupRouter()
+	svcContext := svc.NewServiceContext(sConfig)
 
-	//fmt.Println(cf.Port)
-	// Listen and Server in 0.0.0.0:8080
-	r.Run(sConfig.Addr)
-}
+	e := ginx.Classic()
 
-func setupRouter() *gin.Engine {
+	api.MountRouters(e, svcContext)
 
-	// Disable Console Color
-	logx.UseDebugLevel()
-	r := ginx.Classic()
-
-	// Ping test
-	r.GET("/ping", func(c *gin.Context) {
-		logx.Info().Msg("hello world")
-		logx.Warn().Msg("ttttttttttttt")
-		logx.Error().Msg("qqqqqqqqqqq")
-		c.String(http.StatusOK, "pong")
-	})
-
-	upgrader := websocket.Upgrader{
-		CheckOrigin: func(r *http.Request) bool {
-			return true
-		},
-	}
-	r.GET("/ws", func(context *gin.Context) {
-		conn, err := upgrader.Upgrade(context.Writer, context.Request, nil)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		ws := wsx.NewClassicWsx(conn)
-
-		go ws.StartReading(time.Second * 20)
-		go ws.StartWriteHandler(time.Second * 5)
-
-		ws.WriteText("hello world")
-	})
-
-	return r
+	err := e.Run(sConfig.Addr)
+	logx.Fatal().Msg(err.Error())
+	logx.Info()
 }

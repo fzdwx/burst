@@ -3,23 +3,34 @@ package logx
 import (
 	"context"
 	"fmt"
-	"github.com/fzdwx/colorx"
 	"github.com/rs/zerolog"
 	"io"
 	"os"
 )
 
-func UseDebugLevel() {
-	// UNIX Time is faster and smaller than most timestamps
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	zerolog.SetGlobalLevel(zerolog.DebugLevel)
-}
-
-func UseInfoLevel() {
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
-}
-
 var log = zerolog.New(os.Stderr).With().Timestamp().Logger()
+
+func GetLogLevel(str string) zerolog.Level {
+	switch str {
+	case "debug":
+		return zerolog.DebugLevel
+	case "info":
+		return zerolog.InfoLevel
+	case "warn":
+		return zerolog.WarnLevel
+	case "error":
+		return zerolog.WarnLevel
+	case "fatal":
+		return zerolog.FatalLevel
+	case "panic":
+		return zerolog.PanicLevel
+	}
+	return zerolog.DebugLevel
+}
+
+func UseLogLevel(l zerolog.Level) {
+	zerolog.SetGlobalLevel(l)
+}
 
 func InitLogger(writer ...io.Writer) {
 	multi := zerolog.MultiLevelWriter(writer...)
@@ -41,19 +52,6 @@ func init() {
 	//	return fmt.Sprintf("%s", i)
 	//}
 	InitLogger(os.Stdout)
-}
-
-func getLevel(level interface{}) string {
-	if level == "info" {
-		return colorx.GreenRaw
-	} else if level == "debug" {
-		return colorx.MagentaRaw
-	} else if level == "warn" {
-		return colorx.BlueRaw
-	} else if level == "error" || level == "fatal" {
-		return colorx.RedRaw
-	}
-	return colorx.CyanRaw
 }
 
 func EnableDebug() bool {
