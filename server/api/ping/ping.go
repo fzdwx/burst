@@ -1,14 +1,16 @@
 package ping
 
 import (
+	"github.com/fzdwx/burst/pkg/logx"
+	"github.com/fzdwx/burst/pkg/result"
 	"github.com/fzdwx/burst/server/svc"
-	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 // Ping test function
-func Ping(svcContext *svc.ServiceContext) (string, gin.HandlerFunc) {
-	return "/ping", func(context *gin.Context) {
-		context.String(http.StatusOK, "pong")
+func Ping(svcContext *svc.ServiceContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		logx.Info().Msgf("hello world")
+		result.HttpOk(w, "pong")
 	}
 }

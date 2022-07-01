@@ -1,0 +1,3 @@
+Name: burstServer
+Port: 9999
+LogLevel: debug

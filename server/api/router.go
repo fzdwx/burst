@@ -5,13 +5,34 @@ import (
 	"github.com/fzdwx/burst/server/api/user"
 	"github.com/fzdwx/burst/server/api/ws"
 	"github.com/fzdwx/burst/server/svc"
-	"github.com/gin-gonic/gin"
+	"github.com/zeromicro/go-zero/rest"
+	"net/http"
 )
 
-func MountRouters(e *gin.Engine, svcContext *svc.ServiceContext) {
-	e.GET(ws.Accept(svcContext))
-	e.GET(ping.Ping(svcContext))
+func MountRouters(s *rest.Server, svcContext *svc.ServiceContext) {
+	s.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/accept",
+				Handler: ws.Accept(svcContext),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/ping",
+				Handler: ping.Ping(svcContext),
+			},
+		},
+	)
 
-	e.Group("/user").
-		GET(user.Auth())
+	s.AddRoutes([]rest.Route{
+		{
+			Method:  http.MethodGet,
+			Path:    "/auth",
+			Handler: user.Auth(svcContext),
+		},
+	},
+		rest.WithPrefix("/user"),
+	)
+
 }

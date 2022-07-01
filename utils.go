@@ -1,6 +1,8 @@
 package burst
 
-import "fmt"
+import (
+	"fmt"
+)
 
 const (
 	EmptyStr = ""

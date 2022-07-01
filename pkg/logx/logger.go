@@ -55,6 +55,10 @@ func init() {
 	InitLogger(os.Stdout)
 }
 
+func GetLog() zerolog.Logger {
+	return log
+}
+
 func EnableDebug() bool {
 	return zerolog.GlobalLevel() == zerolog.DebugLevel
 }

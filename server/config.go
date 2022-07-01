@@ -1,6 +1,8 @@
 package server
 
+import "github.com/zeromicro/go-zero/rest"
+
 type Config struct {
-	Addr     string `default:":9999" required:"true"`
-	LogLevel string `default:"debug"`
+	rest.RestConf
+	LogLevel string `json:",default=debug"`
 }

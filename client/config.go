@@ -2,8 +2,8 @@ package client
 
 type Config struct {
 	Server struct {
-		Port int    `default:"9999" required:"true"`
-		Host string `required:"true"`
+		Port int    `json:",default=9999"`
+		Host string `json:",required=true"`
 	}
-	LogLevel string `default:"debug"`
+	LogLevel string `json:",default=debug"`
 }

@@ -3,34 +3,35 @@ package ws
 import (
 	"fmt"
 	"github.com/fzdwx/burst"
-	"github.com/fzdwx/burst/pkg/ginx"
+	"github.com/fzdwx/burst/pkg/result"
 	"github.com/fzdwx/burst/pkg/wsx"
 	"github.com/fzdwx/burst/server/cache"
 	"github.com/fzdwx/burst/server/svc"
-	"github.com/gin-gonic/gin"
+	"net/http"
 	"time"
 )
 
 // Accept  todo save client to cache
-func Accept(svcContext *svc.ServiceContext) (string, gin.HandlerFunc) {
-	return "/accept", func(context *gin.Context) {
+func Accept(svcContext *svc.ServiceContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		// check token
-		token := context.Query("token")
+
+		token := r.URL.Query().Get("token")
 		if token == burst.EmptyStr {
-			ginx.Error("token not found", context)
+			result.HttpBadRequest(w, "token not found")
 			return
 		}
 
 		if !cache.ProxyInfoContainer.Has(token) {
-			ginx.Error("token is not valid", context)
+			result.HttpBadRequest(w, "token is not valid")
 			return
 		}
 
 		// upgrade to websocket
-		conn, err := svcContext.WsUpgrader.Upgrade(context.Writer, context.Request, nil)
+		conn, err := svcContext.WsUpgrader.Upgrade(w, r, nil)
 
 		if err != nil {
-			ginx.Error("upgrade to websocket fail", context)
+			result.HttpBadRequest(w, "upgrade to websocket fail")
 			return
 		}
 
