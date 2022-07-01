@@ -40,6 +40,10 @@ func Accept(svcContext *svc.ServiceContext) (string, gin.HandlerFunc) {
 			ws.WriteText("我草11111")
 		})
 
+		ws.MountCloseFunc(func(err error) {
+			cache.ProxyInfoContainer.Remove(token)
+		})
+
 		go ws.StartReading(time.Second * 20)
 		go ws.StartWriteHandler(time.Second * 5)
 		ws.WriteText("hello world")

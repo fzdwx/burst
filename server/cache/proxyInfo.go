@@ -2,6 +2,7 @@ package cache
 
 import (
 	"github.com/fzdwx/burst/pkg"
+	"github.com/fzdwx/burst/pkg/logx"
 	cmap "github.com/orcaman/concurrent-map"
 )
 
@@ -36,6 +37,13 @@ func (p proxyInfoCache) Get(token string) (*proxyInfos, bool) {
 	}
 
 	return nil, false
+}
+
+func (p *proxyInfoCache) Remove(token string) {
+	p.m.RemoveCb(token, func(key string, v interface{}, exists bool) bool {
+		logx.Info().Msg("clean proxy info")
+		return true
+	})
 }
 
 func (p *proxyInfos) Add(info pkg.ProxyInfo) {

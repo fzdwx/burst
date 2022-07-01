@@ -3,13 +3,14 @@ package client
 import (
 	"github.com/fzdwx/burst"
 	"github.com/fzdwx/burst/pkg/logx"
+	"github.com/fzdwx/burst/pkg/wsx"
 	"github.com/gorilla/websocket"
 	"io/ioutil"
 	"net/url"
 )
 
 type Client struct {
-	conn       websocket.Conn
+	*wsx.Wsx
 	token      string
 	config     Config
 	serverAddr string
@@ -43,7 +44,5 @@ func (c *Client) Connect() {
 		}
 		return
 	}
-
-	// test
-	conn.WriteMessage(websocket.TextMessage, []byte("123"))
+	c.Wsx = wsx.NewClassicWsx(conn)
 }
