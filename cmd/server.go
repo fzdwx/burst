@@ -1,11 +1,14 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/fzdwx/burst/pkg/ginx"
 	"github.com/fzdwx/burst/pkg/logx"
 	"github.com/fzdwx/burst/pkg/wsx"
+	"github.com/fzdwx/burst/server"
 	"github.com/gorilla/websocket"
+	"github.com/jinzhu/configor"
 	"net/http"
 	"time"
 
@@ -14,12 +17,32 @@ import (
 
 var db = make(map[string]string)
 
+var c = flag.String("c", "server.yml", "the config file path")
+var sConfig = server.Config{}
+
+func init() {
+	flag.Parse()
+
+	err := configor.Load(&sConfig, *c)
+	if err != nil {
+		logx.Fatal().Msg(err.Error())
+	}
+
+}
+
+func main() {
+	r := setupRouter()
+
+	//fmt.Println(cf.Port)
+	// Listen and Server in 0.0.0.0:8080
+	r.Run(sConfig.Addr)
+}
+
 func setupRouter() *gin.Engine {
+
 	// Disable Console Color
 	logx.UseDebugLevel()
 	r := ginx.Classic()
-
-	//r := gin.Default()
 
 	// Ping test
 	r.GET("/ping", func(c *gin.Context) {
@@ -49,10 +72,4 @@ func setupRouter() *gin.Engine {
 	})
 
 	return r
-}
-
-func main() {
-	r := setupRouter()
-	// Listen and Server in 0.0.0.0:8080
-	r.Run(":9999")
 }
