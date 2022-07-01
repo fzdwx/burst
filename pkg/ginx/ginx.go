@@ -4,6 +4,7 @@ import (
 	"github.com/fzdwx/burst"
 	"github.com/fzdwx/burst/pkg/logx"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"time"
 )
 
@@ -42,4 +43,9 @@ func Logger() gin.HandlerFunc {
 		}
 		log.Msg(s)
 	}
+}
+
+func Error(message string, c *gin.Context) {
+	logx.Error().Msg(message)
+	http.Error(c.Writer, message, http.StatusInternalServerError)
 }

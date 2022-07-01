@@ -11,14 +11,14 @@ import (
 )
 
 var (
-	c       = flag.String("c", "server.yml", "the config file path")
+	sc      = flag.String("c", "server.yml", "the config file path")
 	sConfig = server.Config{}
 )
 
 func init() {
 	flag.Parse()
 
-	err := configor.Load(&sConfig, *c)
+	err := configor.Load(&sConfig, *sc)
 	if err != nil {
 		logx.Fatal().Msg(err.Error())
 	}
@@ -35,6 +35,7 @@ func main() {
 	api.MountRouters(e, svcContext)
 
 	err := e.Run(sConfig.Addr)
-	logx.Fatal().Msg(err.Error())
-	logx.Info()
+	if err != nil {
+		logx.Fatal().Msg(err.Error())
+	}
 }
