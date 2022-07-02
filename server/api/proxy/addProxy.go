@@ -26,16 +26,30 @@ func AddProxy(svcContext *svc.ServiceContext) http.HandlerFunc {
 			result.HttpBadRequest(w, proxyInfoNotFound.Error())
 		}
 
-		var ProxyInfos = cache.NewProxyInfos()
+		server, b := cache.ServerContainer.Get(token)
+		if !b {
+			result.HttpBadRequest(w, clientNotFound.Error())
+			return
+		}
+
+		var proxyInfos []*pkg.ServerProxyInfo
+
+		// check if proxy is duplicated
 		for _, proxyInfo := range req.Proxy {
 			if info.Has(proxyInfo.addr()) {
 				result.HttpBadRequest(w, fmt.Sprintf("proxy %s already exists", proxyInfo.String()))
 				return
 			}
-			ProxyInfos.Add(proxyInfo.toCache())
+			proxyInfos = append(proxyInfos, proxyInfo.toCache())
 		}
-		cache.ProxyInfoContainer.Put(token, ProxyInfos)
-		// todo lunch proxy server and send to client
+
+		err = server.Lunch(proxyInfos)
+		if err != nil {
+			result.HttpBadRequest(w, err.Error())
+			return
+		}
+
+		cache.ProxyInfoContainer.Put(token, proxyInfos)
 
 		httpx.OkJson(w, req)
 	}
@@ -60,6 +74,7 @@ var (
 	ipIsBlank         = errors.New("ip is blank")
 	ipIsNotValid      = errors.New("ip is not valid")
 	portIsNotValid    = errors.New("port is not valid")
+	clientNotFound    = errors.New("client not found")
 )
 
 func (i addProxyInfo) addr() string {
@@ -70,8 +85,8 @@ func (i addProxyInfo) String() string {
 	return fmt.Sprintf("%s:%s", i.ChannelType, i.addr())
 }
 
-func (i addProxyInfo) toCache() *pkg.ProxyInfo {
-	return &pkg.ProxyInfo{
+func (i addProxyInfo) toCache() *pkg.ServerProxyInfo {
+	return &pkg.ServerProxyInfo{
 		Ip:          i.Ip,
 		Port:        i.Port,
 		ChannelType: i.ChannelType,

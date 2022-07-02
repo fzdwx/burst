@@ -8,7 +8,7 @@ import (
 
 func init() {
 	ProxyInfoContainer = proxyInfoCache{m: newCache("proxyInfo")}
-	ClientContainer = clientCache{m: newCache("client")}
+	ServerContainer = ServerCache{m: newCache("client")}
 }
 
 func newCache(name string) *collection.Cache {

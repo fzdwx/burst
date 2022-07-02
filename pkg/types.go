@@ -3,11 +3,24 @@ package pkg
 import "errors"
 
 type (
-	ProxyInfo struct {
-		Ip          string
-		Port        int
+	ServerProxyInfo struct {
+		// Ip The intranet IP address of the service that the user submits to be exposed
+		Ip string
+		// Port The port of the service submitted by the user to be exposed
+		Port int
+		// ChannelType channel type
 		ChannelType string
-		Addr        string
+		// Addr format Ip : Port
+		Addr string
+	}
+
+	ClientProxyInfo struct {
+		// ServerPort The port exposed by the server
+		ServerPort int
+		// IntranetAddr The address of the intranet service
+		IntranetAddr string
+		// ChannelType channel type
+		ChannelType string
 	}
 )
 

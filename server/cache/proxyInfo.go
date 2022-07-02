@@ -15,12 +15,12 @@ type (
 	}
 
 	ProxyInfos struct {
-		m map[string]*pkg.ProxyInfo
+		m map[string]*pkg.ServerProxyInfo
 	}
 )
 
 func NewProxyInfos() *ProxyInfos {
-	return &ProxyInfos{m: map[string]*pkg.ProxyInfo{}}
+	return &ProxyInfos{m: map[string]*pkg.ServerProxyInfo{}}
 }
 
 func (pc *proxyInfoCache) Add(token string) {
@@ -32,7 +32,7 @@ func (pc proxyInfoCache) Has(token string) bool {
 	return b
 }
 
-func (pc *proxyInfoCache) Put(token string, infos *ProxyInfos) bool {
+func (pc *proxyInfoCache) Put(token string, infos []*pkg.ServerProxyInfo) bool {
 	old, b := pc.Get(token)
 	if !b {
 		return false
@@ -54,12 +54,12 @@ func (pc *proxyInfoCache) Remove(token string) {
 	pc.m.Del(token)
 }
 
-func (pi *ProxyInfos) Add(info *pkg.ProxyInfo) {
+func (pi *ProxyInfos) Add(info *pkg.ServerProxyInfo) {
 	pi.m[info.Addr] = info
 }
 
-func (pi *ProxyInfos) AddAll(proxyInfos *ProxyInfos) {
-	for _, info := range proxyInfos.m {
+func (pi *ProxyInfos) AddAll(infos []*pkg.ServerProxyInfo) {
+	for _, info := range infos {
 		pi.Add(info)
 	}
 }

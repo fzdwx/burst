@@ -36,7 +36,7 @@ func Accept(svcContext *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		ws := wsx.NewClassicWsx(conn)
-		cache.ClientContainer.Put(ws)
+		cache.ServerContainer.Put(token, ws)
 
 		ws.MountTextFunc(func(text string) {
 			fmt.Println(text)
@@ -45,7 +45,7 @@ func Accept(svcContext *svc.ServiceContext) http.HandlerFunc {
 
 		ws.MountCloseFunc(func(err error) {
 			cache.ProxyInfoContainer.Remove(token)
-			cache.ClientContainer.Remove(ws)
+			cache.ServerContainer.Remove(token)
 		})
 
 		go ws.StartReading(time.Second * 20)
