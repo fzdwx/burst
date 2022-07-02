@@ -43,7 +43,7 @@ func AddProxy(svcContext *svc.ServiceContext) http.HandlerFunc {
 			proxyInfos = append(proxyInfos, proxyInfo.toCache())
 		}
 
-		err, clientPorxyInfos := server.Lunch(proxyInfos)
+		err, clientProxyInfos := server.Lunch(proxyInfos)
 		if err != nil {
 			result.HttpBadRequest(w, err.Error())
 			return
@@ -52,7 +52,7 @@ func AddProxy(svcContext *svc.ServiceContext) http.HandlerFunc {
 		cache.ProxyInfoContainer.Put(token, proxyInfos)
 
 		// todo send client proxy info to client
-		httpx.OkJson(w, clientPorxyInfos)
+		httpx.OkJson(w, clientProxyInfos)
 	}
 }
 
