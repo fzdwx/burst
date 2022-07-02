@@ -13,7 +13,7 @@ func Auth(*svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		token := xid.New().String()
 
-		cache.ProxyInfoContainer.Put(token)
+		cache.ProxyInfoContainer.Add(token)
 		result.HttpOk(w, token)
 	}
 }

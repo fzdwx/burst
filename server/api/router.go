@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/fzdwx/burst/server/api/ping"
+	"github.com/fzdwx/burst/server/api/proxy"
 	"github.com/fzdwx/burst/server/api/user"
 	"github.com/fzdwx/burst/server/api/ws"
 	"github.com/fzdwx/burst/server/svc"
@@ -35,4 +36,13 @@ func MountRouters(s *rest.Server, svcContext *svc.ServiceContext) {
 		rest.WithPrefix("/user"),
 	)
 
+	s.AddRoutes([]rest.Route{
+		{
+			Method:  http.MethodPost,
+			Path:    "/add/:token",
+			Handler: proxy.AddProxy(svcContext),
+		},
+	},
+		rest.WithPrefix("/proxy"),
+	)
 }
