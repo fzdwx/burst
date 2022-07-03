@@ -13,6 +13,26 @@ Server:
   Host: localhost
 ```
 
+## 获取TOKEN
+
+请求地址: `GET /user/auth`
+
+响应:
+
+```raw
+cb0ojodu3aotti323c80
+```
+
+作用:
+
+1. 用于启动客户端: `./client -t cb0ojodu3aotti323c80`
+2. 后面所有的API请求都需要带上`TOKEN`
+3. 如果启动时没有指定`TOKEN`,那么客户端将会自己请求服务端生成一个`TOKEN`,会通过日志打印出来
+    ```raw
+    2022/07/03 - 12:24:53 INF token: cb0ol5du3aotti323c8g
+    ```
+   用户后面如果调用`API`就要携带这个`TOKEN`
+
 ## 添加代理
 
 请求地址: `POST /proxy/add/:token`
