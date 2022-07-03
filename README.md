@@ -1,20 +1,24 @@
-# burst
+# burst | [English](https://github.com/fzdwx/burst/blob/main/docs/en/README.md)
 
-It is a program that can expose intranet services to the internet
+它是一个可以将 内网 服务暴露给 公网 的程序,使用`REST API`来管理
+
+**注意: 当前版本可能还有很多bug,请谨慎使用!**
 
 ## Features
 
-1. Supports all `TCP-based` protocols, including `HTTP`, `Websocket`, `Mysql`, `SSH`...
-2. Support dynamic addition of proxies
+1. 支持所欲基于`TCP`的协议,比如`HTTP`、`Websocket`、`MySQL`、`SSH`等等
+2. 支持动态添加代理
 
 ## Documentation
-todo
+
+1. [快速开始](https://github.com/fzdwx/burst/blob/main/docs/china/quickstart.md)
 
 ## Stack
 
-1. go-zero
-2. websocket
+1. golang/net
+2. go-zero
+3. websocket
 
 ## Links
 
-[older versions of code written in Java](https://github.com/fzdwx/burst/tree/java)
+[使用Java写的旧版本代码](https://github.com/fzdwx/burst/tree/java)
