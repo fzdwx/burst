@@ -44,15 +44,22 @@ func AddProxy(svcContext *svc.ServiceContext) http.HandlerFunc {
 			proxyInfos = append(proxyInfos, proxyInfo.toCache())
 		}
 
-		// todo on error clean server
-		err, clientProxyInfos := server.Lunch(proxyInfos)
+		err, clientProxyInfos, closers := server.Lunch(proxyInfos)
+		clean := func() {
+			for _, c := range closers {
+				c.Close()
+			}
+		}
+
 		if err != nil {
+			go clean()
 			result.HttpBadRequest(w, err.Error())
 			return
 		}
 
 		bytes, err := protocal.NewAddProxy(clientProxyInfos).Encode()
 		if err != nil {
+			go clean()
 			result.HttpBadRequest(w, err.Error())
 			return
 		}

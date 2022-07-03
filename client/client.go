@@ -12,14 +12,17 @@ import (
 	"time"
 )
 
-type Client struct {
-	*wsx.Wsx
-	token      string
-	config     Config
-	serverAddr string
-	serverHost string
-	proxy      map[string]pkg.ClientProxyInfo
-}
+type (
+	Client struct {
+		*wsx.Wsx
+		token      string
+		config     Config
+		serverAddr string
+		serverHost string
+		proxy      map[string]pkg.ClientProxyInfo
+		internet   map[string]*InternetService
+	}
+)
 
 func NewClient(token string, config Config) *Client {
 	return &Client{
@@ -28,6 +31,7 @@ func NewClient(token string, config Config) *Client {
 		serverAddr: burst.FormatAddr(config.Server.Host, config.Server.Port),
 		serverHost: config.Server.Host,
 		proxy:      make(map[string]pkg.ClientProxyInfo),
+		internet:   make(map[string]*InternetService),
 	}
 }
 
@@ -72,4 +76,18 @@ func (c *Client) AddProxy(a protocal.AddProxy) {
 		c.proxy[info.Key()] = info
 		logx.Info().Msgf("add proxy: intranet [%s] to [%s]", info.IntranetAddr, info.Address(c.serverHost))
 	}
+}
+
+func (c *Client) GetProxy(key string) (pkg.ClientProxyInfo, bool) {
+	info, ok := c.proxy[key]
+	return info, ok
+}
+
+func (c *Client) AddInterNetService(net *InternetService) {
+	c.internet[net.connId] = net
+}
+
+func (c Client) GetInternetService(connId string) (*InternetService, bool) {
+	internet, ok := c.internet[connId]
+	return internet, ok
 }

@@ -1,6 +1,7 @@
 package proxy
 
 import (
+	"fmt"
 	"github.com/fzdwx/burst/pkg/logx"
 	"github.com/fzdwx/burst/pkg/protocal"
 	"github.com/google/uuid"
@@ -15,44 +16,75 @@ type (
 		conn net.Conn
 		c    *Container
 		// key used to identify the service started by the server
-		key string
+		key       string
+		writeChan chan []byte
 	}
 )
 
 func NewUserConn(conn net.Conn, c *Container, key string) *UserConn {
 	return &UserConn{
-		Id:   uuid.New().String(),
-		conn: conn,
-		c:    c,
-		key:  key,
+		Id:        uuid.New().String(),
+		conn:      conn,
+		c:         c,
+		key:       key,
+		writeChan: make(chan []byte),
 	}
+}
+
+// UserConnect notify the client to monitor the intranet service
+func (u UserConn) UserConnect() error {
+	bytes, err := protocal.NewUserConnect(u.key, u.Id).Encode()
+	if err != nil {
+		u.err(err).Msg("encode userConnect")
+		return err
+	}
+
+	u.c.WriteBinary(bytes)
+	return nil
 }
 
 // ReadUserRequest read user request to client with to write intranet service.
 func (u UserConn) ReadUserRequest() {
+	// todo clean
 	for {
 		// todo read buffer size
 		buf := make([]byte, 1024)
 		n, err := u.conn.Read(buf)
 		if err != nil {
+			fmt.Println(err)
 			u.err(err).Msg("read user connection")
-			break
+			return
 		}
 
-		data, err := u.buildUserRequest(buf, n)
+		bytes, err := protocal.NewUserRequest(buf[:n], u.key, u.Id).Encode()
 
 		if err != nil {
 			u.err(err).Msg("encode userRequest")
 			continue
 		}
 
-		// todo write client receive
-		u.c.WriteBinary(data)
+		u.c.WriteBinary(bytes)
+		logx.Debug().Int("write", n).Msg("write to client on user request")
 	}
 }
 
-func (u UserConn) buildUserRequest(buf []byte, n int) ([]byte, error) {
-	return protocal.NewUserRequest(buf[:n], u.key, u.Id).Encode()
+func (u UserConn) StartWriteToUser() {
+	// todo clean
+	for {
+		select {
+		case data := <-u.writeChan:
+			// write user request data to internet
+			_, err := u.conn.Write(data)
+			if err != nil {
+				u.err(err).Msg("write to user")
+				return
+			}
+		}
+	}
+}
+
+func (u UserConn) Write(data []byte) {
+	u.writeChan <- data
 }
 
 func (u UserConn) err(err error) *zerolog.Event {

@@ -1,10 +1,12 @@
 package ws
 
 import (
-	"fmt"
 	"github.com/fzdwx/burst"
+	"github.com/fzdwx/burst/pkg/logx"
+	"github.com/fzdwx/burst/pkg/protocal"
 	"github.com/fzdwx/burst/pkg/result"
 	"github.com/fzdwx/burst/pkg/wsx"
+	"github.com/fzdwx/burst/server/api/ws/handler/internetResponse"
 	"github.com/fzdwx/burst/server/cache"
 	"github.com/fzdwx/burst/server/svc"
 	"net/http"
@@ -38,9 +40,19 @@ func Accept(svcContext *svc.ServiceContext) http.HandlerFunc {
 		ws := wsx.NewClassicWsx(conn)
 		cache.ServerContainer.Put(token, ws)
 
-		ws.MountTextFunc(func(text string) {
-			fmt.Println(text)
-			ws.WriteText("我草11111")
+		ws.MountBinaryFunc(func(bytes []byte) {
+
+			decode, err := protocal.Decode(bytes)
+			if err != nil {
+				logx.Err(err).Msg("decode burst")
+				return
+			}
+
+			switch decode.Type {
+			case protocal.InternetResponseType:
+				internetResponse.Handle(decode.InternetResponse)
+			}
+
 		})
 
 		ws.MountCloseFunc(func(err error) {

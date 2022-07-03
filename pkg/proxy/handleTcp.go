@@ -3,13 +3,14 @@ package proxy
 import (
 	"github.com/fzdwx/burst/pkg"
 	"github.com/fzdwx/burst/pkg/logx"
+	"io"
 	"net"
 )
 
-func (c *Container) handleTCP(info *pkg.ServerProxyInfo) (error, *pkg.ClientProxyInfo) {
+func (c *Container) handleTCP(info *pkg.ServerProxyInfo) (error, *pkg.ClientProxyInfo, io.Closer) {
 	tcp, err := net.ListenTCP(info.ChannelType, nil)
 	if err != nil {
-		return err, nil
+		return err, nil, nil
 	}
 
 	c.Closer = append(c.Closer, tcp)
@@ -20,6 +21,7 @@ func (c *Container) handleTCP(info *pkg.ServerProxyInfo) (error, *pkg.ClientProx
 		IntranetAddr: info.Addr,
 		ServerPort:   serverPort,
 	}
+
 	go func() {
 		for {
 			// accept user connection
@@ -30,9 +32,18 @@ func (c *Container) handleTCP(info *pkg.ServerProxyInfo) (error, *pkg.ClientProx
 			}
 
 			userConn := NewUserConn(conn, c, cp.Key())
+			c.Closer = append(c.Closer, conn)
+			c.AddUserConn(userConn)
+
+			err = userConn.UserConnect()
+			if err != nil {
+				continue
+			}
+
 			go userConn.ReadUserRequest()
+			go userConn.StartWriteToUser()
 		}
 	}()
 
-	return nil, cp
+	return nil, cp, tcp
 }
