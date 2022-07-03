@@ -10,7 +10,8 @@ It is a program that can expose intranet services to the internet, using `REST A
 2. Support dynamic addition of proxies
 
 ## Documentation
-todo
+
+1. [Quick Start](https://github.com/fzdwx/burst/blob/main/docs/en/quickstart.md)
 
 ## Stack
 
