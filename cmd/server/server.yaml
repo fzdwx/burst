@@ -1,3 +1,4 @@
 Name: burstServer
+# the server api port
 Port: 9999
 LogLevel: debug

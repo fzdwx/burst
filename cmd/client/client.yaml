@@ -1,3 +1,5 @@
 Server:
+  # the server api port
   Port: 9999
+  # the server ip
   Host: localhost

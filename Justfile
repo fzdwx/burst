@@ -17,10 +17,10 @@ client:
 
 #build server and client binaries
 build:
-    cd ./cmd && {{amd64_linux}} go build -o ../bin/server-linux-amd64 ./server.go
-    cd ./cmd && {{amd64_linux}} go build -o ../bin/client-linux-amd64 ./client.go
-    cd ./cmd && {{amd64_win}} go build -o ../bin/server-win-amd64.exe ./server.go
-    cd ./cmd && {{amd64_win}} go build -o ../bin/client-win-amd64.exe ./client.go
+    cd ./cmd/server && {{amd64_linux}} go build -o ../../bin/server-linux-amd64 ./server.go
+    cd ./cmd/client && {{amd64_linux}} go build -o ../../bin/client-linux-amd64 ./client.go
+    cd ./cmd/server && {{amd64_win}} go build -o ../../bin/server-win-amd64.exe ./server.go
+    cd ./cmd/client && {{amd64_win}} go build -o ../../bin/client-win-amd64.exe ./client.go
 
 # call go mod tidy
 tidy:

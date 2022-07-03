@@ -15,7 +15,7 @@ type (
 
 		UserRequest UserRequest `json:"userRequest,omitempty"`
 
-		InternetResponse InternetResponse `json:"internetResponse,omitempty"`
+		IntranetResponse IntranetResponse `json:"internetResponse,omitempty"`
 	}
 
 	AddProxy struct {
@@ -33,7 +33,7 @@ type (
 		ConnId string `json:"connId"`
 	}
 
-	InternetResponse struct {
+	IntranetResponse struct {
 		Data   []byte `json:"data"`
 		ConnId string `json:"connId"`
 		Token  string `json:"token"`
@@ -49,7 +49,7 @@ const (
 
 /* to server */
 const (
-	InternetResponseType = "internetResponse"
+	IntranetResponseType = "intranetResponse"
 )
 
 func (b Burst) Encode() ([]byte, error) {
@@ -92,10 +92,10 @@ func NewUserRequest(data []byte, key string, connId string) Burst {
 	}
 }
 
-func NewInternetResponse(data []byte, token string, connId string) Burst {
+func NewIntranetResponse(data []byte, token string, connId string) Burst {
 	return Burst{
-		Type: InternetResponseType,
-		InternetResponse: InternetResponse{
+		Type: IntranetResponseType,
+		IntranetResponse: IntranetResponse{
 			Data:   data,
 			Token:  token,
 			ConnId: connId,

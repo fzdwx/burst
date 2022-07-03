@@ -37,7 +37,7 @@ func (s InternetService) StartRead(c *Client) {
 			return
 		}
 
-		bytes, err := protocal.NewInternetResponse(buf[:n], c.token, s.connId).Encode()
+		bytes, err := protocal.NewIntranetResponse(buf[:n], c.token, s.connId).Encode()
 		if err != nil {
 			s.err(err).Msg("encode internet response")
 			continue

@@ -49,8 +49,8 @@ func Accept(svcContext *svc.ServiceContext) http.HandlerFunc {
 			}
 
 			switch decode.Type {
-			case protocal.InternetResponseType:
-				internetResponse.Handle(decode.InternetResponse)
+			case protocal.IntranetResponseType:
+				internetResponse.Handle(decode.IntranetResponse)
 			}
 
 		})
