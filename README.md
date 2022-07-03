@@ -6,7 +6,7 @@
 
 ## Features
 
-1. 支持所欲基于`TCP`的协议,比如`HTTP`、`Websocket`、`MySQL`、`SSH`等等
+1. 支持所有基于`TCP`的协议,比如`HTTP`、`Websocket`、`MySQL`、`SSH`等等
 2. 支持动态添加代理
 
 ## Documentation
