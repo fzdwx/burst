@@ -9,7 +9,8 @@ import (
 	"github.com/fzdwx/burst/pkg/wsx"
 	"github.com/rs/zerolog"
 	"github.com/zeromicro/go-zero/core/conf"
-	zeroLogx "github.com/zeromicro/go-zero/core/logx"
+	zlog "github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/zero-contrib/logx/zerologx"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -32,7 +33,7 @@ func init() {
 	logx.UseLogLevel(level)
 	out := os.Stdout
 	logx.InitLogger(zerolog.ConsoleWriter{Out: out, TimeFormat: "2006/01/02 - 15:04:05"})
-	zeroLogx.SetWriter(logx.NewZeroLogWrite(logx.GetLog()))
+	zlog.SetWriter(zerologx.NewZeroLogWriter(logx.GetLog()))
 
 	serverAddr := burst.FormatAddr(cConfig.Server.Host, cConfig.Server.Port)
 	logx.Info().Msgf("server addr %s", serverAddr)
