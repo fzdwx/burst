@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/fzdwx/burst"
 	"github.com/fzdwx/burst/pkg"
+	"github.com/fzdwx/burst/pkg/protocal"
 	"github.com/fzdwx/burst/pkg/result"
 	"github.com/fzdwx/burst/server/cache"
 	"github.com/fzdwx/burst/server/svc"
@@ -43,15 +44,24 @@ func AddProxy(svcContext *svc.ServiceContext) http.HandlerFunc {
 			proxyInfos = append(proxyInfos, proxyInfo.toCache())
 		}
 
+		// todo on error clean server
 		err, clientProxyInfos := server.Lunch(proxyInfos)
 		if err != nil {
 			result.HttpBadRequest(w, err.Error())
 			return
 		}
 
+		bytes, err := protocal.NewAddProxy(clientProxyInfos).Encode()
+		if err != nil {
+			result.HttpBadRequest(w, err.Error())
+			return
+		}
+
+		// send client proxy info to client
+		server.WriteBinary(bytes)
+
 		cache.ProxyInfoContainer.Put(token, proxyInfos)
 
-		// todo send client proxy info to client
 		httpx.OkJson(w, clientProxyInfos)
 	}
 }

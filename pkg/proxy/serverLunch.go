@@ -21,8 +21,8 @@ func NewContainer(ws *wsx.Wsx, token string) *Container {
 
 // Lunch Start the local service and then generate the format of the proxy information required by the client
 //
-func (c Container) Lunch(infos []*pkg.ServerProxyInfo) (error, []*pkg.ClientProxyInfo) {
-	var clientInfos []*pkg.ClientProxyInfo
+func (c Container) Lunch(infos []*pkg.ServerProxyInfo) (error, []pkg.ClientProxyInfo) {
+	var clientInfos []pkg.ClientProxyInfo
 	for _, info := range infos {
 		var clientInfo *pkg.ClientProxyInfo
 		var err error
@@ -42,7 +42,7 @@ func (c Container) Lunch(infos []*pkg.ServerProxyInfo) (error, []*pkg.ClientProx
 		if clientInfo == nil {
 			return burst.NewError("unSupport channelType %s", pkg.UDP), nil
 		}
-		clientInfos = append(clientInfos, clientInfo)
+		clientInfos = append(clientInfos, *clientInfo)
 	}
 	return nil, clientInfos
 }

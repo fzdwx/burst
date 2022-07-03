@@ -14,6 +14,12 @@ func (c *Container) handleTCP(info *pkg.ServerProxyInfo) (error, *pkg.ClientProx
 
 	c.Closer = append(c.Closer, tcp)
 	serverPort := tcp.Addr().(*net.TCPAddr).Port
+
+	cp := &pkg.ClientProxyInfo{
+		ChannelType:  info.ChannelType,
+		IntranetAddr: info.Addr,
+		ServerPort:   serverPort,
+	}
 	go func() {
 		for {
 			// accept user connection
@@ -23,14 +29,10 @@ func (c *Container) handleTCP(info *pkg.ServerProxyInfo) (error, *pkg.ClientProx
 				continue
 			}
 
-			userConn := NewUserConn(conn, c, serverPort)
+			userConn := NewUserConn(conn, c, cp.Key())
 			go userConn.ReadUserRequest()
 		}
 	}()
 
-	return nil, &pkg.ClientProxyInfo{
-		ChannelType:  info.ChannelType,
-		IntranetAddr: info.Addr,
-		ServerPort:   serverPort,
-	}
+	return nil, cp
 }

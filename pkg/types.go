@@ -1,6 +1,10 @@
 package pkg
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"github.com/fzdwx/burst"
+)
 
 type (
 	ServerProxyInfo struct {
@@ -41,4 +45,21 @@ func CheckChannelType(str string) bool {
 		return true
 	}
 	return false
+}
+func (cp ClientProxyInfo) Key() string {
+	switch cp.ChannelType {
+	case HTTP:
+		return "todo"
+	default:
+		return fmt.Sprint(cp.ServerPort)
+	}
+}
+
+func (cp ClientProxyInfo) Address(serverAddr string) string {
+	switch cp.ChannelType {
+	case HTTP:
+		return "todo"
+	default:
+		return burst.FormatAddr(serverAddr, cp.ServerPort)
+	}
 }

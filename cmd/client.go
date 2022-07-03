@@ -4,7 +4,9 @@ import (
 	"flag"
 	"github.com/fzdwx/burst"
 	"github.com/fzdwx/burst/client"
+	"github.com/fzdwx/burst/client/handler"
 	"github.com/fzdwx/burst/pkg/logx"
+	"github.com/fzdwx/burst/pkg/wsx"
 	"github.com/rs/zerolog"
 	"github.com/zeromicro/go-zero/core/conf"
 	zeroLogx "github.com/zeromicro/go-zero/core/logx"
@@ -47,8 +49,10 @@ func init() {
 func main() {
 	client := client.NewClient(token, cConfig)
 
-	client.Connect()
-	client.WriteText("hello world")
+	client.Connect(func(wsx *wsx.Wsx) {
+		wsx.MountBinaryFunc(handler.Dispatch(client))
+	})
+
 	select {}
 }
 

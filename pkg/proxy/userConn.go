@@ -11,19 +11,20 @@ import (
 type (
 	UserConn struct {
 		// Id uuid
-		Id         string
-		conn       net.Conn
-		c          *Container
-		serverPort int
+		Id   string
+		conn net.Conn
+		c    *Container
+		// key used to identify the service started by the server
+		key string
 	}
 )
 
-func NewUserConn(conn net.Conn, c *Container, port int) *UserConn {
+func NewUserConn(conn net.Conn, c *Container, key string) *UserConn {
 	return &UserConn{
-		Id:         uuid.New().String(),
-		conn:       conn,
-		c:          c,
-		serverPort: port,
+		Id:   uuid.New().String(),
+		conn: conn,
+		c:    c,
+		key:  key,
 	}
 }
 
@@ -51,13 +52,9 @@ func (u UserConn) ReadUserRequest() {
 }
 
 func (u UserConn) buildUserRequest(buf []byte, n int) ([]byte, error) {
-	return protocal.UserRequest{
-		Data:       buf[:n],
-		ServerPort: u.serverPort,
-		ConnId:     u.Id,
-	}.Encode()
+	return protocal.NewUserRequest(buf[:n], u.key, u.Id).Encode()
 }
 
 func (u UserConn) err(err error) *zerolog.Event {
-	return logx.Err(err).Str("connId", u.Id).Int("serverPort", u.serverPort)
+	return logx.Err(err).Str("connId", u.Id).Str("key", u.key)
 }

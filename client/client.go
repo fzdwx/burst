@@ -2,7 +2,9 @@ package client
 
 import (
 	"github.com/fzdwx/burst"
+	"github.com/fzdwx/burst/pkg"
 	"github.com/fzdwx/burst/pkg/logx"
+	"github.com/fzdwx/burst/pkg/protocal"
 	"github.com/fzdwx/burst/pkg/wsx"
 	"github.com/gorilla/websocket"
 	"io/ioutil"
@@ -15,6 +17,8 @@ type Client struct {
 	token      string
 	config     Config
 	serverAddr string
+	serverHost string
+	proxy      map[string]pkg.ClientProxyInfo
 }
 
 func NewClient(token string, config Config) *Client {
@@ -22,10 +26,13 @@ func NewClient(token string, config Config) *Client {
 		token:      token,
 		config:     config,
 		serverAddr: burst.FormatAddr(config.Server.Host, config.Server.Port),
+		serverHost: config.Server.Host,
+		proxy:      make(map[string]pkg.ClientProxyInfo),
 	}
 }
 
-func (c *Client) Connect() {
+// Connect  to server,and init connection
+func (c *Client) Connect(init func(wsx *wsx.Wsx)) {
 	u := url.URL{
 		Scheme:   "ws",
 		Host:     c.serverAddr,
@@ -49,6 +56,20 @@ func (c *Client) Connect() {
 
 	c.Wsx = wsx.NewClassicWsx(conn)
 
+	if init != nil {
+		init(c.Wsx)
+	}
+
 	go c.Wsx.StartReading(time.Second * 20)
 	go c.Wsx.StartWriteHandler(time.Second * 5)
+}
+
+// AddProxy add proxy info to client
+//
+// do not consider repetition
+func (c *Client) AddProxy(a protocal.AddProxy) {
+	for _, info := range a.Proxy {
+		c.proxy[info.Key()] = info
+		logx.Info().Msgf("add proxy: intranet [%s] to [%s]", info.IntranetAddr, info.Address(c.serverHost))
+	}
 }
