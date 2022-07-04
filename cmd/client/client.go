@@ -4,6 +4,7 @@ import (
 	"flag"
 	"github.com/fzdwx/burst"
 	"github.com/fzdwx/burst/client"
+	"github.com/fzdwx/burst/client/command"
 	"github.com/fzdwx/burst/client/handler"
 	"github.com/fzdwx/burst/pkg/logx"
 	"github.com/fzdwx/burst/pkg/wsx"
@@ -48,13 +49,13 @@ func init() {
 }
 
 func main() {
-	client := client.NewClient(token, cConfig)
+	c := client.NewClient(token, cConfig)
 
-	client.Connect(func(wsx *wsx.Wsx) {
-		wsx.MountBinaryFunc(handler.Dispatch(client))
+	c.Connect(func(wsx *wsx.Wsx) {
+		wsx.MountBinaryFunc(handler.Dispatch(c))
 	})
 
-	select {}
+	c.ReaderCommand(command.Dispatch)
 }
 
 func generateToken(serverAddr string) string {

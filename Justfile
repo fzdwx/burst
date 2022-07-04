@@ -7,13 +7,17 @@ amd64_win := "GOOS=windows GOARCH=amd64"
 ls:
     @just -l
 
+# just run s -> just run server | just run c -> just run client
+run type:
+    @just {{ if type == "s" { "server" } else { "client" } }}
+
 # run server
 server:
-    go run ./cmd/server.go
+    cd ./cmd/server/ && go run .
 
 # run client
 client:
-    go run ./cmd/client.go
+     cd ./cmd/client/ && go run .
 
 #build server and client binaries
 build:
