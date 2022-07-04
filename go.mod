@@ -3,12 +3,12 @@ module github.com/fzdwx/burst
 go 1.18
 
 require (
-	github.com/andelf/go-curl v0.0.0-20200630032108-fd49ff24ed97
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/rs/xid v1.4.0
 	github.com/rs/zerolog v1.27.0
 	github.com/zeromicro/go-zero v1.3.4
+	github.com/zeromicro/zero-contrib/logx/zerologx v0.0.0-20220702160639-bbe8e8ed0d6d
 )
 
 require (
@@ -32,7 +32,6 @@ require (
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
-	github.com/zeromicro/zero-contrib/logx/zerologx v0.0.0-20220702160639-bbe8e8ed0d6d // indirect
 	go.opentelemetry.io/otel v1.7.0 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.7.0 // indirect
 	go.opentelemetry.io/otel/exporters/zipkin v1.7.0 // indirect

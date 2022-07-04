@@ -13,7 +13,7 @@ func (c *Container) handleTCP(info *pkg.ServerProxyInfo) (error, *pkg.ClientProx
 		return err, nil, nil
 	}
 
-	c.Closer = append(c.Closer, tcp)
+	c.AddCloser(tcp)
 	serverPort := tcp.Addr().(*net.TCPAddr).Port
 
 	cp := &pkg.ClientProxyInfo{
@@ -32,16 +32,16 @@ func (c *Container) handleTCP(info *pkg.ServerProxyInfo) (error, *pkg.ClientProx
 			}
 
 			userConn := NewUserConn(conn, c, cp.Key())
-			c.Closer = append(c.Closer, conn)
+			c.AddCloser(conn)
 			c.AddUserConn(userConn)
 
-			err = userConn.UserConnect()
+			err = userConn.OnUserConnect()
 			if err != nil {
 				continue
 			}
 
-			go userConn.ReadUserRequest()
-			go userConn.StartWriteToUser()
+			go userConn.StartRead()
+			go userConn.StartWrite()
 		}
 	}()
 

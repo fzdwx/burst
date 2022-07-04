@@ -31,8 +31,8 @@ func NewUserConn(conn net.Conn, c *Container, key string) *UserConn {
 	}
 }
 
-// UserConnect notify the client to monitor the intranet service
-func (u UserConn) UserConnect() error {
+// OnUserConnect notify the client to monitor the intranet service
+func (u UserConn) OnUserConnect() error {
 	bytes, err := protocal.NewUserConnect(u.key, u.Id).Encode()
 	if err != nil {
 		u.err(err).Msg("encode userConnect")
@@ -43,8 +43,8 @@ func (u UserConn) UserConnect() error {
 	return nil
 }
 
-// ReadUserRequest read user request to client with to write intranet service.
-func (u UserConn) ReadUserRequest() {
+// StartRead read user request to client with to write intranet service.
+func (u UserConn) StartRead() {
 	// todo clean
 	for {
 		// todo read buffer size
@@ -68,7 +68,8 @@ func (u UserConn) ReadUserRequest() {
 	}
 }
 
-func (u UserConn) StartWriteToUser() {
+// StartWrite start Write intranet response to user
+func (u UserConn) StartWrite() {
 	// todo clean
 	for {
 		select {
@@ -83,6 +84,7 @@ func (u UserConn) StartWriteToUser() {
 	}
 }
 
+// Write data to user
 func (u UserConn) Write(data []byte) {
 	u.writeChan <- data
 }

@@ -10,37 +10,42 @@ import (
 type (
 	Container struct {
 		*wsx.Wsx
-		Token       string
-		Closer      []io.Closer
+		Token string
+		// closers save this client all listeners(tcp/udp/http...) associated and connections from users
+		closers     []io.Closer
 		UserConnMap map[string]*UserConn
 	}
 )
 
 func NewContainer(ws *wsx.Wsx, token string) *Container {
-	return &Container{Wsx: ws, Token: token, Closer: []io.Closer{}, UserConnMap: make(map[string]*UserConn)}
+	return &Container{Wsx: ws, Token: token, closers: []io.Closer{}, UserConnMap: make(map[string]*UserConn)}
 }
 
 // Lunch Start the local service and then generate the format of the proxy information required by the client
 //
 func (c Container) Lunch(infos []*pkg.ServerProxyInfo) (error, []pkg.ClientProxyInfo, []io.Closer) {
-	var clientInfos []pkg.ClientProxyInfo
-	var closers []io.Closer
+	var (
+		clientInfos []pkg.ClientProxyInfo
+		closers     []io.Closer
+	)
+
 	for _, info := range infos {
 		var (
 			clientInfo *pkg.ClientProxyInfo
-			closer     io.Closer
+			listener   io.Closer
 			err        error
 		)
 
 		switch info.ChannelType {
 		case pkg.TCP:
-			err, clientInfo, closer = c.handleTCP(info)
+			err, clientInfo, listener = c.handleTCP(info)
 		case pkg.HTTP:
-			err, clientInfo, closer = c.handlerHttp(info)
+			err, clientInfo, listener = c.handlerHttp(info)
 		case pkg.UDP:
-			err, clientInfo, closer = c.handleUdp(info)
+			err, clientInfo, listener = c.handleUdp(info)
 		}
 
+		// todo clean closers
 		if err != nil {
 			return err, nil, nil
 		}
@@ -50,16 +55,22 @@ func (c Container) Lunch(infos []*pkg.ServerProxyInfo) (error, []pkg.ClientProxy
 		}
 
 		clientInfos = append(clientInfos, *clientInfo)
-		closers = append(closers, closer)
+		closers = append(closers, listener)
 	}
+
 	return nil, clientInfos, closers
 }
 
 // Close the local service
 func (c Container) Close() {
-	for _, c := range c.Closer {
+	for _, c := range c.closers {
 		c.Close()
 	}
+}
+
+// AddCloser add closer
+func (c *Container) AddCloser(closer io.Closer) {
+	c.closers = append(c.closers, closer)
 }
 
 func (c *Container) AddUserConn(conn *UserConn) {
