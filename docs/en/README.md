@@ -1,5 +1,7 @@
 # burst | [中文](https://github.com/fzdwx/burst/blob/main/README.md)
 
+**My English is not good, so use Google Translate for all English documents.**
+
 It is a program that can expose intranet services to the internet, using `REST API` to manage.
 
 **Note: The current version may still have many bugs, please use it with caution!**
