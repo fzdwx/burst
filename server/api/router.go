@@ -42,6 +42,11 @@ func MountRouters(s *rest.Server, svcContext *svc.ServiceContext) {
 			Path:    "/add/:token",
 			Handler: proxy.AddProxy(svcContext),
 		},
+		{
+			Method:  http.MethodPost,
+			Path:    "/remove/:token",
+			Handler: proxy.RemoveProxy(svcContext),
+		},
 	},
 		rest.WithPrefix("/proxy"),
 	)
