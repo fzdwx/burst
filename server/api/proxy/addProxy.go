@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/fzdwx/burst"
 	"github.com/fzdwx/burst/pkg"
+	"github.com/fzdwx/burst/pkg/logx"
 	"github.com/fzdwx/burst/pkg/model"
 	"github.com/fzdwx/burst/pkg/model/req"
 	"github.com/fzdwx/burst/pkg/protocal"
@@ -33,9 +34,8 @@ func AddProxy(svcContext *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		var proxyInfos []*pkg.ServerProxyInfo
-
 		// check if proxy is duplicated
+		var proxyInfos []*pkg.ServerProxyInfo
 		for _, proxyInfo := range proxyInfoReq.Proxy {
 			if info.Has(proxyInfo.Addr()) {
 				result.HttpBadRequest(w, fmt.Sprintf("proxy %s already exists", proxyInfo.String()))
@@ -46,6 +46,7 @@ func AddProxy(svcContext *svc.ServiceContext) http.HandlerFunc {
 
 		err, clientProxyInfos, closers := server.Lunch(proxyInfos)
 		clean := func() {
+			logx.Error().Str("token", token).Interface("proxy", proxyInfoReq).Msg("clean listeners")
 			for _, c := range closers {
 				c.Close()
 			}
@@ -57,6 +58,7 @@ func AddProxy(svcContext *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
+		// notify client save proxy info
 		bytes, err := protocal.NewAddProxy(clientProxyInfos).Encode()
 		if err != nil {
 			go clean()
@@ -64,9 +66,7 @@ func AddProxy(svcContext *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		// send client proxy info to client
 		server.WriteBinary(bytes)
-
 		cache.ProxyInfoContainer.Put(token, proxyInfos)
 
 		httpx.OkJson(w, clientProxyInfos)

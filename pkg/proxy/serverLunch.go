@@ -9,10 +9,14 @@ import (
 
 type (
 	Container struct {
+		// the websocket connection to client
 		*wsx.Wsx
+		// the Token of client
 		Token string
 		// closers save this client all listeners(tcp/udp/http...) associated and connections from users
-		closers     []io.Closer
+		closers []io.Closer
+		// UserConnMap save all user connections,
+		// key is conn id
 		UserConnMap map[string]*UserConn
 	}
 )
@@ -25,8 +29,10 @@ func NewContainer(ws *wsx.Wsx, token string) *Container {
 //
 func (c Container) Lunch(infos []*pkg.ServerProxyInfo) (error, []pkg.ClientProxyInfo, []io.Closer) {
 	var (
+		// mapping information used to return to the client
 		clientInfos []pkg.ClientProxyInfo
-		closers     []io.Closer
+		// all listeners started by the current request
+		listeners []io.Closer
 	)
 
 	for _, info := range infos {
@@ -45,7 +51,6 @@ func (c Container) Lunch(infos []*pkg.ServerProxyInfo) (error, []pkg.ClientProxy
 			err, clientInfo, listener = c.handleUdp(info)
 		}
 
-		// todo clean closers
 		if err != nil {
 			return err, nil, nil
 		}
@@ -55,10 +60,10 @@ func (c Container) Lunch(infos []*pkg.ServerProxyInfo) (error, []pkg.ClientProxy
 		}
 
 		clientInfos = append(clientInfos, *clientInfo)
-		closers = append(closers, listener)
+		listeners = append(listeners, listener)
 	}
 
-	return nil, clientInfos, closers
+	return nil, clientInfos, listeners
 }
 
 // Close the local service

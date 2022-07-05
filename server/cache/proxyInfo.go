@@ -37,7 +37,7 @@ func (pc *proxyInfoCache) Put(token string, infos []*pkg.ServerProxyInfo) bool {
 	if !b {
 		return false
 	}
-	old.AddAll(infos)
+	old.addAll(infos)
 	return true
 }
 
@@ -54,19 +54,19 @@ func (pc *proxyInfoCache) Remove(token string) {
 	pc.m.Del(token)
 }
 
-func (pi *ProxyInfos) Add(info *pkg.ServerProxyInfo) {
-	pi.m[info.Addr] = info
-}
-
-func (pi *ProxyInfos) AddAll(infos []*pkg.ServerProxyInfo) {
-	for _, info := range infos {
-		pi.Add(info)
-	}
-}
-
 func (pi *ProxyInfos) Has(addr string) bool {
 	if _, ok := pi.m[addr]; ok {
 		return ok
 	}
 	return false
+}
+
+func (pi *ProxyInfos) addAll(infos []*pkg.ServerProxyInfo) {
+	for _, info := range infos {
+		pi.add(info)
+	}
+}
+
+func (pi *ProxyInfos) add(info *pkg.ServerProxyInfo) {
+	pi.m[info.Addr] = info
 }

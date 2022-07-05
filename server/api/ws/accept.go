@@ -6,18 +6,17 @@ import (
 	"github.com/fzdwx/burst/pkg/protocal"
 	"github.com/fzdwx/burst/pkg/result"
 	"github.com/fzdwx/burst/pkg/wsx"
-	"github.com/fzdwx/burst/server/api/ws/handler/internetResponse"
+	"github.com/fzdwx/burst/server/api/ws/handler"
 	"github.com/fzdwx/burst/server/cache"
 	"github.com/fzdwx/burst/server/svc"
 	"net/http"
 	"time"
 )
 
-// Accept  todo save client to cache
+// Accept client connection
 func Accept(svcContext *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// check token
-
 		token := r.URL.Query().Get("token")
 		if token == burst.EmptyStr {
 			result.HttpBadRequest(w, "token not found")
@@ -31,28 +30,23 @@ func Accept(svcContext *svc.ServiceContext) http.HandlerFunc {
 
 		// upgrade to websocket
 		conn, err := svcContext.WsUpgrader.Upgrade(w, r, nil)
-
 		if err != nil {
-			result.HttpBadRequest(w, "upgrade to websocket fail")
+			result.HttpBadRequest(w, "upgrade to websocket fail:"+err.Error())
 			return
 		}
 
+		// init websocket client
 		ws := wsx.NewClassicWsx(conn)
 		cache.ServerContainer.Put(token, ws)
 
 		ws.MountBinaryFunc(func(bytes []byte) {
-
 			decode, err := protocal.Decode(bytes)
 			if err != nil {
 				logx.Err(err).Msg("decode burst")
 				return
 			}
 
-			switch decode.Type {
-			case protocal.IntranetResponseType:
-				internetResponse.Handle(decode.IntranetResponse)
-			}
-
+			handler.Dispatch(decode)
 		})
 
 		ws.MountCloseFunc(func(err error) {
