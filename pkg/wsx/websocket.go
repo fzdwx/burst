@@ -218,6 +218,11 @@ func (w *Wsx) StartWriteHandler(pingPeriod time.Duration) {
 	}
 }
 
+// Closed the websocket connection is closed ?
+func (w *Wsx) Closed() bool {
+	return Ping(w.conn) != nil
+}
+
 // Close the connection with the peer
 func (w *Wsx) Close() {
 	w.lock.Lock()

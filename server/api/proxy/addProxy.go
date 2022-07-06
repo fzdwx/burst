@@ -34,6 +34,11 @@ func AddProxy(svcContext *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
+		if server.Closed() {
+			server.Close()
+			result.HttpBadRequest(w, model.ServerClosed.Error())
+		}
+
 		// check if proxy is duplicated
 		var proxyInfos []*pkg.ServerProxyInfo
 		for _, proxyInfo := range proxyInfoReq.Proxy {

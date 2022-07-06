@@ -68,6 +68,8 @@ func (c Container) Lunch(infos []*pkg.ServerProxyInfo) (error, []pkg.ClientProxy
 
 // Close the local service
 func (c Container) Close() {
+	c.Wsx.Close()
+
 	for _, c := range c.closers {
 		c.Close()
 	}

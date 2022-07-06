@@ -10,4 +10,5 @@ var (
 	IpIsNotValid      = errors.New("ip is not valid")
 	PortIsNotValid    = errors.New("port is not valid")
 	ClientNotFound    = errors.New("client not found")
+	ServerClosed      = errors.New("client disconnected")
 )
