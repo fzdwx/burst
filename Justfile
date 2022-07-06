@@ -9,7 +9,7 @@ ls:
 
 # just run s -> just run server | just run c -> just run client
 run type:
-    @just {{ if type == "s" { "server" } else { "client" } }}
+    ./just {{ if type == "s" { "server" } else { "client" } }}
 
 # run server
 server:
@@ -20,11 +20,15 @@ client:
      cd ./cmd/client/ && go run .
 
 #build server and client binaries
-build:
+release:
     cd ./cmd/server && {{amd64_linux}} go build -o server server.go && tar -zvcf ../../bin/server-linux-amd64.tar.gz server server.yaml && rm -rf server
     cd ./cmd/client && {{amd64_linux}} go build -o client client.go && tar -zvcf ../../bin/client-linux-amd64.tar.gz client client.yaml && rm -rf client
     cd ./cmd/server && {{amd64_win}} go build -o server.exe server.go && tar -zvcf ../../bin/server-win-amd64.tar.gz server.exe server.yaml && rm -rf server.exe
     cd ./cmd/client && {{amd64_win}} go build -o client.exe client.go && tar -zvcf ../../bin/client-win-amd64.tar.gz client.exe client.yaml && rm -rf client.exe
+
+build:
+    cd ./cmd/server && {{amd64_linux}} go build -o ../../bin/server server.go
+    cd ./cmd/client && {{amd64_linux}} go build -o ../../bin/client client.go
 
 # call go mod tidy
 tidy:
