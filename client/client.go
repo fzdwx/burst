@@ -78,7 +78,7 @@ func (c *Client) Connect(init func(wsx *wsx.Wsx)) {
 		init(c.Wsx)
 	}
 
-	go c.Wsx.StartReading(time.Second * 20)
+	go c.Wsx.StartReading(0)
 	go c.Wsx.StartWriteHandler(time.Second * 5)
 }
 
