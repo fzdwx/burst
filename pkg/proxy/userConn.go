@@ -44,8 +44,9 @@ func (u UserConn) OnUserConnect() error {
 }
 
 // StartRead read user request to client with to write intranet service.
-func (u UserConn) StartRead() {
-	// todo clean
+func (u UserConn) StartRead(clean func()) {
+	defer clean()
+
 	for {
 		// todo read buffer size
 		buf := make([]byte, 1024)
@@ -74,8 +75,9 @@ func (u UserConn) StartRead() {
 }
 
 // StartWrite start Write intranet response to user
-func (u UserConn) StartWrite() {
-	// todo clean
+func (u UserConn) StartWrite(clean func()) {
+	defer clean()
+
 	for {
 		select {
 		case data := <-u.writeChan:

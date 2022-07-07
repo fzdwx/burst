@@ -15,7 +15,10 @@ func Handle(internetResponse protocal.IntranetResponse) {
 
 	conn, b := container.GetUserConn(internetResponse.ConnId)
 	if !b {
-		logx.Error().Msg("user conn not found on write to user")
+		logx.Debug().
+			Bytes("bytes", internetResponse.Data).
+			Str("str", string(internetResponse.Data)).
+			Msg("user conn not found on write to user")
 		return
 	}
 

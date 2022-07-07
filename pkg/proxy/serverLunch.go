@@ -88,3 +88,9 @@ func (c *Container) GetUserConn(connId string) (*UserConn, bool) {
 	userConn, ok := c.UserConnMap[connId]
 	return userConn, ok
 }
+
+func (c *Container) CleanUserConn(conn *UserConn) func() {
+	return func() {
+		delete(c.UserConnMap, conn.Id)
+	}
+}

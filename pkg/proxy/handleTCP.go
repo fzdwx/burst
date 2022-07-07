@@ -34,14 +34,16 @@ func (c *Container) handleTCP(info *pkg.ServerProxyInfo) (error, *pkg.ClientProx
 			userConn := NewUserConn(conn, c, cp.Key())
 			c.AddCloser(conn)
 			c.AddUserConn(userConn)
+			clean := c.CleanUserConn(userConn)
 
 			err = userConn.OnUserConnect()
 			if err != nil {
+				clean()
 				continue
 			}
 
-			go userConn.StartRead()
-			go userConn.StartWrite()
+			go userConn.StartRead(clean)
+			go userConn.StartWrite(clean)
 		}
 	}()
 
