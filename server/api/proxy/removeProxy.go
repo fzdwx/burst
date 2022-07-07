@@ -36,7 +36,7 @@ func RemoveProxy(svcContext *svc.ServiceContext) http.HandlerFunc {
 			result.HttpBadRequest(w, model.ServerClosed.Error())
 		}
 
-		// check if proxy is duplicated
+		// check if proxy is existed
 		var proxyInfos []*pkg.ServerProxyInfo
 		for _, proxyInfo := range proxyInfoReq.Proxy {
 			if info.Has(proxyInfo.Addr()) {

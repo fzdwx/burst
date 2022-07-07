@@ -54,7 +54,7 @@ func Accept(svcContext *svc.ServiceContext) http.HandlerFunc {
 			cache.ServerContainer.Remove(token)
 		})
 
-		go ws.StartReading(time.Second * 20)
+		go ws.StartReading(0)
 		go ws.StartWriteHandler(time.Second * 5)
 	}
 }

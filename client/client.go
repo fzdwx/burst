@@ -10,6 +10,7 @@ import (
 	"github.com/fzdwx/burst/pkg/wsx"
 	"github.com/gorilla/websocket"
 	"github.com/rs/zerolog"
+	"io"
 	"io/ioutil"
 	"net"
 	"net/url"
@@ -144,8 +145,14 @@ func (s InternetService) StartRead(c *Client) {
 		buf := make([]byte, 1024)
 		n, err := s.conn.Read(buf)
 		if err != nil {
-			s.err(err).Msg("read from internet")
+			if err != io.EOF {
+				s.err(err).Msg("read from internet")
+			}
 			return
+		}
+
+		if n == 0 {
+			continue
 		}
 
 		bytes, err := protocal.NewIntranetResponse(buf[:n], c.token, s.connId).Encode()

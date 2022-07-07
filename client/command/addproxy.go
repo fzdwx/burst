@@ -2,6 +2,7 @@ package command
 
 import (
 	"fmt"
+	"github.com/fzdwx/burst"
 	"github.com/fzdwx/burst/client"
 	"github.com/fzdwx/burst/pkg/model/req"
 	"github.com/spf13/cast"
@@ -25,9 +26,16 @@ func addProxy(s []string, c *client.Client) {
 			return
 		}
 
+		var ip string
+		if split[1] == burst.EmptyStr {
+			ip = "localhost"
+		} else {
+			ip = split[1]
+		}
+
 		proxyInfo := req.AddProxyInfo{
 			ChannelType: split[0],
-			Ip:          split[1],
+			Ip:          ip,
 			Port:        cast.ToInt(port),
 		}
 		infos = append(infos, proxyInfo)

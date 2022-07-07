@@ -1,11 +1,11 @@
 package proxy
 
 import (
-	"fmt"
 	"github.com/fzdwx/burst/pkg/logx"
 	"github.com/fzdwx/burst/pkg/protocal"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
+	"io"
 	"net"
 )
 
@@ -51,9 +51,14 @@ func (u UserConn) StartRead() {
 		buf := make([]byte, 1024)
 		n, err := u.conn.Read(buf)
 		if err != nil {
-			fmt.Println(err)
-			u.err(err).Msg("read user connection")
+			if err != io.EOF {
+				u.err(err).Msg("read user connection")
+			}
 			return
+		}
+
+		if n == 0 {
+			continue
 		}
 
 		bytes, err := protocal.NewUserRequest(buf[:n], u.key, u.Id).Encode()
