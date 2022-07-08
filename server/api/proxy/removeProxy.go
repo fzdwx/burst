@@ -5,6 +5,7 @@ import (
 	"github.com/fzdwx/burst/pkg"
 	"github.com/fzdwx/burst/pkg/model"
 	"github.com/fzdwx/burst/pkg/model/req"
+	"github.com/fzdwx/burst/pkg/protocal"
 	"github.com/fzdwx/burst/pkg/result"
 	"github.com/fzdwx/burst/server/cache"
 	"github.com/fzdwx/burst/server/svc"
@@ -31,33 +32,55 @@ func RemoveProxy(svcContext *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		if server.Closed() {
-			server.Close()
-			result.HttpBadRequest(w, model.ServerClosed.Error())
-		}
-
-		// check if proxy is existed
-		var proxyInfos []*pkg.ServerProxyInfo
+		var clientProxyInfos []pkg.ClientProxyInfo
+		var serverProxyInfos []*pkg.ServerProxyInfo
+		var cleans []func()
 		for _, proxyInfo := range proxyInfoReq.Proxy {
-			if info.Has(proxyInfo.Addr()) {
-				proxyInfos = append(proxyInfos, proxyInfo.ToCache())
+			addr := proxyInfo.Addr()
+			if info.Has(addr) {
+				serverProxyInfo, _ := info.Get(addr)
+				serverProxyInfos = append(serverProxyInfos, serverProxyInfo)
+				clientProxyInfos = append(clientProxyInfos, *serverProxyInfo.ClientProxyInfo)
+
+				cleans = append(cleans, func() {
+					// remove proxy info and close listener from server
+					// 1. close listener
+					serverProxyInfo.BindListener.Close()
+					// 2. remove proxy from cache
+					info.Remove(addr)
+				})
 			}
 		}
-		if len(proxyInfos) == 0 {
+
+		if len(clientProxyInfos) == 0 {
 			result.HttpOk(w, "the proxy is not found")
 			return
 		}
 
-		// todo remove proxy
-		// 	1. close listener
-		//  2. remove proxy from cache
-		//  3. notify client remove proxy
+		// 3. notify client remove proxy
+		bytes, err := protocal.NewRemoveProxy(clientProxyInfos).Encode()
+		if err != nil {
+			result.HttpBadRequest(w, err.Error())
+			return
+		}
 
+		server.WriteBinary(bytes)
+
+		// do clean
+		go func() {
+			for _, clean := range cleans {
+				clean()
+			}
+		}()
+
+		// update cache
+		cache.ProxyInfoContainer.Put(token, serverProxyInfos)
+		httpx.OkJson(w, clientProxyInfos)
 	}
 }
 
 func removeProxyPreCheck(w http.ResponseWriter, r *http.Request) (string, *req.RemoveProxyInfoReq, error) {
-	token := burst.GetQuery("token", r)
+	token := burst.GetPars("token", r)
 	if token == burst.EmptyStr {
 		result.HttpBadRequest(w, model.TokenIsRequired.Error())
 		return "", nil, nil

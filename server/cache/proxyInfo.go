@@ -61,6 +61,11 @@ func (pi *ProxyInfos) Has(addr string) bool {
 	return false
 }
 
+func (pi ProxyInfos) Get(addr string) (*pkg.ServerProxyInfo, bool) {
+	info, ok := pi.m[addr]
+	return info, ok
+}
+
 func (pi *ProxyInfos) addAll(infos []*pkg.ServerProxyInfo) {
 	for _, info := range infos {
 		pi.add(info)
@@ -69,4 +74,8 @@ func (pi *ProxyInfos) addAll(infos []*pkg.ServerProxyInfo) {
 
 func (pi *ProxyInfos) add(info *pkg.ServerProxyInfo) {
 	pi.m[info.Addr] = info
+}
+
+func (pi *ProxyInfos) Remove(addr string) {
+	delete(pi.m, addr)
 }

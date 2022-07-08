@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/fzdwx/burst"
+	"io"
 )
 
 type (
@@ -16,6 +17,10 @@ type (
 		ChannelType string
 		// Addr format Ip : Port
 		Addr string
+
+		// use on remove proxy
+		ClientProxyInfo *ClientProxyInfo
+		BindListener    io.Closer
 	}
 
 	ClientProxyInfo struct {

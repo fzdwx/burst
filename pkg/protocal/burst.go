@@ -11,6 +11,8 @@ type (
 
 		AddProxy AddProxy `json:"addProxy,omitempty"`
 
+		RemoveProxy RemoveProxy `json:"removeProxy,omitempty"`
+
 		UserConnect UserConnect `json:"userConnect,omitempty"`
 
 		UserRequest UserRequest `json:"userRequest,omitempty"`
@@ -19,6 +21,10 @@ type (
 	}
 
 	AddProxy struct {
+		Proxy []pkg.ClientProxyInfo `json:"proxy,omitempty"`
+	}
+
+	RemoveProxy struct {
 		Proxy []pkg.ClientProxyInfo `json:"proxy,omitempty"`
 	}
 
@@ -44,6 +50,7 @@ type (
 const (
 	UserRequestType = "userRequest"
 	AddProxyType    = "addProxy"
+	RemoveProxyType = "removeProxy"
 	UserConnectType = "userConnect"
 )
 
@@ -66,6 +73,15 @@ func NewAddProxy(proxy []pkg.ClientProxyInfo) Burst {
 	return Burst{
 		Type: AddProxyType,
 		AddProxy: AddProxy{
+			Proxy: proxy,
+		},
+	}
+}
+
+func NewRemoveProxy(proxy []pkg.ClientProxyInfo) Burst {
+	return Burst{
+		Type: RemoveProxyType,
+		RemoveProxy: RemoveProxy{
 			Proxy: proxy,
 		},
 	}

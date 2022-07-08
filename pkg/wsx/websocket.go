@@ -1,6 +1,7 @@
 package wsx
 
 import (
+	"fmt"
 	"github.com/fzdwx/burst"
 	"github.com/fzdwx/burst/pkg/logx"
 	"github.com/gorilla/websocket"
@@ -176,6 +177,7 @@ func (w *Wsx) StartWriteHandler(pingPeriod time.Duration) {
 	for {
 		select {
 		case message := <-w.writeTextChan:
+			fmt.Println("11111111111111111111111111111111111")
 			if message == nil {
 				return
 			}
@@ -225,6 +227,7 @@ func (w *Wsx) Closed() bool {
 
 // Close the connection with the peer
 func (w *Wsx) Close() {
+	fmt.Println("wsx closer")
 	w.lock.Lock()
 	defer w.lock.Unlock()
 

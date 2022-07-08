@@ -28,15 +28,6 @@ func (i RemoveProxyInfo) String() string {
 	return fmt.Sprintf("%s:%s", i.ChannelType, i.Addr())
 }
 
-func (i RemoveProxyInfo) ToCache() *pkg.ServerProxyInfo {
-	return &pkg.ServerProxyInfo{
-		Ip:          i.Ip,
-		Port:        i.Port,
-		ChannelType: i.ChannelType,
-		Addr:        i.Addr(),
-	}
-}
-
 func (r RemoveProxyInfoReq) Check() error {
 	if len(r.Proxy) == 0 {
 		return model.ProxyIsRequired
