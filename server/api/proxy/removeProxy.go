@@ -3,6 +3,7 @@ package proxy
 import (
 	"github.com/fzdwx/burst"
 	"github.com/fzdwx/burst/pkg"
+	"github.com/fzdwx/burst/pkg/logx"
 	"github.com/fzdwx/burst/pkg/model"
 	"github.com/fzdwx/burst/pkg/model/req"
 	"github.com/fzdwx/burst/pkg/protocal"
@@ -48,6 +49,7 @@ func RemoveProxy(svcContext *svc.ServiceContext) http.HandlerFunc {
 					serverProxyInfo.BindListener.Close()
 					// 2. remove proxy from cache
 					info.Remove(addr)
+					logx.Info().Int("serverPort", serverProxyInfo.ClientProxyInfo.ServerPort).Str("token", token).Str("client intranetAddr", serverProxyInfo.ClientProxyInfo.IntranetAddr).Msg("remove proxy")
 				})
 			}
 		}
