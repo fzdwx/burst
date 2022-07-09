@@ -92,6 +92,14 @@ func (c *Client) AddProxy(a protocal.AddProxy) {
 	}
 }
 
+// RemoveProxy remove proxy info from client
+func (c *Client) RemoveProxy(r protocal.RemoveProxy) {
+	for _, info := range r.Proxy {
+		delete(c.proxy, info.Key())
+		logx.Info().Msgf("remove proxy: intranet [%s] to [%s]", info.IntranetAddr, info.Address(c.serverHost))
+	}
+}
+
 func (c *Client) GetProxy(key string) (pkg.ClientProxyInfo, bool) {
 	info, ok := c.proxy[key]
 	return info, ok
@@ -104,6 +112,10 @@ func (c *Client) AddInterNetService(net *InternetService) {
 func (c Client) GetInternetService(connId string) (*InternetService, bool) {
 	internet, ok := c.internet[connId]
 	return internet, ok
+}
+
+func (c Client) RemoveInterNetService(interNet *InternetService) {
+	delete(c.internet, interNet.connId)
 }
 
 func (c *Client) ReaderCommand(f func(line string, client *Client)) {
@@ -138,8 +150,9 @@ func NewInternetService(conn net.Conn, connId string, proxy pkg.ClientProxyInfo)
 	}
 }
 
-func (s InternetService) StartRead(c *Client) {
-	// todo clean
+func (s InternetService) StartRead(c *Client, clean func()) {
+	defer clean()
+
 	for {
 		// todo read buffer size
 		buf := make([]byte, 1024)
@@ -166,8 +179,9 @@ func (s InternetService) StartRead(c *Client) {
 	}
 }
 
-func (s InternetService) StartWrite() {
-	// todo clean
+func (s InternetService) StartWrite(clean func()) {
+	defer clean()
+
 	for {
 		select {
 		case data := <-s.writeChan:
@@ -178,6 +192,18 @@ func (s InternetService) StartWrite() {
 				return
 			}
 			logx.Debug().Int("write", n).Msg("write user request data to internet")
+		}
+	}
+}
+
+// CloseInternet close internet service
+func (c *Client) CloseInternet(proxy []pkg.ClientProxyInfo) {
+	for _, service := range c.internet {
+		for _, p := range proxy {
+			if service.proxy.Key() == p.Key() {
+				service.conn.Close()
+				logx.Debug().Msgf("close internet connection: %s", p.Key())
+			}
 		}
 	}
 }

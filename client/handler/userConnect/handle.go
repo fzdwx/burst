@@ -24,9 +24,15 @@ func Handle(c *client.Client, userConnect protocal.UserConnect) {
 		// todo write err to server,close user client
 		return
 	}
+
 	interNet := client.NewInternetService(conn, userConnect.ConnId, proxy)
 	c.AddInterNetService(interNet)
 
-	go interNet.StartRead(c)
-	go interNet.StartWrite()
+	clean := func() {
+		logx.Debug().Msg("clean user connect")
+		c.RemoveInterNetService(interNet)
+	}
+
+	go interNet.StartRead(c, clean)
+	go interNet.StartWrite(clean)
 }

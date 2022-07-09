@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/fzdwx/burst/client"
 	"github.com/fzdwx/burst/client/handler/addProxy"
+	"github.com/fzdwx/burst/client/handler/removeProxy"
 	"github.com/fzdwx/burst/client/handler/userConnect"
 	"github.com/fzdwx/burst/client/handler/userRequest"
 	"github.com/fzdwx/burst/pkg/logx"
@@ -20,6 +21,8 @@ func Dispatch(c *client.Client) func(bytes []byte) {
 		switch burst.Type {
 		case protocal.AddProxyType:
 			addProxy.Handle(c, burst.AddProxy)
+		case protocal.RemoveProxyType:
+			removeProxy.Handle(c, burst.RemoveProxy)
 		case protocal.UserConnectType:
 			userConnect.Handle(c, burst.UserConnect)
 		case protocal.UserRequestType:
