@@ -5,8 +5,8 @@ import (
 	"github.com/fzdwx/burst/pkg/protocal"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
-	"io"
 	"net"
+	"strings"
 )
 
 type (
@@ -52,9 +52,11 @@ func (u UserConn) StartRead(clean func()) {
 		buf := make([]byte, 1024)
 		n, err := u.conn.Read(buf)
 		if err != nil {
-			if err != io.EOF {
-				u.err(err).Msg("read user connection")
+			if strings.ContainsAny("use of closed network connection", err.Error()) || strings.ContainsAny("EOF", err.Error()) {
+				return
 			}
+
+			u.err(err).Msg("read user connection")
 			return
 		}
 

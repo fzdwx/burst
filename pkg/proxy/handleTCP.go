@@ -5,6 +5,7 @@ import (
 	"github.com/fzdwx/burst/pkg/logx"
 	"io"
 	"net"
+	"strings"
 )
 
 func (c *Container) handleTCP(info *pkg.ServerProxyInfo) (error, *pkg.ClientProxyInfo, io.Closer) {
@@ -29,6 +30,10 @@ func (c *Container) handleTCP(info *pkg.ServerProxyInfo) (error, *pkg.ClientProx
 			// accept user connection
 			conn, err := tcp.AcceptTCP()
 			if err != nil {
+				if strings.ContainsAny("use of closed network connection", err.Error()) || strings.ContainsAny("EOF", err.Error()) {
+					return
+				}
+
 				logx.Err(err).Str("channelType", info.ChannelType).Msg("accept user connection")
 				return
 			}
@@ -44,6 +49,7 @@ func (c *Container) handleTCP(info *pkg.ServerProxyInfo) (error, *pkg.ClientProx
 				continue
 			}
 
+			info.BindUserConn = append(info.BindUserConn, userConn.conn)
 			go userConn.StartRead(clean)
 			go userConn.StartWrite(clean)
 		}

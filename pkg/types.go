@@ -21,6 +21,7 @@ type (
 		// use on remove proxy
 		ClientProxyInfo *ClientProxyInfo
 		BindListener    io.Closer
+		BindUserConn    []io.Closer
 	}
 
 	ClientProxyInfo struct {

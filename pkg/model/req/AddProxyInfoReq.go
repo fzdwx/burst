@@ -5,6 +5,7 @@ import (
 	"github.com/fzdwx/burst"
 	"github.com/fzdwx/burst/pkg"
 	"github.com/fzdwx/burst/pkg/model"
+	"io"
 	"net"
 )
 
@@ -30,10 +31,11 @@ func (i AddProxyInfo) String() string {
 
 func (i AddProxyInfo) ToCache() *pkg.ServerProxyInfo {
 	return &pkg.ServerProxyInfo{
-		Ip:          i.Ip,
-		Port:        i.Port,
-		ChannelType: i.ChannelType,
-		Addr:        i.Addr(),
+		Ip:           i.Ip,
+		Port:         i.Port,
+		ChannelType:  i.ChannelType,
+		Addr:         i.Addr(),
+		BindUserConn: []io.Closer{},
 	}
 }
 

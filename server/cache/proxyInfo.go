@@ -51,6 +51,18 @@ func (pc proxyInfoCache) Get(token string) (*ProxyInfos, bool) {
 }
 
 func (pc *proxyInfoCache) Remove(token string) {
+	infos, b := pc.Get(token)
+	if !b {
+		return
+	}
+
+	for _, info := range infos.m {
+		info.BindListener.Close()
+		for _, closer := range info.BindUserConn {
+			closer.Close()
+		}
+	}
+
 	pc.m.Del(token)
 }
 

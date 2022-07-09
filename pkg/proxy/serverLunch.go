@@ -91,6 +91,7 @@ func (c *Container) GetUserConn(connId string) (*UserConn, bool) {
 
 func (c *Container) CleanUserConn(conn *UserConn) func() {
 	return func() {
+		conn.conn.Close()
 		delete(c.UserConnMap, conn.Id)
 	}
 }

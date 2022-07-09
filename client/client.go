@@ -10,11 +10,11 @@ import (
 	"github.com/fzdwx/burst/pkg/wsx"
 	"github.com/gorilla/websocket"
 	"github.com/rs/zerolog"
-	"io"
 	"io/ioutil"
 	"net"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -158,9 +158,11 @@ func (s InternetService) StartRead(c *Client, clean func()) {
 		buf := make([]byte, 1024)
 		n, err := s.conn.Read(buf)
 		if err != nil {
-			if err != io.EOF {
-				s.err(err).Msg("read from internet")
+			if strings.ContainsAny("use of closed network connection", err.Error()) || strings.ContainsAny("EOF", err.Error()) {
+				return
 			}
+
+			s.err(err).Msg("read from internet")
 			return
 		}
 
