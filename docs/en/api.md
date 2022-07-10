@@ -1,17 +1,4 @@
-# Quick start
-
-## Prepare
-
-1. Prepare a server and client [download](https://github.com/fzdwx/burst/releases)
-2. Modify the client's configuration file `client.yaml`, specify the ip and port of the server
-
-```yaml
-Server:
-  # the server api port
-  Port: 9999
-  # the server ip
-  Host: localhost
-```
+# User
 
 ## Get TOKEN
 
@@ -33,6 +20,8 @@ usefulness:
     2022/07/03 - 12:24:53 INF token: cb0ol5du3aotti323c8g
     ```
    If the user calls `API` later, they will carry this `TOKEN`
+
+# Proxy
 
 ## Add proxy
 
@@ -66,3 +55,35 @@ response:
 
 If you are proxying the `HTTP` service, then you can now visit `http://{{serverIp}}:40477` to check if the proxy is
 successful.
+
+## remove proxy
+
+request address: `POST /proxy/remove/:token`
+
+request body(JSON):
+
+```jsonpath
+{
+    "proxy": [
+        {
+            "ip":"localhost",    # default is localhost
+            "port":63342,
+            "channelType":"tcp", # current version only supports tcp
+        }
+    ]
+}
+```
+
+response:
+
+```jsonpath
+[
+    {
+        "ServerPort": 40477,                # 在服务端暴露的端口
+        "IntranetAddr": "localhost:63342",  # 客户端中内网被代理的地址
+        "ChannelType": "tcp"                    
+    }
+]
+```
+
+After the proxy is removed, all related connections are closed immediately.

@@ -7,11 +7,12 @@
 ## Features
 
 1. 支持所有基于`TCP`的协议,比如`HTTP`、`Websocket`、`MySQL`、`SSH`等等
-2. 支持动态添加代理
+2. 支持动态 添加/删除 代理
 
 ## Documentation
 
 1. [快速开始](https://github.com/fzdwx/burst/blob/main/docs/china/quickstart.md)
+2. [API 文档](https://github.com/fzdwx/burst/blob/main/docs/china/api.md)
 
 ## Stack
 

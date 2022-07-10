@@ -9,11 +9,12 @@ It is a program that can expose intranet services to the internet, using `REST A
 ## Features
 
 1. Supports all `TCP-based` protocols, including `HTTP`, `Websocket`, `MySQL`, `SSH`...
-2. Support dynamic addition of proxies
+2. Support dynamic add/remove proxy
 
 ## Documentation
 
 1. [Quick Start](https://github.com/fzdwx/burst/blob/main/docs/en/quickstart.md)
+2. [API Documentation](https://github.com/fzdwx/burst/blob/main/docs/en/api.md)
 
 ## Stack
 
