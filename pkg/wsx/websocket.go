@@ -227,7 +227,6 @@ func (w *Wsx) Closed() bool {
 
 // Close the connection with the peer
 func (w *Wsx) Close() {
-	fmt.Println("wsx closer")
 	w.lock.Lock()
 	defer w.lock.Unlock()
 
@@ -244,6 +243,9 @@ func (w *Wsx) Close() {
 	} else {
 		w.conn.Close()
 	}
+
+	w.debug().Msg("WebSocket Close")
+
 	close(w.writeBinaryChan)
 	close(w.writeTextChan)
 }

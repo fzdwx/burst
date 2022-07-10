@@ -33,7 +33,7 @@ func UseLogLevel(l zerolog.Level) {
 }
 
 func InitLogger(writer ...io.Writer) {
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMicro
+	zerolog.TimeFieldFormat = "2006/01/02 - 15:04:05"
 	multi := zerolog.MultiLevelWriter(writer...)
 	log = zerolog.New(multi).With().Timestamp().Logger()
 }

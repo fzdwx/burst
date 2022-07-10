@@ -1,0 +1,7 @@
+Server:
+  # the server api port
+  Port: 9999
+  # the server ip
+  Host: localhost
+# set log level e.g: debug info warn error fatal
+LogLevel: info

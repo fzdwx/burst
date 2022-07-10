@@ -1,0 +1,5 @@
+Name: burstServer
+# the server api port
+Port: 9999
+# set log level e.g: debug info warn error fatal
+LogLevel: info

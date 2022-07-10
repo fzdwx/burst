@@ -20,6 +20,7 @@ import (
 var (
 	cc        = flag.String("c", "client.yaml", "the config file path")
 	tokenFlag = flag.String("t", "", "the access token")
+	logFile   = flag.String("l", "", "the log file path, e.g: ./client.log")
 	cConfig   client.Config
 	token     string
 )
@@ -29,11 +30,17 @@ func init() {
 
 	conf.MustLoad(*cc, &cConfig)
 
-	level := logx.GetLogLevel(cConfig.LogLevel)
+	if *logFile != "" {
+		out, err := os.OpenFile(*logFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+		if err != nil {
+			logx.Fatal().Err(err).Msg("open log file fail")
+		}
+		logx.InitLogger(out)
+	} else {
+		logx.InitLogger(zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: "2006/01/02 - 15:04:05"})
+	}
 
-	logx.UseLogLevel(level)
-	out := os.Stdout
-	logx.InitLogger(zerolog.ConsoleWriter{Out: out, TimeFormat: "2006/01/02 - 15:04:05"})
+	logx.UseLogLevel(logx.GetLogLevel(cConfig.LogLevel))
 	zlog.SetWriter(zerologx.NewZeroLogWriter(logx.GetLog()))
 
 	serverAddr := burst.FormatAddr(cConfig.Server.Host, cConfig.Server.Port)
