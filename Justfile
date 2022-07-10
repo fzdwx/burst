@@ -7,6 +7,11 @@ amd64_win := "GOOS=windows GOARCH=amd64"
 ls:
     @just -l
 
+# install just to /usr/local/bin
+prejust:
+    cp -r just /usr/local/bin/just
+    chmod +x /usr/local/bin/just
+
 # just run s -> just run server | just run c -> just run client
 run type:
     ./just {{ if type == "s" { "server" } else { "client" } }}
