@@ -91,6 +91,6 @@ func (a addProxyCommand) run(s []string, c *client.Client) {
 
 	for _, proxyInfo := range proxyInfos {
 		f("add proxy:")
-		f("    " + proxyInfo.String())
+		f("    " + fmt.Sprintf("%s -> %s", proxyInfo.IntranetAddr, proxyInfo.Address(burst.GetCurrentIp())))
 	}
 }

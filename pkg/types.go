@@ -69,7 +69,3 @@ func (cp ClientProxyInfo) Address(serverAddr string) string {
 		return burst.FormatAddr(serverAddr, cp.ServerPort)
 	}
 }
-
-func (cp ClientProxyInfo) String() string {
-	return fmt.Sprintf("%s -> %s", cp.IntranetAddr, cp.Address(burst.GetCurrentIp()))
-}

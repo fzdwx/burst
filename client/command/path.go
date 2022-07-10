@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	AddProxy = "/proxy/add/"
+	AddProxy    = "/proxy/add/"
+	RemoveProxy = "/proxy/remove/"
 )
 
 func PostJson(url url.URL, body interface{}) (*http.Response, error) {
