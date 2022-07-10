@@ -1,68 +1,39 @@
 # Quick start
 
-## Prepare
+## start
 
 1. Prepare a server and client [download](https://github.com/fzdwx/burst/releases)
 2. Modify the client's configuration file `client.yaml`, specify the ip and port of the server
+   ```yaml
+   Server:
+     # the server api port
+     Port: 9999
+     # the server ip
+     Host: localhost
+   ```
+3. Start the server `./server -l server.log`
+    1. `-l` specifies the log output file, defaults to the controlled output.
+4. Start the client `./client -l client.log -t xxxx`
+    1. `-l` specifies the log output file, defaults to the controlled output.
+    2. `-t` specifies the token, if not specified, the client will request the server to generate a token, which will be
+       printed out through the log,all subsequent APIs need to carry this token
+       ```log
+       2022/07/03 - 12:24:53 INF token: cb0ol5du3aotti323c8g
+       ```
 
-```yaml
-Server:
-  # the server api port
-  Port: 9999
-  # the server ip
-  Host: localhost
-```
+## Client CLI
 
-## Get TOKEN
+> Now when the client is started, it becomes a `CLI` that can be used to call the server's API.
 
-request address: `GET /user/auth`
+For example, I need to add a proxy: I want to expose my local `63342` port, you can enter `ap tcp::63342`, and it will
+send a request to the server to enable the proxy.
 
-response:
+Example:
 
-```raw
-cb0ojodu3aotti323c80
-```
+**add proxy**
 
-usefulness:
+![image](https://user-images.githubusercontent.com/65269574/178137099-de53f387-d321-4dfa-af41-0f9abeb426a5.png)
 
-1. used to start the client: `./client -t cb0ojodu3aotti323c80`
-2. All subsequent API requests need to bring `TOKEN`
-3. If `TOKEN` is not specified at startup, the client will request the server to generate a `TOKEN`, which will be
-   printed out through the log
-    ```raw
-    2022/07/03 - 12:24:53 INF token: cb0ol5du3aotti323c8g
-    ```
-   If the user calls `API` later, they will carry this `TOKEN`
+**show usage**
 
-## Add proxy
-
-request address: `POST /proxy/add/:token`
-
-request body(JSON):
-
-```jsonpath
-{
-    "proxy": [
-        {
-            "ip":"localhost",    # default is localhost
-            "port":63342,
-            "channelType":"tcp", # current version only supports tcp
-        }
-    ]
-}
-```
-
-response:
-
-```jsonpath
-[
-    {
-        "ServerPort": 40477,                # 在服务端暴露的端口
-        "IntranetAddr": "localhost:63342",  # 客户端中内网被代理的地址
-        "ChannelType": "tcp"                    
-    }
-]
-```
-
-If you are proxying the `HTTP` service, then you can now visit `http://{{serverIp}}:40477` to check if the proxy is
-successful.
+![image](https://user-images.githubusercontent.com/65269574/178137229-350ee6ff-382d-436e-bf44-9d325a780b7a.png)

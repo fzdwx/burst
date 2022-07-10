@@ -20,7 +20,7 @@ import (
 var (
 	cc        = flag.String("c", "client.yaml", "the config file path")
 	tokenFlag = flag.String("t", "", "the access token")
-	logFile   = flag.String("l", "", "the log file path, e.g: ./client.log")
+	logFile   = flag.String("l", "./client.log", "the log file path, e.g: ./client.log")
 	cConfig   client.Config
 	token     string
 )
