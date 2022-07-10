@@ -1,11 +1,45 @@
 package command
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/fzdwx/burst/client"
+	"strings"
+)
 
-func usage() {
-	fmt.Println("Usage:")
+type (
+	usageCommand struct {
+	}
+)
+
+func (u usageCommand) usage() {
 	fmt.Println("  u: show usage")
-	fmt.Println("  q: quit")
-	fmt.Println("  ap: add proxy ")
-	fmt.Println("      example: ap tcp::8888 tcp:192.168.1.1:9999 tcp:11.22.33.44:5555 ...")
+	fmt.Println("      format: u [command]")
+	fmt.Println("      example: u ap")
 }
+
+func (u usageCommand) run(s []string, client *client.Client) {
+	var uf = usageAll
+
+	if len(s) > 0 {
+		c := commands[strings.TrimSpace(s[0])]
+		if c != nil {
+			uf = func() {
+				c.usage()
+			}
+		} else {
+			unknownCommand(s)
+			return
+		}
+	}
+	showVersion()
+	fmt.Println("Usage:")
+	uf()
+}
+
+var (
+	usageAll = func() {
+		for _, c := range commands {
+			c.usage()
+		}
+	}
+)

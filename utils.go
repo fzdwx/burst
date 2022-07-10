@@ -3,6 +3,7 @@ package burst
 import (
 	"errors"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/netx"
 	"github.com/zeromicro/go-zero/rest/pathvar"
 	"net"
 	"net/http"
@@ -11,6 +12,18 @@ import (
 const (
 	EmptyStr = ""
 )
+
+var (
+	CurrentIp string
+)
+
+func GetCurrentIp() string {
+	if CurrentIp == "" {
+		CurrentIp = netx.InternalIp()
+	}
+
+	return CurrentIp
+}
 
 func Over(errorMessage string) {
 	panic(errorMessage)

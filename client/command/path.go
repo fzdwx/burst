@@ -21,7 +21,7 @@ func PostJson(url url.URL, body interface{}) (*http.Response, error) {
 	return http.Post(url.String(), "application/json", bytes.NewBuffer(b))
 }
 
-func ShowResp(resp *http.Response) (func(msg string), string) {
+func ShowResp(resp *http.Response) (func(msg string), []byte) {
 	if resp.Body != nil {
 		defer resp.Body.Close()
 	}
@@ -33,8 +33,8 @@ func ShowResp(resp *http.Response) (func(msg string), string) {
 
 	switch resp.StatusCode {
 	case 200:
-		return infoMsg, string(b)
+		return infoMsg, b
 	default:
-		return errorMsg, string(b)
+		return errorMsg, b
 	}
 }
