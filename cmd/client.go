@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/fzdwx/burst/internal"
 	client2 "github.com/fzdwx/burst/internal/client"
 	"github.com/fzdwx/burst/internal/client/command"
 	"github.com/fzdwx/burst/internal/client/handler"

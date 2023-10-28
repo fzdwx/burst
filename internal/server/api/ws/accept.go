@@ -1,6 +1,7 @@
 package ws
 
 import (
+	"github.com/fzdwx/burst/internal"
 	cache2 "github.com/fzdwx/burst/internal/cache"
 	"github.com/fzdwx/burst/internal/logx"
 	"github.com/fzdwx/burst/internal/protocal"

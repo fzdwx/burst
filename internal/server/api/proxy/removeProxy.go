@@ -1,6 +1,7 @@
 package proxy
 
 import (
+	"github.com/fzdwx/burst/internal"
 	"github.com/fzdwx/burst/internal/cache"
 	"github.com/fzdwx/burst/internal/logx"
 	"github.com/fzdwx/burst/internal/model"
