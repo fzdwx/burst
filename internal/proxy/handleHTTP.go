@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"fmt"
+	"github.com/fzdwx/burst/internal"
 	"github.com/fzdwx/burst/internal/logx"
 	"io"
 	"net"

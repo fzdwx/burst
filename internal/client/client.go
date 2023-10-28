@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"github.com/fzdwx/burst/internal"
 	"github.com/fzdwx/burst/internal/linereader"
 	"github.com/fzdwx/burst/internal/logx"
 	"github.com/fzdwx/burst/internal/protocal"

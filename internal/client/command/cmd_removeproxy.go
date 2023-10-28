@@ -3,6 +3,7 @@ package command
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/fzdwx/burst/internal"
 	"github.com/fzdwx/burst/internal/client"
 	"github.com/fzdwx/burst/internal/model/req"
 	"github.com/spf13/cast"
