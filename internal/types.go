@@ -42,6 +42,9 @@ const (
 
 var (
 	ErrChannelTypeNotValid = errors.New("channel type is not valid")
+	ChannelTypes           = []string{
+		TCP, HTTP, UDP,
+	}
 )
 
 func CheckChannelType(str string) bool {

@@ -3,16 +3,17 @@ package client
 import (
 	"fmt"
 	"github.com/fzdwx/burst/internal"
-	"github.com/fzdwx/burst/internal/linereader"
 	"github.com/fzdwx/burst/internal/logx"
 	"github.com/fzdwx/burst/internal/protocal"
 	"github.com/fzdwx/burst/internal/wsx"
 	"github.com/gorilla/websocket"
+	"github.com/knz/bubbline"
+	"github.com/knz/bubbline/editline"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"io"
 	"net"
 	"net/url"
-	"os"
 	"strings"
 	"time"
 )
@@ -117,18 +118,39 @@ func (c *Client) RemoveInterNetService(interNet *InternetService) {
 	delete(c.internet, interNet.connId)
 }
 
-func (c *Client) ReaderCommand(f func(line string, client *Client)) {
-	lr := linereader.New(os.Stdin)
+func (c *Client) ReaderCommand(f func(line string, client *Client), a editline.AutoCompleteFn) {
+	m := bubbline.New()
+	m.AutoComplete = a
 
 	fmt.Println("please input command: (u for usage)")
-	// Get all the lines
 	for {
-		fmt.Print("> ")
-		select {
-		case line := <-lr.Ch:
-			f(line, c)
+		// Read a line of input using the widget.
+		line, err := m.GetLine()
+
+		// Handle the end of input.
+		if err != nil {
+			if err == io.EOF {
+				// No more input.
+				break
+			}
+			if errors.Is(err, bubbline.ErrInterrupted) {
+				// Entered Ctrl+C to cancel input.
+				fmt.Println("^C")
+			} else if errors.Is(err, bubbline.ErrTerminated) {
+				fmt.Println("terminated")
+				break
+			} else {
+				fmt.Println("error:", err)
+			}
+			continue
 		}
+
+		line = strings.TrimSpace(line)
+		// Handle regular input.
+		f(line, c)
+		m.AddHistory(line)
 	}
+
 }
 
 type (

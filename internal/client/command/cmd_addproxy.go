@@ -6,6 +6,9 @@ import (
 	"github.com/fzdwx/burst/internal"
 	"github.com/fzdwx/burst/internal/client"
 	"github.com/fzdwx/burst/internal/model/req"
+	"github.com/knz/bubbline"
+	"github.com/knz/bubbline/computil"
+	"github.com/knz/bubbline/editline"
 	"github.com/spf13/cast"
 	"net/url"
 	"strings"
@@ -14,6 +17,31 @@ import (
 type (
 	addProxyCommand struct{}
 )
+
+func (a addProxyCommand) autocomplete() bubbline.AutoCompleteFn {
+	return func(v [][]rune, line, col int) (msg string, comp editline.Completions) {
+		// Detect the word under the cursor.
+		word, wstart, wend := computil.FindWord(v, line, col)
+
+		wordWithoutSpace := strings.TrimSpace(word)
+
+		if len(wordWithoutSpace) == 0 {
+			return "", editline.SimpleWordsCompletion(internal.ChannelTypes, "channelType", col, wstart, wend)
+		}
+		var channelTypeCandidates []string
+		for _, name := range internal.ChannelTypes {
+			if strings.HasPrefix(name, word) {
+				channelTypeCandidates = append(channelTypeCandidates, fmt.Sprintf("%s:", name))
+			}
+		}
+		// todo 返回完成后会默认加一个空格
+		if len(channelTypeCandidates) != 0 {
+			return "", editline.SimpleWordsCompletion(channelTypeCandidates, "channelType", col, wstart, wend)
+		}
+
+		return fmt.Sprintf("your input word is %s", word), nil
+	}
+}
 
 func (a addProxyCommand) usage() {
 	fmt.Println("  ap: add proxy ")

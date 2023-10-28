@@ -42,7 +42,7 @@ var (
 				wsx.MountBinaryFunc(handler.Dispatch(c))
 			})
 
-			c.ReaderCommand(command.Dispatch)
+			c.ReaderCommand(command.Dispatch, command.Autocomplete)
 		},
 	}
 	token      = ""

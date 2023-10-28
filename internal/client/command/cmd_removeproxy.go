@@ -6,6 +6,7 @@ import (
 	"github.com/fzdwx/burst/internal"
 	"github.com/fzdwx/burst/internal/client"
 	"github.com/fzdwx/burst/internal/model/req"
+	"github.com/knz/bubbline"
 	"github.com/spf13/cast"
 	"net/url"
 	"strings"
@@ -15,6 +16,11 @@ type (
 	removeProxyCommand struct {
 	}
 )
+
+func (r removeProxyCommand) autocomplete() bubbline.AutoCompleteFn {
+	//TODO implement me
+	panic("implement me")
+}
 
 func (r removeProxyCommand) usage() {
 	fmt.Println("  rp: remove proxy ")

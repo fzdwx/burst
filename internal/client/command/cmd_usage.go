@@ -3,6 +3,7 @@ package command
 import (
 	"fmt"
 	"github.com/fzdwx/burst/internal/client"
+	"github.com/knz/bubbline"
 	"strings"
 )
 
@@ -10,6 +11,11 @@ type (
 	usageCommand struct {
 	}
 )
+
+func (u usageCommand) autocomplete() bubbline.AutoCompleteFn {
+	//TODO implement me
+	panic("implement me")
+}
 
 func (u usageCommand) usage() {
 	fmt.Println("  u: show usage")

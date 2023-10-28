@@ -3,44 +3,51 @@ package command
 import (
 	"fmt"
 	"github.com/fzdwx/burst/internal/client"
+	"github.com/knz/bubbline"
 	"github.com/zeromicro/go-zero/core/color"
 	"strings"
 )
 
 type command interface {
 	usage()
+	autocomplete() bubbline.AutoCompleteFn
 	run([]string, *client.Client)
 }
 
 var (
 	commands = map[string]command{}
 	version  = "2.1.0"
+
+	commandNames = []string{
+		"usage", "quit", "addProxy", "removeProxy",
+	}
 )
 
 func init() {
-	commands["u"] = &usageCommand{}
+	commands["usage"] = &usageCommand{}
 	commands["quit"] = &quitCommand{}
-	commands["ap"] = &addProxyCommand{}
-	commands["rp"] = &removeProxyCommand{}
+	commands["addProxy"] = &addProxyCommand{}
+	commands["removeProxy"] = &removeProxyCommand{}
 }
 
 func Dispatch(line string, client *client.Client) {
-	split := strings.Split(line, " ")
-	switch strings.TrimSpace(split[0]) {
+	pairs := strings.Split(line, " ")
+
+	switch strings.TrimSpace(pairs[0]) {
 	case "u", "usage", "h", "help", "?":
-		commands["u"].run(split[1:], client)
+		commands["usage"].run(pairs[1:], client)
 	case "q", "quit", "exit":
-		commands["quit"].run(split, client)
-	case "ap":
-		commands["ap"].run(split[1:], client)
-	case "rp":
-		commands["rp"].run(split[1:], client)
+		commands["quit"].run(pairs, client)
+	case "ap", "addProxy":
+		commands["addProxy"].run(pairs[1:], client)
+	case "rp", "removeProxy":
+		commands["removeProxy"].run(pairs[1:], client)
 	case "log":
 		//Log(client)
 	case "version":
 		showVersion()
 	default:
-		unknownCommand(split)
+		unknownCommand(pairs)
 	}
 }
 
