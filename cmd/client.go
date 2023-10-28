@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/fzdwx/burst/internal"
-	client2 "github.com/fzdwx/burst/internal/client"
+	"github.com/fzdwx/burst/internal/client"
 	"github.com/fzdwx/burst/internal/client/command"
 	"github.com/fzdwx/burst/internal/client/handler"
 	"github.com/fzdwx/burst/internal/logx"
@@ -17,7 +17,7 @@ var (
 		Use: "client",
 		Run: func(cmd *cobra.Command, args []string) {
 			loadLog()
-			var cConfig = client2.Config{
+			var cConfig = client.Config{
 				Server: struct {
 					Port int    `json:",default=9999"`
 					Host string `json:",required=true"`
@@ -36,7 +36,7 @@ var (
 				token = generateToken(serverAddr)
 			}
 
-			c := client2.NewClient(token, cConfig)
+			c := client.NewClient(token, cConfig)
 
 			c.Connect(func(wsx *wsx.Wsx) {
 				wsx.MountBinaryFunc(handler.Dispatch(c))
