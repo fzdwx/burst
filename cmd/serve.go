@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	serve = &cobra.Command{
+	serveCmd = &cobra.Command{
 		Use: "serve",
 		Run: func(cmd *cobra.Command, args []string) {
 			loadLog()

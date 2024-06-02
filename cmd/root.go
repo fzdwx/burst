@@ -22,8 +22,8 @@ func init() {
 	cmd.PersistentFlags().StringVarP(&logFile, "log", "l", "", "the log file path, e.g: ./server.log")
 	cmd.PersistentFlags().StringVarP(&logLevel, "level", "v", "debug", "the log level, e.g: debug, info, warn, error, fatal, panic")
 
-	cmd.AddCommand(serve)
-	cmd.AddCommand(exportCmd)
+	cmd.AddCommand(serveCmd)
+	cmd.AddCommand(clientCmd)
 }
 
 func loadLog() {

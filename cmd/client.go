@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	exportCmd = &cobra.Command{
+	clientCmd = &cobra.Command{
 		Use: "client",
 		Run: func(cmd *cobra.Command, args []string) {
 			loadLog()
@@ -51,9 +51,9 @@ var (
 )
 
 func init() {
-	exportCmd.PersistentFlags().StringVarP(&token, "token", "t", "", "the access token, if not set, will generate a new one")
-	exportCmd.PersistentFlags().IntVarP(&serverPort, "port", "p", 9999, "the server port")
-	exportCmd.PersistentFlags().StringVarP(&serverHost, "host", "s", "0.0.0.0", "the server host")
+	clientCmd.PersistentFlags().StringVarP(&token, "token", "t", "", "the access token, if not set, will generate a new one")
+	clientCmd.PersistentFlags().IntVarP(&serverPort, "port", "p", 9999, "the server port")
+	clientCmd.PersistentFlags().StringVarP(&serverHost, "host", "s", "0.0.0.0", "the server host")
 }
 
 func generateToken(serverAddr string) string {
