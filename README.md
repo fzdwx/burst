@@ -14,6 +14,6 @@ go install github.com/fzdwx/burst@main
 # on server
 burst serve
 
-# on client
-burst client
+# export local port 8888 to server
+burst client ap tcp:::8888
 ```

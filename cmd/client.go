@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 var (
@@ -42,18 +43,27 @@ var (
 				wsx.MountBinaryFunc(handler.Dispatch(c))
 			})
 
-			c.ReaderCommand(command.Dispatch, command.Autocomplete)
+			if interactive {
+				c.ReaderCommand(command.Dispatch, command.Autocomplete)
+				return
+			}
+
+			userCommand := strings.Join(args, " ")
+			command.Dispatch(userCommand, c)
+			select {}
 		},
 	}
-	token      = ""
-	serverPort = 9999
-	serverHost = ""
+	token       = ""
+	serverPort  = 9999
+	serverHost  = ""
+	interactive = false
 )
 
 func init() {
 	clientCmd.PersistentFlags().StringVarP(&token, "token", "t", "", "the access token, if not set, will generate a new one")
 	clientCmd.PersistentFlags().IntVarP(&serverPort, "port", "p", 9999, "the server port")
 	clientCmd.PersistentFlags().StringVarP(&serverHost, "host", "s", "0.0.0.0", "the server host")
+	clientCmd.PersistentFlags().BoolVarP(&interactive, "interactive", "i", false, "interactive mode")
 }
 
 func generateToken(serverAddr string) string {
